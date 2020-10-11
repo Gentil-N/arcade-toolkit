@@ -4,7 +4,6 @@
 #include "../include/atk_orion.h"
 #include "../include/atk_asset.h"
 #include "../include/atk_desktop.h"
-/*haha*/
 
 void myMessageCallback(AtkMsgType code, const char *description, const char *file, size_t line)
 {
