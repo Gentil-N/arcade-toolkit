@@ -17,6 +17,7 @@ message(STATUS "Build Test")
 set(ATK_MOD_ORION ON)
 set(ATK_MOD_ASSET ON)
 set(ATK_MOD_DESKTOP ON)
+set(ATK_MOD_MATH ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(SRC_FILES ${SRC_FILES} ${PROJECT_SOURCE_DIR}/code/test/main.cpp)
 if(${ATK_TRIANGLE_DEMO} MATCHES ON)
@@ -85,6 +86,13 @@ set(REQUIRED_LIBS ${REQUIRED_LIBS} glfw3)
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/desktop/dsk_core.c
               ${SRC_DIR}/desktop/window.c)
+endif()
+#-
+if(${ATK_MOD_MATH} MATCHES ON)
+message(STATUS "Math module enabled")
+set(SRC_FILES ${SRC_FILES} 
+              ${SRC_DIR}/math/mth_core.c
+              ${SRC_DIR}/math/vec.c)
 endif()
 #----------------
 
