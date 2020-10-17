@@ -24,7 +24,7 @@ extern "C"
 #define mth_to_degf(rad) (rad * 180.0f / MTH_PI_f)
 #define mth_to_degd(rad) (rad * 180.0 / MTH_PI_d)
 
-       ATK_API float rsqrtssf(float val); //rsqrtss float
+       ATK_API float rsqrtssf(float val); //rsqrtss -> float
 
 #define COMMA ,
 #define MTH_DEC_VEC(type, t, n, vals)                                                 \
