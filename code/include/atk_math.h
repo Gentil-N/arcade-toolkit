@@ -108,17 +108,18 @@ extern "C"
        ATK_API MthMat3##t *mthRotZSecMat3##t(MthMat3##t *mat, type a);
 
 #define MTH_DEC_FUNC_MAT4(type, t)                                                     \
-       ATK_API MthMat4##t *mthTranslateFstMat4##t(MthMat4##t *mat, const MthMat4##t *vec);     \
-       ATK_API MthMat4##t *mthTranslateSecMat4##t(MthMat4##t *mat, const MthMat4##t *vec);     \
-       ATK_API MthMat4##t *mthTranslateFstMat4Vec3##t(MthMat4##t *mat, const MthMat3##t *vec); \
-       ATK_API MthMat4##t *mthTranslateSecMat4Vec3##t(MthMat4##t *mat, const MthMat3##t *vec); \
+       ATK_API MthMat4##t *mthScaleMat4Vec3##t(MthMat4##t *mat, const MthVec3##t *vec);\
+       ATK_API MthMat4##t *mthTranslateFstMat4##t(MthMat4##t *mat, const MthVec4##t *vec);     \
+       ATK_API MthMat4##t *mthTranslateSecMat4##t(MthMat4##t *mat, const MthVec4##t *vec);     \
+       ATK_API MthMat4##t *mthTranslateFstMat4Vec3##t(MthMat4##t *mat, const MthVec3##t *vec); \
+       ATK_API MthMat4##t *mthTranslateSecMat4Vec3##t(MthMat4##t *mat, const MthVec3##t *vec); \
        ATK_API MthMat4##t *mthRotXFstMat4##t(MthMat4##t *mat, type a);                         \
        ATK_API MthMat4##t *mthRotXSecMat4##t(MthMat4##t *mat, type a);                         \
        ATK_API MthMat4##t *mthRotYFstMat4##t(MthMat4##t *mat, type a);                         \
        ATK_API MthMat4##t *mthRotYSecMat4##t(MthMat4##t *mat, type a);                         \
        ATK_API MthMat4##t *mthRotZFstMat4##t(MthMat4##t *mat, type a);                         \
        ATK_API MthMat4##t *mthRotZSecMat4##t(MthMat4##t *mat, type a);                         \
-       ATK_API MthMat4##t *mthPerspectiveMat4##t(MthMat4##t mat, type width, type height, type fov, type znear, type zfar);
+       ATK_API MthMat4##t *mthPerspectiveMat4##t(MthMat4##t *mat, type width, type height, type fov, type znear, type zfar);
 
        MTH_DEC_MAT(float, f, 2)
        MTH_DEC_MAT(double, d, 2)
