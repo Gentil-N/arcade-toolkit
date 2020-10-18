@@ -65,10 +65,7 @@ struct DskWindow
        }
        ~DskWindow()
        {
-              if (m_handle != nullptr)
-              {
-                     dskDestroyWindow(this);
-              }
+              destroy();
        }
        DskWindow &operator=(const DskWindow &window) = delete;
        DskWindow &operator=(DskWindow &&window)
@@ -78,6 +75,18 @@ struct DskWindow
               m_height = window.m_height;
               window.m_handle = nullptr;
               return *this;
+       }
+       bool create(const DskWindowSettings &settings)
+       {
+              destroy();
+              return dskCreateWindow(this, &settings);
+       }
+       void destroy()
+       {
+              if (m_handle != nullptr)
+              {
+                     dskDestroyWindow(this);
+              }
        }
        bool shouldClose()
        {

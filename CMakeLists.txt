@@ -92,7 +92,8 @@ if(${ATK_MOD_MATH} MATCHES ON)
 message(STATUS "Math module enabled")
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/math/mth_core.c
-              ${SRC_DIR}/math/vec.c)
+              ${SRC_DIR}/math/vec.c
+              ${SRC_DIR}/math/mat.c)
 endif()
 #----------------
 
