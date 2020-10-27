@@ -23,6 +23,9 @@ set(SRC_FILES ${SRC_FILES} ${PROJECT_SOURCE_DIR}/code/test/main.cpp)
 if(${ATK_TRIANGLE_DEMO} MATCHES ON)
 message(STATUS "Triangle demo enabled")
 add_compile_definitions(TRIANGLE_DEMO)
+elseif(${ATK_CUBE_DEMO} MATCHES ON)
+message(STATUS "Cube demo enabled")
+add_compile_definitions(CUBE_DEMO)
 endif()
 else()
 add_compile_definitions(ATK_EXPORT_LIB)
@@ -91,9 +94,7 @@ endif()
 if(${ATK_MOD_MATH} MATCHES ON)
 message(STATUS "Math module enabled")
 set(SRC_FILES ${SRC_FILES} 
-              ${SRC_DIR}/math/mth_core.c
-              ${SRC_DIR}/math/vec.c
-              ${SRC_DIR}/math/mat.c)
+              ${SRC_DIR}/math/mth_core.c)
 endif()
 #----------------
 

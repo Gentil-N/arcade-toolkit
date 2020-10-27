@@ -33,7 +33,7 @@ struct AstModel
        AtkArray m_vertices;
        AtkArray m_indices;
 #ifdef __cplusplus
-       AstModel()//"loadFrom..." must be called
+       AstModel() //"loadFrom..." must be called
        {
        }
        AstModel(const char *file_name, uint32_t load_options)
@@ -57,7 +57,10 @@ struct AstModel
        }
        ~AstModel()
        {
-              astModelDestroy(this);
+              if (m_vertices.m_data != nullptr)
+              {
+                     astModelDestroy(this);
+              }
        }
        AstModel &operator=(const AstModel &model)
        {
