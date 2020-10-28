@@ -14,7 +14,7 @@ OrnRenderer *ornCreateRenderer(OrnDevice *device, const OrnRendererSettings *set
     if (settings->enable_depth_test)
     {
         renderer->depth.image = ornCreateImage(
-            device->handle, &device->tbl, device->allocator, renderer->frame_extent.width, renderer->frame_extent.height, device->gpu->depth.format,
+            device->handle, &device->tbl, device->memory_allocator, renderer->frame_extent.width, renderer->frame_extent.height, device->gpu->depth.format,
             device->gpu->depth.tiling, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 1, (VkSampleCountFlagBits)settings->sample_count);
         VkImageViewCreateInfo image_view_info = vkfImageViewCreateInfo(
             renderer->depth.image->handle, VK_IMAGE_VIEW_TYPE_2D, device->gpu->depth.format, (VkComponentMapping){}, vkfImageSubresourceRange(VK_IMAGE_ASPECT_DEPTH_BIT, 0, 1, 0, 1));
@@ -34,7 +34,7 @@ OrnRenderer *ornCreateRenderer(OrnDevice *device, const OrnRendererSettings *set
     if (msaa_enabled)
     {
         renderer->msaa.image = ornCreateImage(
-            device->handle, &device->tbl, device->allocator, renderer->frame_extent.width, renderer->frame_extent.height, device->swapchain->surface_format.format,
+            device->handle, &device->tbl, device->memory_allocator, renderer->frame_extent.width, renderer->frame_extent.height, device->swapchain->surface_format.format,
             VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT, 1, (VkSampleCountFlagBits)settings->sample_count);
         VkImageViewCreateInfo image_view_info = vkfImageViewCreateInfo(
             renderer->msaa.image->handle, VK_IMAGE_VIEW_TYPE_2D, device->swapchain->surface_format.format, (VkComponentMapping){},
@@ -96,12 +96,12 @@ void ornDestroyRenderer(OrnDevice *device, OrnRenderer *renderer)
     if (renderer->depth.image != NULL)
     {
         device->tbl.vkDestroyImageView(device->handle, renderer->depth.image_view, VK_AC);
-        ornDestroyImage(device->handle, &device->tbl, device->allocator, renderer->depth.image);
+        ornDestroyImage(device->handle, &device->tbl, renderer->depth.image);
     }
     if (renderer->msaa.image != NULL)
     {
         device->tbl.vkDestroyImageView(device->handle, renderer->msaa.image_view, VK_AC);
-        ornDestroyImage(device->handle, &device->tbl, device->allocator, renderer->msaa.image);
+        ornDestroyImage(device->handle, &device->tbl, renderer->msaa.image);
     }
     atk_free(renderer);
     atk_info("renderer destroyed");

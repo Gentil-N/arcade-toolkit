@@ -8,11 +8,11 @@ OrnBuffer *ornCreateBuffer(OrnDevice *device, const OrnBufferSettings *buffer_se
        VkBufferCreateInfo buffer_info = vkfBufferCreateInfo(buffer_settings->size, buffer_settings->usage, VK_SHARING_MODE_EXCLUSIVE, 0, NULL);
        orn_assert_vk(device->tbl.vkCreateBuffer(device->handle, &buffer_info, VK_AC, &buffer->handle));
 
-       VkmAllocationCreateInfo allocation_info;
-       allocation_info.buffer = buffer->handle;
-       allocation_info.memoryProperties = buffer_settings->memory;
-       allocation_info.objectType = VKM_BUFFER_OBJECT_TYPE;
-       orn_assert_vk(vkmAllocateMemory(device->handle, device->allocator, &allocation_info, &buffer->allocation));
+       OrnMemoryAllocationSettings settings;
+       settings.buffer = buffer->handle;
+       settings.memoryProperties = buffer_settings->memory;
+       settings.objectType = ORN_BUFFER_OBJECT_TYPE;
+       buffer->alloc = ornAllocateMemory(device->handle, device->memory_allocator, &settings);
 
        atk_info("buffer created");
        return buffer;
@@ -20,7 +20,7 @@ OrnBuffer *ornCreateBuffer(OrnDevice *device, const OrnBufferSettings *buffer_se
 
 void ornDestroyBuffer(OrnDevice *device, OrnBuffer *buffer)
 {
-       vkmFreeMemory(device->allocator, buffer->allocation);
+       ornFreeMemory(buffer->alloc);
        device->tbl.vkDestroyBuffer(device->handle, buffer->handle, VK_AC);
        atk_free(buffer);
        atk_info("buffer destroyed");
@@ -28,12 +28,10 @@ void ornDestroyBuffer(OrnDevice *device, OrnBuffer *buffer)
 
 void *ornMapBuffer(OrnDevice *device, OrnBuffer *buffer)
 {
-       void *data = NULL;
-       orn_assert_vk(vkmMapMemory(device->handle, device->allocator, buffer->allocation, &data));
-       return data;
+       return ornMapMemory(device->handle, device->memory_allocator, buffer->alloc);
 }
 
 void ornUnmapBuffer(OrnDevice *device, OrnBuffer *buffer)
 {
-       vkmUnmapMemory(device->handle, device->allocator, buffer->allocation);
+       ornUnmapMemory(device->handle, device->memory_allocator, buffer->alloc);
 }

@@ -57,7 +57,7 @@ set(SRC_FILES ${SRC_FILES}
               ${SRC_DIR}/orion/texture.c
               ${SRC_DIR}/orion/uniform.c
               ${SRC_DIR}/orion/vulkan_loader.c
-              ${SRC_DIR}/orion/vulkan_memory.c)
+              ${SRC_DIR}/orion/memory_allocator.c)
 endif()
 #-
 if(${ATK_MOD_ASSET} MATCHES ON)

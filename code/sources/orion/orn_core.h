@@ -23,7 +23,6 @@ extern "C"
 #endif //ATK_PLATFORM_LINUX
 #include "vulkan_loader.h"
 #include "vulkan_filler.h"
-#include "vulkan_memory.h"
 #define ORN_REQUIRED_VK_VERS_MAJ 1
 #define ORN_REQUIRED_VK_VERS_MIN 2
 #define ORN_MEMORY_POOL_SIZE 50000000 // 50Mb
@@ -33,7 +32,12 @@ extern "C"
 #else
 #define orn_assert_vk(expr) expr;
 #endif //!NDEBUG
-#define orn_check_ret(expr, type, desc, rtrn) if((expr)) {atk_error(type, desc); return rtrn;}
+#define orn_check_ret(expr, type, desc, rtrn) \
+       if ((expr))                            \
+       {                                      \
+              atk_error(type, desc);          \
+              return rtrn;                    \
+       }
 
        bool ornCheckInstanceLayers(const char **required_layers, uint32_t layer_count);
        bool ornCheckInstanceExtentions(const char **required_extensions, uint32_t extensions_count);
@@ -87,6 +91,68 @@ extern "C"
        void ornEraseGpus(AtkArray *gpus);
        bool ornCheckGpuExtensions(const OrnGpu *gpu, uint32_t extension_count, const char **required_extensions);
 
+       typedef struct OrnMemoryPool OrnMemoryPool;
+
+       typedef struct OrnMemoryAllocation
+       {
+              VkDeviceSize offset;
+              VkDeviceSize size;
+              OrnMemoryPool *memory_pool;
+       } OrnMemoryAllocation;
+
+       struct OrnBuffer
+       {
+              VkBuffer handle;
+              OrnMemoryAllocation *alloc;
+       };
+
+       typedef struct OrnImage
+       {
+              VkImage handle;
+              OrnMemoryAllocation *alloc;
+       } OrnImage;
+
+       typedef struct OrnMemoryAllocator
+       {
+              const VklDeviceTable *dtbl;
+              VkDeviceSize memory_pool_size;
+              AtkVector pools;
+              VkPhysicalDeviceMemoryProperties memory_properties;
+       } OrnMemoryAllocator;
+
+       typedef struct OrnMemoryAllocatorSettings
+       {
+              VkPhysicalDevice physical_device;
+              const VklInstanceTable *itbl;
+              const VklDeviceTable *dtbl;
+              VkDeviceSize memory_pool_size;
+       } OrnMemoryAllocatorSettings;
+
+       OrnMemoryAllocator *ornCreateMemoryAllocator(const OrnMemoryAllocatorSettings *settings);
+       void ornDestroyMemoryAllocator(VkDevice device, OrnMemoryAllocator *memory_allocator);
+
+       typedef enum OrnMemoryObjectType
+       {
+              ORN_BUFFER_OBJECT_TYPE = 0x1,
+              ORN_IMAGE_OBJECT_TYPE = 0x2
+       } OrnMemoryObjectType;
+
+       typedef struct OrnMemoryAllocationSettings
+       {
+              OrnMemoryObjectType objectType;
+              union 
+              {
+                     VkBuffer buffer;
+                     VkImage image;
+              };
+              VkMemoryPropertyFlags memoryProperties;
+       } OrnMemoryAllocationSettings;
+
+       OrnMemoryAllocation *ornAllocateMemory(VkDevice device, OrnMemoryAllocator *memory_allocator, const OrnMemoryAllocationSettings *settings);
+       void ornFreeMemory(OrnMemoryAllocation *memory_alloc);
+       void *ornMapMemory(VkDevice device, OrnMemoryAllocator *memory_allocator, OrnMemoryAllocation *memory_alloc);
+       void ornUnmapMemory(VkDevice device, OrnMemoryAllocator *memory_allocator, OrnMemoryAllocation *memory_alloc);
+
        typedef struct OrnSwapchain
        {
               VkSurfaceFormatKHR surface_format;
@@ -116,7 +182,8 @@ extern "C"
               VklDeviceTable tbl;
               VkQueue graphics_queue, present_queue;
               VkCommandPool command_pool;
-              VkmAllocator allocator;
+              //VkmAllocator allocator;
+              OrnMemoryAllocator *memory_allocator;
               OrnSwapchain *swapchain;
               AtkVector msgs;
               OrnSyncObjects *sync_objects;
@@ -139,16 +206,16 @@ extern "C"
        void ornPushDeviceMsg(OrnDevice *device, OrnDeviceMsgType type, void *data);
        void ornParseDeviceMsgs(OrnDevice *device, bool force_wait);
 
-       typedef struct OrnImage
+       /*typedef struct OrnImage
        {
               VkImage handle;
               VkmAllocation allocation;
-       } OrnImage;
+       } OrnImage;*/
 
        OrnImage *ornCreateImage(
-           VkDevice device, const VklDeviceTable *dtbl, VkmAllocator allocator, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-           uint32_t mip_level_count, VkSampleCountFlagBits sample_count);
-       void ornDestroyImage(VkDevice device, const VklDeviceTable *dtbl, VkmAllocator allocator, OrnImage *image);
+           VkDevice device, const VklDeviceTable *dtbl, OrnMemoryAllocator *memory_allocator, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, 
+           VkImageUsageFlags usage, uint32_t mip_level_count, VkSampleCountFlagBits sample_count);
+       void ornDestroyImage(VkDevice device, const VklDeviceTable *dtbl, OrnImage *image);
 
        struct OrnRenderer
        {
@@ -178,11 +245,11 @@ extern "C"
        VkFormat ornGetFormatEquivalent(OrnVertexInputType input_type);
        VkDeviceSize ornGetSizeofFormat(VkFormat format);
 
-       struct OrnBuffer
+       /*struct OrnBuffer
        {
               VkBuffer handle;
               VkmAllocation allocation;
-       };
+       };*/
 
        struct OrnTexture
        {

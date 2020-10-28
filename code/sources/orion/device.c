@@ -35,7 +35,7 @@ OrnDevice *ornCreateDevice(const OrnDeviceSettings *settings)
        command_pool_info.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
        orn_assert_vk(device->tbl.vkCreateCommandPool(device->handle, &command_pool_info, VK_AC, &device->command_pool));
 
-       VkmAllocatorCreateInfo allocator_info;
+       /*VkmAllocatorCreateInfo allocator_info;
        allocator_info.allocationCallbacks = VK_AC;
        allocator_info.memoryPoolSize = ORN_MEMORY_POOL_SIZE;
        allocator_info.pfn_allocateMemory = device->tbl.vkAllocateMemory;
@@ -48,7 +48,13 @@ OrnDevice *ornCreateDevice(const OrnDeviceSettings *settings)
        allocator_info.pfn_mapMemory = device->tbl.vkMapMemory;
        allocator_info.pfn_unmapMemory = device->tbl.vkUnmapMemory;
        allocator_info.physicalDevice = settings->gpu->handle;
-       vkmCreateAllocator(&allocator_info, &device->allocator);
+       vkmCreateAllocator(&allocator_info, &device->allocator);*/
+       OrnMemoryAllocatorSettings memory_allocator_settings;
+       memory_allocator_settings.dtbl = &device->tbl;
+       memory_allocator_settings.itbl = &CONTEXT.itbl;
+       memory_allocator_settings.memory_pool_size = ORN_MEMORY_POOL_SIZE;
+       memory_allocator_settings.physical_device = device->gpu->handle;
+       device->memory_allocator = ornCreateMemoryAllocator(&memory_allocator_settings);
 
        device->swapchain = ornCreateSwapchain(device->handle, &device->tbl, settings->gpu, settings->width, settings->height, settings->surface);
        device->sync_objects = ornCreateSyncObjects(&device->tbl, device->handle, (uint32_t)device->swapchain->images.m_count);
@@ -80,7 +86,8 @@ void ornDestroyDevice(OrnDevice *device)
        ornDestroySyncObjects(&device->tbl, device->handle, device->sync_objects);
        ornDestroySwapchain(device->handle, &device->tbl, device->swapchain);
 
-       vkmDestroyAllocator(device->handle, device->allocator);
+       /*vkmDestroyAllocator(device->handle, device->allocator);*/
+       ornDestroyMemoryAllocator(device->handle, device->memory_allocator);
        device->tbl.vkDestroyCommandPool(device->handle, device->command_pool, VK_AC);
        device->tbl.vkDestroyDevice(device->handle, VK_AC);
        atk_free(device);

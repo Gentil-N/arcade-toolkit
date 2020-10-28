@@ -9,7 +9,7 @@ OrnTexture *ornCreateTexture(OrnDevice *device, const OrnTextureSettings *settin
     texture->height = settings->height;
     texture->mip_level_count = settings->enable_mipmaps ? (uint32_t)floorf(log2f((float)ORN_MAX(settings->width, settings->height))) + 1 : 1;
     texture->image = ornCreateImage(
-        device->handle, &device->tbl, device->allocator, settings->width, settings->height, device->gpu->texture.format, VK_IMAGE_TILING_OPTIMAL,
+        device->handle, &device->tbl, device->memory_allocator, settings->width, settings->height, device->gpu->texture.format, VK_IMAGE_TILING_OPTIMAL,
         VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, texture->mip_level_count, VK_SAMPLE_COUNT_1_BIT);
     texture->layout = VK_IMAGE_LAYOUT_UNDEFINED;
     VkImageViewCreateInfo image_info = vkfImageViewCreateInfo(
@@ -30,7 +30,7 @@ void ornDestroyTexture(OrnDevice *device, OrnTexture *texture)
 {
     device->tbl.vkDestroySampler(device->handle, texture->sampler, VK_AC);
     device->tbl.vkDestroyImageView(device->handle, texture->image_view, VK_AC);
-    ornDestroyImage(device->handle, &device->tbl, device->allocator, texture->image);
+    ornDestroyImage(device->handle, &device->tbl, texture->image);
     atk_free(texture);
     atk_info("texture destroyed");
 }
