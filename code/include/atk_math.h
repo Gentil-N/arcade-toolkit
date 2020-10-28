@@ -32,6 +32,19 @@ extern "C"
 
 #ifdef __cplusplus
 
+template<typename type>
+struct MthVec2;
+template<typename type>
+struct MthVec3;
+template<typename type>
+struct MthVec4;
+template<typename type>
+struct MthMat2;
+template<typename type>
+struct MthMat3;
+template<typename type>
+struct MthMat4;
+
 template <typename type>
 struct MthVec2
 {
@@ -46,18 +59,26 @@ struct MthVec2
        MthVec2(const MthVec2 &vec) : x(vec.x), y(vec.y)
        {
        }
-       MthVec2<type> &operator=(const MthVec2 &vec) = default;
-       MthVec2<type> &operator+=(const MthVec2 &vec)
+       bool operator==(const MthVec2<type> &vec) const
+       {
+              return x == vec.x && y == vec.y;
+       }
+       bool operator!=(const MthVec2<type> &vec) const
+       {
+              return x != vec.x || y != vec.y;
+       }
+       MthVec2<type> &operator=(const MthVec2<type> &vec) = default;
+       MthVec2<type> &operator+=(const MthVec2<type> &vec)
        {
               x += vec.x;
               y += vec.y;
               return *this;
        }
-       MthVec2<type> operator+(const MthVec2 &vec) const
+       MthVec2<type> operator+(const MthVec2<type> &vec) const
        {
               return MthVec2<type>(x + vec.x, y + vec.y);
        }
-       MthVec2<type> &operator-=(const MthVec2 &vec)
+       MthVec2<type> &operator-=(const MthVec2<type> &vec)
        {
               x -= vec.x;
               y -= vec.y;
@@ -150,26 +171,34 @@ struct MthVec3
        MthVec3(const MthVec3 &vec) : x(vec.x), y(vec.y), z(vec.z)
        {
        }
-       MthVec3<type> &operator=(const MthVec3 &vec) = default;
-       MthVec3<type> &operator+=(const MthVec3 &vec)
+       bool operator==(const MthVec3<type> &vec) const
+       {
+              return x == vec.x && y == vec.y && z == vec.z;
+       }
+       bool operator!=(const MthVec3<type> &vec) const
+       {
+              return x != vec.x || y != vec.y || z != vec.z;
+       }
+       MthVec3<type> &operator=(const MthVec3<type> &vec) = default;
+       MthVec3<type> &operator+=(const MthVec3<type> &vec)
        {
               x += vec.x;
               y += vec.y;
               z += vec.z;
               return *this;
        }
-       MthVec3<type> operator+(const MthVec3 &vec) const
+       MthVec3<type> operator+(const MthVec3<type> &vec) const
        {
               return MthVec3<type>(x + vec.x, y + vec.y, z + vec.z);
        }
-       MthVec3<type> &operator-=(const MthVec3 &vec)
+       MthVec3<type> &operator-=(const MthVec3<type> &vec)
        {
               x -= vec.x;
               y -= vec.y;
               z -= vec.z;
               return *this;
        }
-       MthVec3<type> operator-(const MthVec3 &vec) const
+       MthVec3<type> operator-(const MthVec3<type> &vec) const
        {
               return MthVec3<type>(x - vec.x, y - vec.y, z - vec.z);
        }
@@ -286,8 +315,16 @@ struct MthVec4
        MthVec4(const MthVec4 &vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w)
        {
        }
-       MthVec4<type> &operator=(const MthVec4 &vec) = default;
-       MthVec4<type> &operator+=(const MthVec4 &vec)
+       bool operator==(const MthVec4<type> &vec) const
+       {
+              return x == vec.x && y == vec.y && z == vec.z && w == vec.w;
+       }
+       bool operator!=(const MthVec4<type> &vec) const
+       {
+              return x != vec.x || y != vec.y || z != vec.z || w != vec.w;
+       }
+       MthVec4<type> &operator=(const MthVec4<type> &vec) = default;
+       MthVec4<type> &operator+=(const MthVec4<type> &vec)
        {
               x += vec.x;
               y += vec.y;
@@ -295,11 +332,11 @@ struct MthVec4
               w += vec.w;
               return *this;
        }
-       MthVec4<type> operator+(const MthVec4 &vec) const
+       MthVec4<type> operator+(const MthVec4<type> &vec) const
        {
               return MthVec4<type>(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
        }
-       MthVec4<type> &operator-=(const MthVec4 &vec)
+       MthVec4<type> &operator-=(const MthVec4<type> &vec)
        {
               x -= vec.x;
               y -= vec.y;
@@ -307,7 +344,7 @@ struct MthVec4
               w -= vec.w;
               return *this;
        }
-       MthVec4<type> operator-(const MthVec4 &vec) const
+       MthVec4<type> operator-(const MthVec4<type> &vec) const
        {
               return MthVec4<type>(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
        }
@@ -444,6 +481,14 @@ struct MthMat2
        MthMat2(const MthMat2<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[1][0], mat.m[1][1]}
        {
        }
+       bool operator==(const MthMat2<type> &mat) const
+       {
+              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1];
+       }
+       bool operator!=(const MthMat2<type> &mat) const
+       {
+              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1];
+       }
        MthMat2<type> &operator=(const MthMat2<type> &mat) = default;
        MthMat2<type> &operator+=(const MthMat2<type> &mat)
        {
@@ -577,6 +622,14 @@ struct MthMat3
        }
        MthMat3(const MthMat3<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[0][2], mat.m[1][0], mat.m[1][1], mat.m[1][2], mat.m[2][0], mat.m[2][1], mat.m[2][2]}
        {
+       }
+       bool operator==(const MthMat2<type> &mat) const
+       {
+              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1] && m[0][2] == mat.m[0][2] && m[1][2] == mat.m[1][2] && m[2][0] == mat.m[2][0] && m[2][1] == mat.m[2][1] && m[2][2] == mat.m[2][2];
+       }
+       bool operator!=(const MthMat2<type> &mat) const
+       {
+              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1] || m[0][2] != mat.m[0][2] || m[1][2] != mat.m[1][2] || m[2][0] != mat.m[2][0] || m[2][1] != mat.m[2][1] || m[2][2] != mat.m[2][2];
        }
        MthMat3<type> &operator=(const MthMat3<type> &mat) = default;
        MthMat3<type> &operator+=(const MthMat3<type> &mat)
@@ -856,8 +909,16 @@ struct MthMat4
        {
        }
        MthMat4(const MthMat4<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[0][2], mat.m[0][3], mat.m[1][0], mat.m[1][1], mat.m[1][2], mat.m[1][3], mat.m[2][0], mat.m[2][1], mat.m[2][2], mat.m[2][3],
-                                             mat.m[2][0], mat.m[2][1], mat.m[2][2], mat.m[3][3]}
+                                             mat.m[3][0], mat.m[3][1], mat.m[3][2], mat.m[3][3]}
        {
+       }
+       bool operator==(const MthMat2<type> &mat) const
+       {
+              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1] && m[0][2] == mat.m[0][2] && m[1][2] == mat.m[1][2] && m[2][0] == mat.m[2][0] && m[2][1] == mat.m[2][1] && m[2][2] == mat.m[2][2] && m[0][3] == mat.m[0][3] && m[1][3] == mat.m[1][3] && m[2][3] == mat.m[2][3] && m[3][0] == mat.m[3][0] && m[3][1] == mat.m[3][1] && m[3][2] == mat.m[3][2] && m[3][3] == mat.m[3][3];
+       }
+       bool operator!=(const MthMat2<type> &mat) const
+       {
+              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1] || m[0][2] != mat.m[0][2] || m[1][2] != mat.m[1][2] || m[2][0] != mat.m[2][0] || m[2][1] != mat.m[2][1] || m[2][2] != mat.m[2][2] || m[0][3] != mat.m[0][3] || m[1][3] != mat.m[1][3] || m[2][3] != mat.m[2][3] || m[3][0] != mat.m[3][0] || m[3][1] != mat.m[3][1] || m[3][2] != mat.m[3][2] || m[3][3] != mat.m[3][3];
        }
        MthMat4<type> &operator=(const MthMat4<type> &mat) = default;
        MthMat4<type> &operator+=(const MthMat4<type> &mat)
