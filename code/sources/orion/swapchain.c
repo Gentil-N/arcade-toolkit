@@ -44,10 +44,12 @@ OrnSwapchain *ornCreateSwapchain(VkDevice device, const VklDeviceTable *dtbl, co
        OrnSwapchain *swapchain = (OrnSwapchain*)atk_alloc(sizeof(struct OrnSwapchain));
        atk_assert(swapchain != NULL);
 
+       atk_assert(gpu->surface_formats.m_count > 0);
        swapchain->surface_format = chooseSurfaceFormat(gpu);
        uint32_t image_count = ORN_MAX(gpu->surface_capabilities.minImageCount, ORN_MIN(gpu->surface_capabilities.maxImageCount, SWAPCHAIN_IMAGE_COUNT));
 
        swapchain->extent = chooseExtent(gpu, width, height);
+       atk_assert(gpu->present_modes.m_count > 0);
        swapchain->present_mode = choosePresentMode(gpu);
 
        uint32_t queue_indices[2];

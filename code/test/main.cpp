@@ -200,7 +200,7 @@ int main()
                      OrnUniformBinding uniform_binding = {ORN_UNIFORM_TYPE_BUFFER, ORN_VERTEX_SHADER};
                      OrnUniformSet uniform_set = {&uniform_binding, 1, 1};
                      OrnPipelineSettings pipeline_settings = {
-                         vertex_shader, fragment_shader, &vertex_inputs, 1, ORN_CULL_MODE_NONE, ORN_POLYGON_MODE_FILL, &uniform_set, 1, renderer, true, ORN_SAMPLE_COUNT_1};
+                         vertex_shader, fragment_shader, &vertex_inputs, 1, ORN_CULL_MODE_NONE, ORN_POLYGON_MODE_FILL, &uniform_set, 1, renderer, ORN_SAMPLE_COUNT_1};
                      OrnPipeline *pipeline = ornCreatePipeline(device, &pipeline_settings);
                      ornDestroyShader(device, fragment_shader);
                      ornDestroyShader(device, vertex_shader);
@@ -230,7 +230,7 @@ int main()
 
                      OrnCommand *command = ornCreateCommand(device);
                      ornCmdBegin(command);
-                     ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f, true);
+                     ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f);
                      ornCmdBindVertex(command, buffer, 0, 0);
                      ornCmdBindIndex(command, buffer, model.vertexCount() * sizeof(float));
                      ornCmdBindUniform(command, pipeline, uniform, 0);

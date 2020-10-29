@@ -32,7 +32,7 @@ void ornCmdBegin(OrnCommand *command)
        }
 }
 
-void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *pipeline, float clear_r, float clear_g, float clear_b, bool clear_depth)
+void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *pipeline, float clear_r, float clear_g, float clear_b)
 {
        for (size_t i = 0; i < command->command_buffers.m_count; ++i)
        {
@@ -44,7 +44,7 @@ void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *
               clear_values[1].depthStencil = depth_value;
               VkRect2D render_area = vkfRect2D(vkfOffset2D(0, 0), renderer->frame_extent);
               VkRenderPassBeginInfo render_pass_begin_info = vkfRenderPassBeginInfo(
-                  renderer->render_pass, atk_get(VkFramebuffer, renderer->framebuffers, i), render_area, clear_depth ? 2 : 1, clear_values);
+                  renderer->render_pass, atk_get(VkFramebuffer, renderer->framebuffers, i), render_area, renderer->depth.image == NULL ? 1 : 2, clear_values);
               command->dtbl->vkCmdBeginRenderPass(curr_cmd_buf, &render_pass_begin_info, VK_SUBPASS_CONTENTS_INLINE);
               command->dtbl->vkCmdBindPipeline(curr_cmd_buf, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->handle);
        }

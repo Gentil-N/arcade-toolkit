@@ -93,6 +93,7 @@ void atkDestroyMutex(AtkMutex *mutex)
  * Callback Info/Warning/Error
  */
 
+#ifdef ATK_DEBUG
 AtkMutex *MSG_CALLBACK_MUTEX;
 fct_atkMessageCallback MSG_CALLBACK;
 
@@ -123,6 +124,7 @@ void atkConcatAndPushMsg(AtkMsgType code, const char *file, size_t line, const c
 
        atkFree(msg_buf);
 }
+#endif //ATK_DEBUG
 
 /**
  * Vector
@@ -357,17 +359,17 @@ void atkStringResizeCapacity(AtkString *string, size_t new_capacity)
 bool atkFileCreate(AtkFile *file, const char *file_name, const char *access_mode)
 {
        atk_assert(file != NULL);
-       if((file->m_handle = (void*)fopen(file_name, access_mode)) == NULL)
+       if ((file->m_handle = (void *)fopen(file_name, access_mode)) == NULL)
        {
               atk_error(ATK_MSG_PROC_FAILED, "failed to open file");
               return false;
        }
-       if(fseek(file->m_handle, 0L, SEEK_END) != 0)
+       if (fseek(file->m_handle, 0L, SEEK_END) != 0)
        {
               return false;
        }
        file->m_size = ftell(file->m_handle);
-       if(fseek(file->m_handle, 0L, SEEK_SET) != 0)
+       if (fseek(file->m_handle, 0L, SEEK_SET) != 0)
        {
               return false;
        }
@@ -378,7 +380,7 @@ bool atkFileClose(AtkFile *file)
 {
        atk_assert(file != NULL);
        atk_assert(file->m_handle != NULL);
-       if(fclose(file->m_handle) != 0)
+       if (fclose(file->m_handle) != 0)
        {
               atk_error(ATK_MSG_PROC_FAILED, "failed to close file");
               return false;
@@ -431,6 +433,7 @@ typedef struct AtkMemAllocHandle
 
 AtkMemoryTracker MEMORY_TRACKER;
 
+#ifdef ATK_DEBUG
 void atkInitMemoryTracker()
 {
        MEMORY_TRACKER.m_mutex = atkCreateMutex();
@@ -539,7 +542,7 @@ void *atkReallocAlignedDebug(void *ptr, size_t alignment, size_t size)
 
 void atkFreeDebug(void *ptr)
 {
-       if(ptr == NULL)
+       if (ptr == NULL)
        {
               return;
        }
@@ -568,6 +571,7 @@ void atkFreeDebug(void *ptr)
        atkUnlockMutex(MEMORY_TRACKER.m_mutex);
        atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to find memory allocation handle");
 }
+#endif //ATK_DEBUG
 
 /**
  * Init/End
@@ -582,25 +586,17 @@ void atkInit(
        ALLOC_ALIGNED_CALLBACK = (alloc_align_cb == NULL ? aligned_alloc : alloc_align_cb);
        REALLOC_CALLBACK = (realloc_cb == NULL ? realloc : realloc_cb);
        FREE_CALLBACK = (free_cb == NULL ? free : free_cb);
+#ifdef ATK_DEBUG
+       atkInitMemoryTracker();
+#endif //ATK_DEBUG
        atk_info("arcade tool kit initialized");
 }
 
 void atkEnd()
 {
        atk_info("arcade tool kit ended");
-       atkDestroyMutex(MSG_CALLBACK_MUTEX);
-}
-
-void atkInitDebug(
-    fct_atkMessageCallback msg_cb, fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback alloc_align_cb, fct_atkReallocCallback realloc_cb,
-    fct_atkFreeCallback free_cb)
-{
-       atkInit(msg_cb, alloc_cb, alloc_align_cb, realloc_cb, free_cb);
-       atkInitMemoryTracker();
-}
-
-void atkEndDebug()
-{
+#ifdef ATK_DEBUG
        atkEndMemoryTracker();
-       atkEnd();
+#endif //ATK_DEBUG
+       atkDestroyMutex(MSG_CALLBACK_MUTEX);
 }

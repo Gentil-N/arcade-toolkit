@@ -187,7 +187,6 @@ extern "C"
               OrnUniformSet *uniform_sets;
               uint32_t uniform_set_count;
               OrnRenderer *renderer;
-              bool enable_depth_test;
               OrnSampleCount sample_count;
        } OrnPipelineSettings;
 
@@ -270,9 +269,7 @@ extern "C"
        ATK_API OrnCommand *ornCreateCommand(OrnDevice *device);
        ATK_API void ornDestroyCommand(OrnDevice *device, OrnCommand *command);
        ATK_API void ornCmdBegin(OrnCommand *command);
-       ATK_API void ornCmdBeginRender(
-              OrnCommand *command, OrnRenderer *renderer, OrnPipeline *pipeline, float clear_r, float clear_g, float clear_b, 
-              bool clear_depth/*true if depth test enabled*/);
+       ATK_API void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *pipeline, float clear_r, float clear_g, float clear_b);
        ATK_API void ornCmdBindUniform(OrnCommand *command, OrnPipeline *pipeline, OrnUniform *uniform, uint32_t set);
        ATK_API void ornCmdBindVertex(OrnCommand *command, OrnBuffer *buffer, uint32_t binding, size_t offset);
        ATK_API void ornCmdBindIndex(OrnCommand *command, OrnBuffer *buffer, size_t offset);

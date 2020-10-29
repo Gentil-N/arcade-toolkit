@@ -118,9 +118,9 @@ OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *set
            (VkSampleCountFlagBits)settings->sample_count, VK_FALSE, 0.0f, NULL, VK_FALSE, VK_FALSE);
        VkStencilOpState front = {}, back = {};
        VkPipelineDepthStencilStateCreateInfo depth_state =
-           settings->enable_depth_test
-               ? vkfPipelineDepthStencilStateCreateInfo(VK_TRUE, VK_TRUE, VK_COMPARE_OP_LESS, VK_FALSE, VK_FALSE, front, back, 0.0f, 1.0f)
-               : vkfPipelineDepthStencilStateCreateInfo(VK_FALSE, VK_FALSE, VK_COMPARE_OP_LESS, VK_FALSE, VK_FALSE, front, back, 0.0f, 0.0f);
+           settings->renderer->depth.image == NULL
+               ? vkfPipelineDepthStencilStateCreateInfo(VK_FALSE, VK_FALSE, VK_COMPARE_OP_LESS, VK_FALSE, VK_FALSE, front, back, 0.0f, 0.0f)
+               : vkfPipelineDepthStencilStateCreateInfo(VK_TRUE, VK_TRUE, VK_COMPARE_OP_LESS, VK_FALSE, VK_FALSE, front, back, 0.0f, 1.0f);
        VkPipelineColorBlendAttachmentState color_blend_attachment_state = vkfPipelineColorBlendAttachmentState(
            VK_FALSE, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD, VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD,
            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);

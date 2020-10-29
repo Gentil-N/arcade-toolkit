@@ -7,6 +7,11 @@ extern "C"
 #endif //__cplusplus
 
        /**
+        *  Utils
+        */
+#define ATK_COMMA ,
+
+       /**
         * Compilation States
         */
 #ifndef NDEBUG
@@ -64,6 +69,9 @@ extern "C"
        /**
         * Callback Info/Warning/Error
         */
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#ifdef ATK_DEBUG
+
        typedef enum AtkMsgType
        {
               ATK_MSG_VOID = 0,
@@ -84,9 +92,7 @@ extern "C"
 
        ATK_API void atkPushMessage(AtkMsgType code, const char *description, const char *file, size_t line);
        ATK_API void atkConcatAndPushMsg(AtkMsgType code, const char *file, size_t line, const char *format, ...);
-
-#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-#ifdef ATK_DEBUG
+       
 #define atk_vinfo(format, ...) atkConcatAndPushMsg(ATK_MSG_INFO, __FILENAME__, __LINE__, format, __VA_ARGS__)
 #define atk_info(description) atkPushMessage(ATK_MSG_INFO, description, __FILENAME__, __LINE__)
 #define atk_vwarn(type, format, ...) atkConcatAndPushMsg((AtkMsgType)(ATK_MSG_WARNING | type), __FILENAME__, __LINE__, format, __VA_ARGS__)
@@ -162,11 +168,13 @@ extern "C"
        /**
         * Debug
         */
+#ifdef ATK_DEBUG
        ATK_API void *atkAllocDebug(size_t size, size_t line, const char *file_name);
        ATK_API void *atkAllocAlignedDebug(size_t alignment, size_t size, size_t line, const char *file_name);
        ATK_API void *atkReallocDebug(void *ptr, size_t size);
        ATK_API void *atkReallocAlignedDebug(void *ptr, size_t alignment, size_t size);
        ATK_API void atkFreeDebug(void *ptr);
+#endif //ATK_DEBUG
 
        /**
         * Init/End
@@ -175,22 +183,16 @@ extern "C"
            fct_atkMessageCallback msg_cb, fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback alloc_align_cb, fct_atkReallocCallback realloc_cb,
            fct_atkFreeCallback free_cb);
        ATK_API void atkEnd();
-       ATK_API void atkInitDebug(
-           fct_atkMessageCallback msg_cb, fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback alloc_align_cb, fct_atkReallocCallback realloc_cb,
-           fct_atkFreeCallback free_cb);
-       ATK_API void atkEndDebug();
+#define atk_init atkInit
+#define atk_end atkEnd
 
 #ifdef ATK_DEBUG
-#define atk_init atkInitDebug
-#define atk_end atkEndDebug
 #define atk_alloc(size) atkAllocDebug(size, __LINE__, __FILENAME__)
 #define atk_alloc_aligned(alignment, size) atkAllocAlignedDebug(alignment, size, __LINE__, __FILENAME__)
 #define atk_realloc(ptr, size) atkReallocDebug(ptr, size)
 #define atk_realloc_aligned(ptr, alignment, size) atkReallocAlignedDebug(ptr, alignment, size)
 #define atk_free(ptr) atkFreeDebug(ptr)
 #else
-#define atk_init atkInit
-#define atk_end atkEnd
 #define atk_alloc(size) atkAlloc(size)
 #define atk_alloc_aligned(alignment, size) atkAllocAligned(alignment, size)
 #define atk_realloc(ptr, size) atkReallocDebug(ptr, size)
