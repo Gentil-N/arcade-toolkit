@@ -580,9 +580,13 @@ void atkInit(
     fct_atkMessageCallback msg_cb, fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback alloc_align_cb, fct_atkReallocCallback realloc_cb,
     fct_atkFreeCallback free_cb)
 {
+#ifdef ATK_DEBUG
        MSG_CALLBACK = msg_cb;
+#endif //ATK_DEBUG
        ALLOC_CALLBACK = (alloc_cb == NULL ? malloc : alloc_cb);
+#ifdef ATK_DEBUG
        MSG_CALLBACK_MUTEX = atkCreateMutex();
+#endif //ATK_DEBUG
        ALLOC_ALIGNED_CALLBACK = (alloc_align_cb == NULL ? aligned_alloc : alloc_align_cb);
        REALLOC_CALLBACK = (realloc_cb == NULL ? realloc : realloc_cb);
        FREE_CALLBACK = (free_cb == NULL ? free : free_cb);
@@ -597,6 +601,6 @@ void atkEnd()
        atk_info("arcade tool kit ended");
 #ifdef ATK_DEBUG
        atkEndMemoryTracker();
-#endif //ATK_DEBUG
        atkDestroyMutex(MSG_CALLBACK_MUTEX);
+#endif //ATK_DEBUG
 }
