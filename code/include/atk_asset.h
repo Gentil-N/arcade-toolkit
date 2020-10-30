@@ -16,13 +16,16 @@ extern "C"
        {
               AST_LOAD_OPT_NORMALS = 0x1,
               AST_LOAD_OPT_COLORS = 0x2,
-              AST_LOAD_OPT_TEXTCOORDS = 0x4
+              AST_LOAD_OPT_ALPHA_COLOR_CHANNEL = 0x4,
+              AST_LOAD_OPT_TEXTCOORDS = 0x8
        } AstLoadOption;
 
        ATK_API bool astModelCreateFromFile(AstModel *model, const char *file_name, uint32_t load_options);
        ATK_API bool astModelCreateFromMemory(AstModel *model, const void *data, size_t size, uint32_t load_options);
        ATK_API void astModelCreateFromOther(AstModel *model, const AstModel *other);
        ATK_API void astModelDestroy(AstModel *model);
+
+
 
 #ifdef __cplusplus
 }

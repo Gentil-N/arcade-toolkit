@@ -8,7 +8,7 @@
 bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_options)
 {
        size_t vertex_size = 3;
-       bool has_colors = false, has_normals = false, has_textcoords = false;
+       bool has_colors = false, has_color_channel = false, has_normals = false, has_textcoords = false;
        if ((load_options & AST_LOAD_OPT_NORMALS) == AST_LOAD_OPT_NORMALS)
        {
               if (mesh->mNormals == NULL)
@@ -26,8 +26,13 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
                      atk_error(ATK_MSG_FEATURE_NOT_PRESENT, "color channel is not available");
                      return false;
               }
+              vertex_size += 3;
               has_colors = true;
-              vertex_size += 4;
+              if ((load_options & AST_LOAD_OPT_ALPHA_COLOR_CHANNEL) == AST_LOAD_OPT_ALPHA_COLOR_CHANNEL)
+              {
+                     has_color_channel = true;
+                     vertex_size += 1;
+              }
        }
        if ((load_options & AST_LOAD_OPT_TEXTCOORDS) == AST_LOAD_OPT_TEXTCOORDS)
        {
@@ -53,33 +58,36 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
               size_t vertex_pos = 3;
               if (has_normals)
               {
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mNormals[i].x;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mNormals[i].x;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mNormals[i].y;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mNormals[i].y;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mNormals[i].z;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mNormals[i].z;
                      ++vertex_pos;
               }
               if (has_colors)
               {
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mColors[0][i].r;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mColors[0][i].r;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mColors[0][i].g;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mColors[0][i].g;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mColors[0][i].b;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mColors[0][i].b;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mColors[0][i].a;
-                     ++vertex_pos;
+                     if (has_color_channel)
+                     {
+                            atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mColors[0][i].a;
+                            ++vertex_pos;
+                     }
               }
-              if(has_textcoords)
+              if (has_textcoords)
               {
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mTextureCoords[0][i].x;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mTextureCoords[0][i].x;
                      ++vertex_pos;
-                     atk_get(float, model->m_vertices, i * vertex_size + vertex_pos) = mesh->mTextureCoords[0][i].y;
+                     atk_get(float, model->m_vertices, i *vertex_size + vertex_pos) = mesh->mTextureCoords[0][i].y;
                      ++vertex_pos;
               }
        }
-       for(size_t i = 0; i < mesh->mNumFaces; ++i)
+       for (size_t i = 0; i < mesh->mNumFaces; ++i)
        {
               atk_get(uint32_t, model->m_indices, i * 3) = mesh->mFaces[i].mIndices[0];
               atk_get(uint32_t, model->m_indices, i * 3 + 1) = mesh->mFaces[i].mIndices[1];
