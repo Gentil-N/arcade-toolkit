@@ -18,18 +18,30 @@ bool dskInit()
               atk_error(ATK_MSG_INIT_FAILED, "failed to initialize GLFW");
               return false;
        }
+       atkNewVector(&KEYBOARDS, 0, sizeof(DskKeyboard *));
+       atkNewVector(&MOUSES, 0, sizeof(DskMouse *));
        atk_info("desktop module initialized");
        return true;
 }
 
 void dskEnd()
 {
+       atkDeleteVector(&MOUSES);
+       atkDeleteVector(&KEYBOARDS);
        glfwTerminate();
        atk_info("desktop module ended");
 }
 
 void dskRefresh()
 {
+       for(size_t i = 0; i < KEYBOARDS.m_count; ++i)
+       {
+              atk_get(DskKeyboard*, KEYBOARDS, i)->m_key_released.m_count = 0;//the size will not exceed the number of keys
+       }
+       for(size_t i = 0; i < MOUSES.m_count; ++i)
+       {
+              atk_get(DskMouse*, MOUSES, i)->m_button_released.m_count = 0;//the size will not exceed the number of buttons
+       }
        glfwPollEvents();
 }
 

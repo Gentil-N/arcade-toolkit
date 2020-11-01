@@ -9,7 +9,7 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
 {
        size_t vertex_size = 3;
        bool has_colors = false, has_color_channel = false, has_normals = false, has_textcoords = false;
-       if ((load_options & AST_LOAD_OPT_NORMALS) == AST_LOAD_OPT_NORMALS)
+       if ((load_options & AST_MDL_LOAD_OPT_NORMALS) == AST_MDL_LOAD_OPT_NORMALS)
        {
               if (mesh->mNormals == NULL)
               {
@@ -19,7 +19,7 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
               has_normals = true;
               vertex_size += 3;
        }
-       if ((load_options & AST_LOAD_OPT_COLORS) == AST_LOAD_OPT_COLORS)
+       if ((load_options & AST_MDL_LOAD_OPT_COLORS) == AST_MDL_LOAD_OPT_COLORS)
        {
               if (mesh->mColors[0] == NULL)
               {
@@ -28,13 +28,13 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
               }
               vertex_size += 3;
               has_colors = true;
-              if ((load_options & AST_LOAD_OPT_ALPHA_COLOR_CHANNEL) == AST_LOAD_OPT_ALPHA_COLOR_CHANNEL)
+              if ((load_options & AST_MDL_LOAD_OPT_ALPHA_COLOR_CHANNEL) == AST_MDL_LOAD_OPT_ALPHA_COLOR_CHANNEL)
               {
                      has_color_channel = true;
                      vertex_size += 1;
               }
        }
-       if ((load_options & AST_LOAD_OPT_TEXTCOORDS) == AST_LOAD_OPT_TEXTCOORDS)
+       if ((load_options & AST_MDL_LOAD_OPT_TEXTCOORDS) == AST_MDL_LOAD_OPT_TEXTCOORDS)
        {
               if (mesh->mTextureCoords[0] == NULL)
               {

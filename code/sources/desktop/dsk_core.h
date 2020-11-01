@@ -14,6 +14,9 @@ extern "C"
 #endif //ATK_PLATFORM_LINUX
 #include <GLFW/glfw3native.h>
 
+       ATK_GLOBAL AtkVector KEYBOARDS;
+       ATK_GLOBAL AtkVector MOUSES;
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

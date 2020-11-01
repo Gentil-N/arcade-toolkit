@@ -1,14 +1,14 @@
 #ifndef __ORION_H__
 #define __ORION_H__
 
+#ifndef __ATK_H__
+#include "atk.h"
+#endif //__ATK_H__
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif //__cplusplus
-
-#ifndef __ATK_H__
-#include "atk.h"
-#endif //__ATK_H__
 
 #define ORN_LIB_NAME "Orion"
 

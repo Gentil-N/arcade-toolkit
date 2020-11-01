@@ -75,7 +75,8 @@ endif()
 message(STATUS "All libraries required for asset module are available")
 set(REQUIRED_LIBS ${REQUIRED_LIBS} assimp IrrXML zlibstatic)
 set(SRC_FILES ${SRC_FILES} 
-              ${SRC_DIR}/asset/asset.c)
+              ${SRC_DIR}/asset/model.c
+              ${SRC_DIR}/asset/image.c)
 endif()
 #-
 if(${ATK_MOD_DESKTOP} MATCHES ON)
@@ -88,13 +89,18 @@ message(STATUS "All libraries required for desktop module are available")
 set(REQUIRED_LIBS ${REQUIRED_LIBS} glfw3)
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/desktop/dsk_core.c
-              ${SRC_DIR}/desktop/window.c)
+              ${SRC_DIR}/desktop/global.c
+              ${SRC_DIR}/desktop/window.c
+              ${SRC_DIR}/desktop/keyboard.c
+              ${SRC_DIR}/desktop/mouse.c)
 endif()
 #-
 if(${ATK_MOD_MATH} MATCHES ON)
 message(STATUS "Math module enabled")
 set(SRC_FILES ${SRC_FILES} 
-              ${SRC_DIR}/math/mth_core.c)
+              ${SRC_DIR}/math/mth_core.c
+              ${SRC_DIR}/math/mat.cpp
+              ${SRC_DIR}/math/vec.cpp)
 endif()
 #----------------
 

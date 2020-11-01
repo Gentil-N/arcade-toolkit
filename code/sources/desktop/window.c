@@ -32,7 +32,6 @@ bool dskCreateWindow(DskWindow *window, const DskWindowSettings *settings)
 
 void dskDestroyWindow(DskWindow *window)
 {
-       atk_assert(window != NULL && window->m_handle != NULL);
        glfwDestroyWindow((GLFWwindow *)window->m_handle);
        window->m_handle = NULL;
        window->m_width = 0;

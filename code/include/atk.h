@@ -2,6 +2,11 @@
 #define __ATK_H__
 
 #ifdef __cplusplus
+/**
+ * Cpp Standard headers
+ */
+#include <utility>
+
 extern "C"
 {
 #endif //__cplusplus
@@ -21,6 +26,13 @@ extern "C"
 #define ATK_HIDE_CPP(expr) expr
 #else
 #define ATK_HIDE_CPP(expr)
+#ifdef ATK_DEFINE_GLOBAL
+#define ATK_GLOBAL
+#define ATK_GLOBAL_DEF(var, def) var def
+#else
+#define ATK_GLOBAL extern
+#define ATK_GLOBAL_DEF(var, def) extern var
+#endif //ATK_DEFINE_GLOBAL
 #endif //__cplusplus
 
        /**
@@ -38,6 +50,9 @@ extern "C"
 #define ATK_API
 #endif //ATK_PLATFORM_LINUX && ATK_BUILD_SHARED_LIB
 
+       /**
+        * Standard headers
+        */
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
@@ -70,7 +85,6 @@ extern "C"
         * Callback Info/Warning/Error
         */
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-#ifdef ATK_DEBUG
 
        typedef enum AtkMsgType
        {
@@ -89,6 +103,8 @@ extern "C"
        } AtkMsgType;
 
        typedef void (*fct_atkMessageCallback)(AtkMsgType code, const char *description, const char *file, size_t line);
+
+#ifdef ATK_DEBUG
 
        ATK_API void atkPushMessage(AtkMsgType code, const char *description, const char *file, size_t line);
        ATK_API void atkConcatAndPushMsg(AtkMsgType code, const char *file, size_t line, const char *format, ...);
@@ -111,6 +127,45 @@ extern "C"
 #define atk_assert(expr)
 #define atk_dassert(expr, type, description)
 #endif //ATK_DEBUG
+
+       /**
+        * Pack
+        */
+#define ATK_PACK(type, t, n, vars) \
+       typedef struct AtkPack##n##t \
+       { \
+              type vars;\
+       } AtkPack##n##t
+
+       ATK_PACK(int, i, 2, x ATK_COMMA y);
+       ATK_PACK(float, f, 2, x ATK_COMMA y);
+       ATK_PACK(double, d, 2, x ATK_COMMA y);
+
+       ATK_PACK(int, i, 3, x ATK_COMMA y ATK_COMMA z);
+       ATK_PACK(float, f, 3, x ATK_COMMA y ATK_COMMA z);
+       ATK_PACK(double, d, 3, x ATK_COMMA y ATK_COMMA z);
+
+       ATK_PACK(int, i, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
+       ATK_PACK(float, f, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
+       ATK_PACK(double, d, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
+
+#define ATK_PACKX(type, t, n) \
+       typedef struct AtkPack##n##x##n##t \
+       { \
+              type m[n][n];\
+       } AtkPack##n##x##n##t
+
+       ATK_PACKX(int, i, 2);
+       ATK_PACKX(float, f, 2);
+       ATK_PACKX(double, d, 2);
+
+       ATK_PACKX(int, i, 3);
+       ATK_PACKX(float, f, 3);
+       ATK_PACKX(double, d, 3);
+
+       ATK_PACKX(int, i, 4);
+       ATK_PACKX(float, f, 4);
+       ATK_PACKX(double, d, 4);
 
        /**
         * Vector
@@ -195,9 +250,9 @@ extern "C"
 #else
 #define atk_alloc(size) atkAlloc(size)
 #define atk_alloc_aligned(alignment, size) atkAllocAligned(alignment, size)
-#define atk_realloc(ptr, size) atkReallocDebug(ptr, size)
-#define atk_realloc_aligned(ptr, alignment, size) atkReallocAlignedDebug(ptr, alignment, size)
-#define atk_free(ptr) atkFreeDebug(ptr)
+#define atk_realloc(ptr, size) atkRealloc(ptr, size)
+#define atk_realloc_aligned(ptr, alignment, size) atkReallocAligned(ptr, alignment, size)
+#define atk_free(ptr) atkFree(ptr)
 #endif //ATK_DEBUG
 
 #ifdef __cplusplus

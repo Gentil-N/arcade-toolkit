@@ -305,14 +305,9 @@ extern "C"
        /**
         * Globals
         */
-#ifdef ORN_DEFINE_GLOBAL
-#define ORN_GLOBAL(var, def) var def;
-#else
-#define ORN_GLOBAL(var, def) extern var;
-#endif //ORN_DEFINE_GLOBAL
-       ORN_GLOBAL(OrnContext CONTEXT, )
-       ORN_GLOBAL(const VkAllocationCallbacks VK_ALLOC_FUNCS,
-                  = {NULL ATK_COMMA vulkanAllocationFunction ATK_COMMA vulkanReallocationFunction ATK_COMMA vulkanFreeFunction ATK_COMMA NULL ATK_COMMA NULL})
+       ATK_GLOBAL_DEF(OrnContext CONTEXT, );
+       ATK_GLOBAL_DEF(const VkAllocationCallbacks VK_ALLOC_FUNCS,
+                      = {NULL ATK_COMMA vulkanAllocationFunction ATK_COMMA vulkanReallocationFunction ATK_COMMA vulkanFreeFunction ATK_COMMA NULL ATK_COMMA NULL});
 
 #define VK_AC &VK_ALLOC_FUNCS
 

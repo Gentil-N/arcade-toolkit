@@ -1,14 +1,14 @@
 #ifndef __DESKTOP_H__
 #define __DESKTOP_H__
 
+#ifndef __ATK_H__
+#include "atk.h"
+#endif //__ATK_H__
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif //__cplusplus
-
-#ifndef __ATK_H__
-#include "atk.h"
-#endif //__ATK_H__
 
 #ifdef ATK_PLATFORM_LINUX
 #include <X11/Xlib.h>
@@ -38,6 +38,31 @@ extern "C"
 #ifdef ATK_PLATFORM_LINUX
        ATK_API Window dskWindowGetX11Window(DskWindow *window);
 #endif //ATK_PLATFORM_LINUX
+
+       typedef struct DskKeyboard DskKeyboard;
+
+       typedef struct DskKeyboardSettings
+       {
+              DskWindow *window;
+       } DskKeyboardSettings;
+
+       ATK_API void dskCreateKeyboard(DskKeyboard *keyboard, const DskKeyboardSettings *settings);
+       ATK_API void dskDestroyKeyboard(DskKeyboard *keyboard);
+       ATK_API bool dskKeyboardIsKeyPressed(DskKeyboard *keyboard, int key);
+       ATK_API bool dskKeyboardIsKeyReleased(DskKeyboard *keyboard, int key);
+
+       typedef struct DskMouse DskMouse;
+
+       typedef struct DskMouseSettings
+       {
+              DskWindow *window;
+       } DskMouseSettings;
+
+       ATK_API void dskCreateMouse(DskMouse *mouse, const DskMouseSettings *settings);
+       ATK_API void dskDestroyMouse(DskMouse *mouse);
+       ATK_API bool dskMouseIsMouseButtonPressed(DskMouse *mouse, int button);
+       ATK_API bool dskMouseIsMouseButtonReleased(DskMouse *mouse, int button);
+       ATK_API AtkPack2d dskMouseGetCursorPos(DskMouse *mouse);
 
 #ifdef __cplusplus
 }
@@ -83,10 +108,9 @@ struct DskWindow
        }
        void destroy()
        {
-              if (m_handle != nullptr)
-              {
-                     dskDestroyWindow(this);
-              }
+              if (m_handle == nullptr)
+                     return;
+              dskDestroyWindow(this);
        }
        bool shouldClose()
        {
@@ -117,6 +141,142 @@ struct DskWindow
        inline int height() const noexcept
        {
               return m_height;
+       }
+#endif //__cplusplus
+};
+
+struct DskKeyboard
+{
+       DskWindow *m_window ATK_HIDE_CPP(= nullptr);
+       AtkVector m_key_pressed, m_key_released;
+#ifdef __cplusplus
+       DskKeyboard()
+       {
+       }
+       DskKeyboard(const DskKeyboardSettings &settings)
+       {
+              dskCreateKeyboard(this, &settings);
+       }
+       DskKeyboard(const DskKeyboard &keyboard)
+       {
+              m_window = keyboard.m_window;
+              m_key_pressed = keyboard.m_key_pressed;
+              m_key_released = keyboard.m_key_released;
+       }
+       DskKeyboard(DskKeyboard &&keyboard)
+       {
+              m_window = keyboard.m_window;
+              m_key_pressed = std::move(keyboard.m_key_pressed);
+              m_key_released = std::move(keyboard.m_key_released);
+              keyboard.m_window = nullptr;
+       }
+       ~DskKeyboard()
+       {
+              destroy();
+       }
+       DskKeyboard &operator=(const DskKeyboard &keyboard)
+       {
+              m_window = keyboard.m_window;
+              m_key_pressed = keyboard.m_key_pressed;
+              m_key_released = keyboard.m_key_released;
+              return *this;
+       }
+       DskKeyboard &operator=(DskKeyboard &&keyboard)
+       {
+              m_window = keyboard.m_window;
+              m_key_pressed = std::move(keyboard.m_key_pressed);
+              m_key_released = std::move(keyboard.m_key_released);
+              keyboard.m_window = nullptr;
+              return *this;
+       }
+       void create(const DskKeyboardSettings &settings)
+       {
+              destroy();
+              dskCreateKeyboard(this, &settings);
+       }
+       void destroy()
+       {
+              if (m_window == nullptr)
+                     return;
+              dskDestroyKeyboard(this);
+       }
+       bool isKeyPressed(int key)
+       {
+              return dskKeyboardIsKeyPressed(this, key);
+       }
+       bool isKeyReleased(int key)
+       {
+              return dskKeyboardIsKeyReleased(this, key);
+       }
+#endif //__cplusplus
+};
+
+struct DskMouse
+{
+       DskWindow *m_window ATK_HIDE_CPP(= nullptr);
+       AtkVector m_button_pressed, m_button_released;
+#ifdef __cplusplus
+       DskMouse()
+       {
+       }
+       DskMouse(const DskMouseSettings &settings)
+       {
+              dskCreateMouse(this, &settings);
+       }
+       DskMouse(const DskMouse &mouse)
+       {
+              m_window = mouse.m_window;
+              m_button_pressed = mouse.m_button_pressed;
+              m_button_released = mouse.m_button_released;
+       }
+       DskMouse(DskMouse &&mouse)
+       {
+              m_window = mouse.m_window;
+              m_button_pressed = std::move(mouse.m_button_pressed);
+              m_button_released = std::move(mouse.m_button_released);
+              mouse.m_window = nullptr;
+       }
+       ~DskMouse()
+       {
+              destroy();
+       }
+       DskMouse &operator=(const DskMouse &mouse)
+       {
+              m_window = mouse.m_window;
+              m_button_pressed = mouse.m_button_pressed;
+              m_button_released = mouse.m_button_released;
+              return *this;
+       }
+       DskMouse &operator=(DskMouse &&mouse)
+       {
+              m_window = mouse.m_window;
+              m_button_pressed = std::move(mouse.m_button_pressed);
+              m_button_released = std::move(mouse.m_button_released);
+              mouse.m_window = nullptr;
+              return *this;
+       }
+       void create(const DskMouseSettings &settings)
+       {
+              destroy();
+              dskCreateMouse(this, &settings);
+       }
+       void destroy()
+       {
+              if (m_window == nullptr)
+                     return;
+              dskDestroyMouse(this);
+       }
+       bool isButtonPressed(int button)
+       {
+              return dskMouseIsMouseButtonPressed(this, button);
+       }
+       bool isButtonReleased(int button)
+       {
+              return dskMouseIsMouseButtonReleased(this, button);
+       }
+       AtkPack2d getCursorPos()
+       {
+              return dskMouseGetCursorPos(this);
        }
 #endif //__cplusplus
 };

@@ -1,14 +1,14 @@
 #ifndef __MATH_H__
 #define __MATH_H__
 
+#ifndef __ATK_H__
+#include "atk.h"
+#endif //__ATK_H__
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif //__cplusplus
-
-#ifndef __ATK_H__
-#include "atk.h"
-#endif //__ATK_H__
 
 #include <math.h>
 
@@ -32,1415 +32,234 @@ extern "C"
 
 #ifdef __cplusplus
 
-template<typename type>
-struct MthVec2;
-template<typename type>
-struct MthVec3;
-template<typename type>
-struct MthVec4;
-template<typename type>
-struct MthMat2;
-template<typename type>
-struct MthMat3;
-template<typename type>
-struct MthMat4;
+#define MTH_VEC2(type, t)                                             \
+       struct MthVec2##t : public AtkPack2##t                         \
+       {                                                              \
+              MthVec2##t();                                           \
+              MthVec2##t(type _x, type _y);                           \
+              MthVec2##t(const MthVec2##t &vec);                      \
+              MthVec2##t(const AtkPack2##t &pack);\
+              bool operator==(const MthVec2##t &vec) const;           \
+              bool operator!=(const MthVec2##t &vec) const;           \
+              MthVec2##t &operator=(const MthVec2##t &vec) = default; \
+              MthVec2##t &operator=(const AtkPack2##t &pack);\
+              MthVec2##t &operator+=(const MthVec2##t &vec);          \
+              MthVec2##t operator+(const MthVec2##t &vec) const;      \
+              MthVec2##t &operator-=(const MthVec2##t &vec);          \
+              MthVec2##t operator-(const MthVec2##t &vec) const;      \
+              MthVec2##t operator-() const;                           \
+              MthVec2##t &operator*=(type factor);                    \
+              MthVec2##t operator*(type factor) const;                \
+              MthVec2##t &operator/=(type factor);                    \
+              MthVec2##t operator/(type factor) const;                \
+              type dot(type _x, type _y) const;                       \
+              type dot(const MthVec2##t &vec) const;                  \
+              type len() const;                                       \
+              type lenSq() const;                                     \
+              MthVec2##t &norm();                                     \
+              MthVec2##t &ortho();                                    \
+              MthVec2##t &rot(type a);                                \
+       };
 
-template <typename type>
-struct MthVec2
-{
-       type x, y;
+#define MTH_VEC3(type, t)                                             \
+       struct MthVec3##t : public AtkPack3##t                         \
+       {                                                              \
+              MthVec3##t();                                           \
+              MthVec3##t(type _x, type _y, type _z);                  \
+              MthVec3##t(const MthVec3##t &vec);                      \
+              MthVec3##t(const AtkPack3##t &pack);\
+              bool operator==(const MthVec3##t &vec) const;           \
+              bool operator!=(const MthVec3##t &vec) const;           \
+              MthVec3##t &operator=(const MthVec3##t &vec) = default; \
+              MthVec3##t &operator=(const AtkPack3##t &pack);\
+              MthVec3##t &operator+=(const MthVec3##t &vec);          \
+              MthVec3##t operator+(const MthVec3##t &vec) const;      \
+              MthVec3##t &operator-=(const MthVec3##t &vec);          \
+              MthVec3##t operator-(const MthVec3##t &vec) const;      \
+              MthVec3##t operator-() const;                           \
+              MthVec3##t &operator*=(type factor);                    \
+              MthVec3##t operator*(type factor) const;                \
+              MthVec3##t &operator*=(const MthVec3##t &vec);          \
+              MthVec3##t operator*(const MthVec3##t &vec) const;      \
+              MthVec3##t &operator/=(type factor);                    \
+              MthVec3##t operator/(type factor) const;                \
+              type dot(type _x, type _y, type _z) const;              \
+              type dot(const MthVec3##t &vec) const;                  \
+              type len() const;                                       \
+              type lenSq() const;                                     \
+              MthVec3##t &norm();                                     \
+              MthVec3##t &rotX(float a);                              \
+              MthVec3##t &rotY(float a);                              \
+              MthVec3##t &rotZ(float a);                              \
+       };
 
-       MthVec2() : x(0), y(0)
-       {
-       }
-       MthVec2(type _x, type _y) : x(_x), y(_y)
-       {
-       }
-       MthVec2(const MthVec2 &vec) : x(vec.x), y(vec.y)
-       {
-       }
-       bool operator==(const MthVec2<type> &vec) const
-       {
-              return x == vec.x && y == vec.y;
-       }
-       bool operator!=(const MthVec2<type> &vec) const
-       {
-              return x != vec.x || y != vec.y;
-       }
-       MthVec2<type> &operator=(const MthVec2<type> &vec) = default;
-       MthVec2<type> &operator+=(const MthVec2<type> &vec)
-       {
-              x += vec.x;
-              y += vec.y;
-              return *this;
-       }
-       MthVec2<type> operator+(const MthVec2<type> &vec) const
-       {
-              return MthVec2<type>(x + vec.x, y + vec.y);
-       }
-       MthVec2<type> &operator-=(const MthVec2<type> &vec)
-       {
-              x -= vec.x;
-              y -= vec.y;
-              return *this;
-       }
-       MthVec2<type> operator-(const MthVec2 &vec) const
-       {
-              return MthVec2<type>(x - vec.x, y - vec.y);
-       }
-       MthVec2<type> operator-() const
-       {
-              return MthVec2<type>(-x, -y);
-       }
-       MthVec2<type> &operator*=(type factor)
-       {
-              x *= factor;
-              y *= factor;
-              return *this;
-       }
-       MthVec2<type> operator*(type factor) const
-       {
-              return MthVec2<type>(x * factor, y * factor);
-       }
-       MthVec2<type> &operator/=(type factor)
-       {
-              atk_assert(factor != (type)0);
-              x /= factor;
-              y /= factor;
-              return *this;
-       }
-       MthVec2<type> operator/(type factor) const
-       {
-              atk_assert(factor != (type)0);
-              return MthVec2<type>(x / factor, y / factor);
-       }
-       type dot(type _x, type _y) const
-       {
-              return x * _x + y * _y;
-       }
-       type dot(const MthVec2<type> &vec) const
-       {
-              return dot(vec.x, vec.y);
-       }
-       type len() const
-       {
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y);
-       }
-       type lenSq() const
-       {
-              return x * x + y * y;
-       }
-       MthVec2<type> &norm()
-       {
-              type lenght = len();
-              atk_assert(lenght != 0);
-              x /= lenght;
-              y /= lenght;
-              return *this;
-       }
-       MthVec2<type> &ortho()
-       {
-              type buf = x;
-              x = -y;
-              y = buf;
-              return *this;
-       }
-       MthVec2<type> &rot(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type nx = x * c + y * -s;
-              type ny = x * s + y * c;
-              x = nx;
-              y = ny;
-              return *this;
-       }
-};
+#define MTH_VEC4(type, t)                                             \
+       struct MthVec4##t : public AtkPack4##t                         \
+       {                                                              \
+              MthVec4##t();                                           \
+              MthVec4##t(type _x, type _y, type _z, type _w);         \
+              MthVec4##t(const MthVec4##t &vec);                      \
+              MthVec4##t(const AtkPack4##t &pack);\
+              bool operator==(const MthVec4##t &vec) const;           \
+              bool operator!=(const MthVec4##t &vec) const;           \
+              MthVec4##t &operator=(const MthVec4##t &vec) = default; \
+              MthVec4##t &operator=(const AtkPack4##t &pack);\
+              MthVec4##t &operator+=(const MthVec4##t &vec);          \
+              MthVec4##t operator+(const MthVec4##t &vec) const;      \
+              MthVec4##t &operator-=(const MthVec4##t &vec);          \
+              MthVec4##t operator-(const MthVec4##t &vec) const;      \
+              MthVec4##t operator-() const;                           \
+              MthVec4##t &operator*=(type factor);                    \
+              MthVec4##t operator*(type factor) const;                \
+              MthVec4##t &operator/=(type factor);                    \
+              MthVec4##t operator/(type factor) const;                \
+              MthVec4##t &crossDim3(type _x, type _y, type _z);       \
+              MthVec4##t &crossDim3(const MthVec4##t &vec);           \
+              type dot(type _x, type _y, type _z, type _w) const;     \
+              type dot(const MthVec4##t &vec) const;                  \
+              type len() const;                                       \
+              type lenSq() const;                                     \
+              type lenDim3() const;                                   \
+              type lenSqDim3() const;                                 \
+              MthVec4##t &norm();                                     \
+              MthVec4##t &normDim3();                                 \
+              MthVec4##t &rotXDim3(float a);                          \
+              MthVec4##t &rotYDim3(float a);                          \
+              MthVec4##t &rotZDim3(float a);                          \
+       };
 
-template <typename type>
-struct MthVec3
-{
-       type x, y, z;
+#define MTH_MAT2(type, t)                                             \
+       struct MthMat2##t : public AtkPack2x2##t                       \
+       {                                                              \
+              MthMat2##t();                                           \
+              MthMat2##t(type m00, type m01, type m10, type m11);     \
+              MthMat2##t(const MthMat2##t &mat);                      \
+              MthMat2##t(const AtkPack2x2##t &pack);\
+              bool operator==(const MthMat2##t &mat) const;           \
+              bool operator!=(const MthMat2##t &mat) const;           \
+              MthMat2##t &operator=(const MthMat2##t &mat) = default; \
+              MthMat2##t &operator=(const AtkPack2x2##t &pack);\
+              MthMat2##t &operator+=(const MthMat2##t &mat);          \
+              MthMat2##t operator+(const MthMat2##t &mat) const;      \
+              MthMat2##t &operator-=(const MthMat2##t &mat);          \
+              MthMat2##t operator-(const MthMat2##t &mat);            \
+              MthMat2##t operator-() const;                           \
+              MthMat2##t &operator*=(const MthMat2##t &mat);          \
+              MthMat2##t operator*(const MthMat2##t &mat);            \
+              MthVec2##t operator*(const MthVec2##t &vec) const;      \
+              MthMat2##t &operator*=(type factor);                    \
+              MthMat2##t operator*(type factor) const;                \
+              MthMat2##t &identity();                                 \
+              MthMat2##t &transpose();                                \
+              MthMat2##t &scale(type x, type y);                      \
+              MthMat2##t &scale(const MthVec2##t &vec);               \
+              MthMat2##t &rotFst(type a);                             \
+              MthMat2##t &rotSec(type a);                             \
+       };
 
-       MthVec3() : x(0), y(0), z(0)
-       {
-       }
-       MthVec3(type _x, type _y, type _z) : x(_x), y(_y), z(_z)
-       {
-       }
-       MthVec3(const MthVec3 &vec) : x(vec.x), y(vec.y), z(vec.z)
-       {
-       }
-       bool operator==(const MthVec3<type> &vec) const
-       {
-              return x == vec.x && y == vec.y && z == vec.z;
-       }
-       bool operator!=(const MthVec3<type> &vec) const
-       {
-              return x != vec.x || y != vec.y || z != vec.z;
-       }
-       MthVec3<type> &operator=(const MthVec3<type> &vec) = default;
-       MthVec3<type> &operator+=(const MthVec3<type> &vec)
-       {
-              x += vec.x;
-              y += vec.y;
-              z += vec.z;
-              return *this;
-       }
-       MthVec3<type> operator+(const MthVec3<type> &vec) const
-       {
-              return MthVec3<type>(x + vec.x, y + vec.y, z + vec.z);
-       }
-       MthVec3<type> &operator-=(const MthVec3<type> &vec)
-       {
-              x -= vec.x;
-              y -= vec.y;
-              z -= vec.z;
-              return *this;
-       }
-       MthVec3<type> operator-(const MthVec3<type> &vec) const
-       {
-              return MthVec3<type>(x - vec.x, y - vec.y, z - vec.z);
-       }
-       MthVec3<type> operator-() const
-       {
-              return MthVec3<type>(-x, -y, -z);
-       }
-       MthVec3<type> &operator*=(type factor)
-       {
-              x *= factor;
-              y *= factor;
-              z *= factor;
-              return *this;
-       }
-       MthVec3<type> operator*(type factor) const
-       {
-              return MthVec3<type>(x * factor, y * factor, z * factor);
-       }
-       MthVec3<type> &operator*=(const MthVec3<type> &vec)
-       {
-              type nx = y * vec.z - z * vec.y;
-              type ny = z * vec.x - x * vec.z;
-              type nz = x * vec.y - y * vec.x;
-              x = nx;
-              y = ny;
-              z = nz;
-              return *this;
-       }
-       MthVec3<type> operator*(const MthVec3<type> &vec) const
-       {
-              return MthVec3<type>(y * vec.z - z * vec.y, z * vec.x - x * vec.z, x * vec.y - y * vec.x);
-       }
-       MthVec3<type> &operator/=(type factor)
-       {
-              atk_assert(factor != (type)0);
-              x /= factor;
-              y /= factor;
-              z /= factor;
-              return *this;
-       }
-       MthVec3<type> operator/(type factor) const
-       {
-              atk_assert(factor != (type)0);
-              return MthVec3<type>(x / factor, y / factor, z / factor);
-       }
-       type dot(type _x, type _y, type _z) const
-       {
-              return x * _x + y * _y + z * _z;
-       }
-       type dot(const MthVec2<type> &vec) const
-       {
-              return dot(vec.x, vec.y, vec.z);
-       }
-       type len() const
-       {
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z);
-       }
-       type lenSq() const
-       {
-              return x * x + y * y + z * z;
-       }
-       MthVec3<type> &norm()
-       {
-              type lenght = len();
-              atk_assert(lenght != 0);
-              x /= lenght;
-              y /= lenght;
-              z /= lenght;
-              return *this;
-       }
-       MthVec3<type> &rotX(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type ny = y * c + z * -s;
-              type nz = y * s + z * c;
-              y = ny;
-              z = nz;
-              return *this;
-       }
-       MthVec3<type> &rotY(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type nx = x * c + z * s;
-              type nz = x * -s + z * c;
-              x = nx;
-              z = nz;
-              return *this;
-       }
-       MthVec3<type> &rotZ(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type nx = x * c + y * -s;
-              type ny = x * s + y * c;
-              x = nx;
-              y = ny;
-              return *this;
-       }
-};
+#define MTH_MAT3(type, t)                                                                                           \
+       struct MthMat3##t : public AtkPack3x3##t                                                                     \
+       {                                                                                                            \
+              MthMat3##t();                                                                                         \
+              MthMat3##t(type m00, type m01, type m02, type m10, type m11, type m12, type m20, type m21, type m22); \
+              MthMat3##t(const MthMat3##t &mat);                                                                    \
+              MthMat3##t(const AtkPack3x3##t &pack);\
+              bool operator==(const MthMat2##t &mat) const;                                                         \
+              bool operator!=(const MthMat2##t &mat) const;                                                         \
+              MthMat3##t &operator=(const MthMat3##t &mat) = default;                                               \
+              MthMat3##t &operator=(const AtkPack3x3##t &pack);\
+              MthMat3##t &operator+=(const MthMat3##t &mat);                                                        \
+              MthMat3##t operator+(const MthMat3##t &mat) const;                                                    \
+              MthMat3##t &operator-=(const MthMat3##t &mat);                                                        \
+              MthMat3##t operator-(const MthMat3##t &mat);                                                          \
+              MthMat3##t operator-() const;                                                                         \
+              MthMat3##t &operator*=(const MthMat3##t &mat);                                                        \
+              MthMat3##t operator*(const MthMat3##t &mat);                                                          \
+              MthVec3##t operator*(const MthVec3##t &vec) const;                                                    \
+              MthMat3##t &operator*=(type factor);                                                                  \
+              MthMat3##t operator*(type factor) const;                                                              \
+              MthMat3##t &identity();                                                                               \
+              MthMat3##t &transpose();                                                                              \
+              MthMat3##t &scale(type x, type y, type z);                                                            \
+              MthMat3##t &scale(const MthVec3##t &vec);                                                             \
+              MthMat3##t &rotXFst(type a);                                                                          \
+              MthMat3##t &rotXSec(type a);                                                                          \
+              MthMat3##t &rotYFst(type a);                                                                          \
+              MthMat3##t &rotYSec(type a);                                                                          \
+              MthMat3##t &rotZFst(type a);                                                                          \
+              MthMat3##t &rotZSec(type a);                                                                          \
+       };
 
-template <typename type>
-struct MthVec4
-{
-       type x, y, z, w;
+#define MTH_MAT4(type, t)                                                                        \
+       struct MthMat4##t : public AtkPack4x4##t                                                  \
+       {                                                                                         \
+              MthMat4##t();                                                                      \
+              MthMat4##t(type m00, type m01, type m02, type m03,                                 \
+                         type m10, type m11, type m12, type m13,                                 \
+                         type m20, type m21, type m22, type m23,                                 \
+                         type m30, type m31, type m32, type m33);                                \
+              MthMat4##t(const AtkPack4x4##t &pack);\
+              MthMat4##t(const MthMat4##t &mat);                                                 \
+              bool operator==(const MthMat2##t &mat) const;                                      \
+              bool operator!=(const MthMat2##t &mat) const;                                      \
+              MthMat4##t &operator=(const MthMat4##t &mat) = default;                            \
+              MthMat4##t &operator=(const AtkPack4x4##t &pack);\
+              MthMat4##t &operator+=(const MthMat4##t &mat);                                     \
+              MthMat4##t operator+(const MthMat4##t &mat) const;                                 \
+              MthMat4##t &operator-=(const MthMat4##t &mat);                                     \
+              MthMat4##t operator-(const MthMat4##t &mat);                                       \
+              MthMat4##t operator-() const;                                                      \
+              MthMat4##t &operator*=(const MthMat4##t &mat);                                     \
+              MthMat4##t operator*(const MthMat4##t &mat);                                       \
+              MthVec4##t operator*(const MthVec4##t &vec) const;                                 \
+              MthMat4##t &operator*=(type factor);                                               \
+              MthMat4##t operator*(type factor) const;                                           \
+              MthMat4##t &identity();                                                            \
+              MthMat4##t &transpose();                                                           \
+              MthMat4##t &scale(type x, type y, type z, type w);                                 \
+              MthMat4##t &scale(const MthVec4##t &vec);                                          \
+              MthMat4##t &scaleDim3(type x, type y, type z);                                     \
+              MthMat4##t &scaleDim3(const MthVec3##t &vec);                                      \
+              MthMat4##t &rotXFst(type a);                                                       \
+              MthMat4##t &rotXSec(type a);                                                       \
+              MthMat4##t &rotYFst(type a);                                                       \
+              MthMat4##t &rotYSec(type a);                                                       \
+              MthMat4##t &rotZFst(type a);                                                       \
+              MthMat4##t &rotZSec(type a);                                                       \
+              MthMat4##t &translateFst(type x, type y, type z, type w);                          \
+              MthMat4##t &translateFst(const MthVec4##t &vec);                                   \
+              MthMat4##t &translateSec(type x, type y, type z, type w);                          \
+              MthMat4##t &translateSec(const MthVec4##t &vec);                                   \
+              MthMat4##t &translateFstDim3(type x, type y, type z);                              \
+              MthMat4##t &translateFstDim3(const MthVec3##t &vec);                               \
+              MthMat4##t &translateSecDim3(type x, type y, type z);                              \
+              MthMat4##t &translateSecDim3(const MthVec3##t &vec);                               \
+              MthMat4##t &perspective(type width, type height, type fov, type znear, type zfar); \
+       };
 
-       MthVec4() : x(0), y(0), z(0), w(0)
-       {
-       }
-       MthVec4(type _x, type _y, type _z, type _w) : x(_x), y(_y), z(_z), w(_w)
-       {
-       }
-       MthVec4(const MthVec4 &vec) : x(vec.x), y(vec.y), z(vec.z), w(vec.w)
-       {
-       }
-       bool operator==(const MthVec4<type> &vec) const
-       {
-              return x == vec.x && y == vec.y && z == vec.z && w == vec.w;
-       }
-       bool operator!=(const MthVec4<type> &vec) const
-       {
-              return x != vec.x || y != vec.y || z != vec.z || w != vec.w;
-       }
-       MthVec4<type> &operator=(const MthVec4<type> &vec) = default;
-       MthVec4<type> &operator+=(const MthVec4<type> &vec)
-       {
-              x += vec.x;
-              y += vec.y;
-              z += vec.z;
-              w += vec.w;
-              return *this;
-       }
-       MthVec4<type> operator+(const MthVec4<type> &vec) const
-       {
-              return MthVec4<type>(x + vec.x, y + vec.y, z + vec.z, w + vec.w);
-       }
-       MthVec4<type> &operator-=(const MthVec4<type> &vec)
-       {
-              x -= vec.x;
-              y -= vec.y;
-              z -= vec.z;
-              w -= vec.w;
-              return *this;
-       }
-       MthVec4<type> operator-(const MthVec4<type> &vec) const
-       {
-              return MthVec4<type>(x - vec.x, y - vec.y, z - vec.z, w - vec.w);
-       }
-       MthVec4<type> operator-() const
-       {
-              return MthVec4<type>(-x, -y, -z, -w);
-       }
-       MthVec4<type> &operator*=(type factor)
-       {
-              x *= factor;
-              y *= factor;
-              z *= factor;
-              w *= factor;
-              return *this;
-       }
-       MthVec4<type> operator*(type factor) const
-       {
-              return MthVec4<type>(x * factor, y * factor, z * factor, w * factor);
-       }
-       MthVec4<type> &operator/=(type factor)
-       {
-              atk_assert(factor != (type)0);
-              x /= factor;
-              y /= factor;
-              z /= factor;
-              w /= factor;
-              return *this;
-       }
-       MthVec4<type> operator/(type factor) const
-       {
-              atk_assert(factor != (type)0);
-              return MthVec4<type>(x / factor, y / factor, z / factor, w / factor);
-       }
-       MthVec4<type> &crossDim3(type _x, type _y, type _z)
-       {
-              type nx = y * _z - z * _y;
-              type ny = z * _x - x * _z;
-              type nz = x * _y - y * _x;
-              x = nx;
-              y = ny;
-              z = nz;
-              return *this;
-       }
-       MthVec4<type> &crossDim3(const MthVec4<type> &vec)
-       {
-              return crossDim3(vec.x, vec.y, vec.z);
-       }
-       type dot(type _x, type _y, type _z, type _w) const
-       {
-              return x * _x + y * _y + z * _z, w * _w;
-       }
-       type dot(const MthVec2<type> &vec) const
-       {
-              return dot(vec.x, vec.y, vec.z, vec.w);
-       }
-       type len() const
-       {
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z + w * w);
-       }
-       type lenSq() const
-       {
-              return x * x + y * y + z * z + w * w;
-       }
-       type lenDim3() const
-       {
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z);
-       }
-       type lenSqDim3() const
-       {
-              return x * x + y * y + z * z;
-       }
-       MthVec4<type> &norm()
-       {
-              type lenght = len();
-              atk_assert(lenght != 0);
-              x /= lenght;
-              y /= lenght;
-              z /= lenght;
-              w /= lenght;
-              return *this;
-       }
-       MthVec4<type> &normDim3()
-       {
-              type lenght = lenDim3();
-              atk_assert(lenght != 0);
-              x /= lenght;
-              y /= lenght;
-              z /= lenght;
-              return *this;
-       }
-       MthVec4<type> &rotXDim3(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type ny = y * c + z * -s;
-              type nz = y * s + z * c;
-              y = ny;
-              z = nz;
-              return *this;
-       }
-       MthVec4<type> &rotYDim3(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type nx = x * c + z * s;
-              type nz = x * -s + z * c;
-              x = nx;
-              z = nz;
-              return *this;
-       }
-       MthVec4<type> &rotZDim3(float a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type nx = x * c + y * -s;
-              type ny = x * s + y * c;
-              x = nx;
-              y = ny;
-              return *this;
-       }
-};
+MTH_VEC2(float, f);
+MTH_VEC2(double, d)
+MTH_VEC2(int, i)
 
-template <typename type>
-struct MthMat2
-{
-       type m[2][2];
+MTH_VEC3(float, f)
+MTH_VEC3(double, d)
+MTH_VEC3(int, i)
 
-       MthMat2() : m{0, 0, 0, 0}
-       {
-       }
-       MthMat2(type m00, type m01, type m10, type m11) : m{m00, m01, m10, m11}
-       {
-       }
-       MthMat2(const MthMat2<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[1][0], mat.m[1][1]}
-       {
-       }
-       bool operator==(const MthMat2<type> &mat) const
-       {
-              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1];
-       }
-       bool operator!=(const MthMat2<type> &mat) const
-       {
-              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1];
-       }
-       MthMat2<type> &operator=(const MthMat2<type> &mat) = default;
-       MthMat2<type> &operator+=(const MthMat2<type> &mat)
-       {
-              m[0][0] += mat.m[0][0];
-              m[0][1] += mat.m[0][1];
-              m[1][0] += mat.m[1][0];
-              m[1][1] += mat.m[1][1];
-              return *this;
-       }
-       MthMat2<type> operator+(const MthMat2<type> &mat) const
-       {
-              return MthMat2<type>(m[0][0] + mat.m[0][0], m[0][1] + mat.m[0][1], m[1][0] + mat.m[1][0], m[1][1] + mat.m[1][1]);
-       }
-       MthMat2<type> &operator-=(const MthMat2<type> &mat)
-       {
-              m[0][0] -= mat.m[0][0];
-              m[0][1] -= mat.m[0][1];
-              m[1][0] -= mat.m[1][0];
-              m[1][1] -= mat.m[1][1];
-              return *this;
-       }
-       MthMat2<type> operator-(const MthMat2<type> &mat)
-       {
-              return MthMat2<type>(m[0][0] - mat.m[0][0], m[0][1] - mat.m[0][1], m[1][0] - mat.m[1][0], m[1][1] - mat.m[1][1]);
-       }
-       MthMat2<type> operator-() const
-       {
-              return MthMat2<type>(-m[0][0], -m[0][1], -m[1][0], -m[1][1]);
-       }
-       MthMat2<type> &operator*=(const MthMat2<type> &mat)
-       {
-              type m00 = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1];
-              type m01 = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1];
-              type m10 = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1];
-              type m11 = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1];
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              return *this;
-       }
-       MthMat2<type> operator*(const MthMat2<type> &mat)
-       {
-              return MthMat2<type>(m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1], m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1],
-                                   m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1], m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1]);
-       }
-       MthVec2<type> operator*(const MthVec2<type> &vec) const
-       {
-              return MthVec2<type>(m[0][0] * vec.x + m[1][0] * vec.y,
-                                   m[0][1] * vec.x + m[1][1] * vec.y);
-       }
-       MthMat2<type> &operator*=(type factor)
-       {
-              m[0][0] *= factor;
-              m[0][1] *= factor;
-              m[1][0] *= factor;
-              m[1][1] *= factor;
-              return *this;
-       }
-       MthMat2<type> operator*(type factor) const
-       {
-              return MthMat2<type>(m[0][0] * factor, m[0][1] * factor, m[1][0] * factor, m[1][1] * factor);
-       }
-       MthMat2<type> &identity()
-       {
-              m[0][0] = 1;
-              m[0][1] = 0;
-              m[1][0] = 0;
-              m[1][1] = 1;
-              return *this;
-       }
-       MthMat2<type> &transpose()
-       {
-              type buf10 = m[1][0];
-              m[1][0] = m[0][1];
-              m[0][1] = buf10;
-              return *this;
-       }
-       MthMat2<type> &scale(type x, type y)
-       {
-              m[0][0] * x;
-              m[0][1] * x;
-              m[1][0] * y;
-              m[1][1] * y;
-              return *this;
-       }
-       MthMat2<type> &scale(const MthVec2<type> &vec)
-       {
-              return scale(vec.x, vec.y);
-       }
-       MthMat2<type> &rotFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[1][0] * s;
-              type m01 = m[0][1] * c + m[1][1] * s;
-              type m10 = m[0][0] * -s + m[1][0] * c;
-              type m11 = m[0][1] * -s + m[1][1] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              return *this;
-       }
-       MthMat2<type> &rotSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[0][1] * -s;
-              type m01 = m[0][0] * s + m[0][1] * c;
-              type m10 = m[1][0] * c + m[1][1] * -s;
-              type m11 = m[1][0] * s + m[1][1] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              return *this;
-       }
-};
+MTH_VEC4(float, f)
+MTH_VEC4(double, d)
+MTH_VEC4(int, i)
 
-template <typename type>
-struct MthMat3
-{
-       type m[3][3];
+MTH_MAT2(float, f)
+MTH_MAT2(double, d)
+MTH_MAT2(int, i)
 
-       MthMat3() : m{0, 0, 0, 0, 0, 0, 0, 0, 0}
-       {
-       }
-       MthMat3(type m00, type m01, type m02, type m10, type m11, type m12, type m20, type m21, type m22) : m{m00, m01, m02, m10, m11, m12, m20, m21, m22}
-       {
-       }
-       MthMat3(const MthMat3<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[0][2], mat.m[1][0], mat.m[1][1], mat.m[1][2], mat.m[2][0], mat.m[2][1], mat.m[2][2]}
-       {
-       }
-       bool operator==(const MthMat2<type> &mat) const
-       {
-              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1] && m[0][2] == mat.m[0][2] && m[1][2] == mat.m[1][2] && m[2][0] == mat.m[2][0] && m[2][1] == mat.m[2][1] && m[2][2] == mat.m[2][2];
-       }
-       bool operator!=(const MthMat2<type> &mat) const
-       {
-              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1] || m[0][2] != mat.m[0][2] || m[1][2] != mat.m[1][2] || m[2][0] != mat.m[2][0] || m[2][1] != mat.m[2][1] || m[2][2] != mat.m[2][2];
-       }
-       MthMat3<type> &operator=(const MthMat3<type> &mat) = default;
-       MthMat3<type> &operator+=(const MthMat3<type> &mat)
-       {
-              m[0][0] += mat.m[0][0];
-              m[0][1] += mat.m[0][1];
-              m[0][2] += mat.m[0][2];
-              m[1][0] += mat.m[1][0];
-              m[1][1] += mat.m[1][1];
-              m[1][2] += mat.m[1][2];
-              m[2][0] += mat.m[2][0];
-              m[2][1] += mat.m[2][1];
-              m[2][2] += mat.m[2][2];
-              return *this;
-       }
-       MthMat3<type> operator+(const MthMat3<type> &mat) const
-       {
-              return MthMat3<type>(m[0][0] + mat.m[0][0], m[0][1] + mat.m[0][1], m[0][2] + mat.m[0][2],
-                                   m[1][0] + mat.m[1][0], m[1][1] + mat.m[1][1], m[1][2] + mat.m[1][2],
-                                   m[2][0] + mat.m[2][0], m[2][1] + mat.m[2][1], m[2][2] + mat.m[2][2]);
-       }
-       MthMat3<type> &operator-=(const MthMat3<type> &mat)
-       {
-              m[0][0] -= mat.m[0][0];
-              m[0][1] -= mat.m[0][1];
-              m[0][2] -= mat.m[0][2];
-              m[1][0] -= mat.m[1][0];
-              m[1][1] -= mat.m[1][1];
-              m[1][2] -= mat.m[1][2];
-              m[2][0] -= mat.m[2][0];
-              m[2][1] -= mat.m[2][1];
-              m[2][2] -= mat.m[2][2];
-              return *this;
-       }
-       MthMat3<type> operator-(const MthMat3<type> &mat)
-       {
-              return MthMat3<type>(m[0][0] - mat.m[0][0], m[0][1] - mat.m[0][1], m[0][2] - mat.m[0][2],
-                                   m[1][0] - mat.m[1][0], m[1][1] - mat.m[1][1], m[1][2] - mat.m[1][2],
-                                   m[2][0] - mat.m[2][0], m[2][1] - mat.m[2][1], m[2][2] - mat.m[2][2]);
-       }
-       MthMat3<type> operator-() const
-       {
-              return MthMat3<type>(-m[0][0], -m[0][1], -m[0][2],
-                                   -m[1][0], -m[1][1], -m[1][2],
-                                   -m[2][0], -m[2][1], -m[2][2]);
-       }
-       MthMat3<type> &operator*=(const MthMat3<type> &mat)
-       {
-              type m00 = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2];
-              type m01 = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2];
-              type m02 = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2];
-              type m10 = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2];
-              type m11 = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2];
-              type m12 = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2];
-              type m20 = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2];
-              type m21 = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2];
-              type m22 = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2];
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              return *this;
-       }
-       MthMat3<type> operator*(const MthMat3<type> &mat)
-       {
-              return MthMat3<type>(m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2],
-                                   m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2],
-                                   m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2],
-                                   m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2],
-                                   m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2],
-                                   m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2],
-                                   m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2],
-                                   m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2],
-                                   m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2]);
-       }
-       MthVec3<type> operator*(const MthVec3<type> &vec) const
-       {
-              return MthVec3<type>(m[0][0] * vec.x + m[1][0] * vec.y + m[2][0] * vec.z,
-                                   m[0][1] * vec.x + m[1][1] * vec.y + m[2][1] * vec.z,
-                                   m[0][2] * vec.x + m[1][2] * vec.y + m[2][2] * vec.z);
-       }
-       MthMat3<type> &operator*=(type factor)
-       {
-              m[0][0] *= factor;
-              m[0][1] *= factor;
-              m[0][2] *= factor;
-              m[1][0] *= factor;
-              m[1][1] *= factor;
-              m[1][2] *= factor;
-              m[2][0] *= factor;
-              m[2][1] *= factor;
-              m[2][2] *= factor;
-              return *this;
-       }
-       MthMat3<type> operator*(type factor) const
-       {
-              return MthMat3<type>(m[0][0] * factor,
-                                   m[0][1] * factor,
-                                   m[0][2] * factor,
-                                   m[1][0] * factor,
-                                   m[1][1] * factor,
-                                   m[1][2] * factor,
-                                   m[2][0] * factor,
-                                   m[2][1] * factor,
-                                   m[2][2] * factor);
-       }
-       MthMat3<type> &identity()
-       {
-              m[0][0] = 1;
-              m[0][1] = 0;
-              m[0][2] = 0;
-              m[1][0] = 0;
-              m[1][1] = 1;
-              m[1][2] = 0;
-              m[2][0] = 0;
-              m[2][1] = 0;
-              m[2][2] = 1;
-              return *this;
-       }
-       MthMat3<type> &transpose()
-       {
-              type buf10 = m[1][0];
-              m[1][0] = m[0][1];
-              m[0][1] = buf10;
-              type buf20 = m[2][0];
-              m[2][0] = m[0][2];
-              m[0][2] = buf20;
-              type buf21 = m[2][1];
-              m[2][1] = m[1][2];
-              m[1][2] = buf21;
-              return *this;
-       }
-       MthMat3<type> &scale(type x, type y, type z)
-       {
-              m[0][0] *= x;
-              m[0][1] *= x;
-              m[0][2] *= x;
-              m[1][0] *= y;
-              m[1][1] *= y;
-              m[1][2] *= y;
-              m[2][0] *= z;
-              m[2][1] *= z;
-              m[2][2] *= z;
-              return *this;
-       }
-       MthMat3<type> &scale(const MthVec3<type> &vec)
-       {
-              return scale(vec.x, vec.y, vec.z);
-       }
-       MthMat3<type> &rotXFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m10 = m[1][0] * c + m[2][0] * s;
-              type m11 = m[1][1] * c + m[2][1] * s;
-              type m12 = m[1][2] * c + m[2][2] * s;
-              type m20 = m[1][0] * -s + m[2][0] * c;
-              type m21 = m[1][1] * -s + m[2][1] * c;
-              type m22 = m[1][2] * -s + m[2][2] * c;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              return *this;
-       }
-       MthMat3<type> &rotXSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m01 = m[0][1] * c + m[0][2] * -s;
-              type m02 = m[0][1] * s + m[0][2] * c;
-              type m11 = m[1][1] * c + m[1][2] * -s;
-              type m12 = m[1][1] * s + m[1][2] * c;
-              type m21 = m[2][1] * c + m[2][2] * -s;
-              type m22 = m[2][1] * s + m[2][2] * c;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              return *this;
-       }
-       MthMat3<type> &rotYFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[2][0] * -s;
-              type m01 = m[0][1] * c + m[2][1] * -s;
-              type m02 = m[0][2] * c + m[2][2] * -s;
-              type m20 = m[0][0] * s + m[2][0] * c;
-              type m21 = m[0][1] * s + m[2][1] * c;
-              type m22 = m[0][2] * s + m[2][2] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              return *this;
-       }
-       MthMat3<type> &rotYSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[0][2] * s;
-              type m02 = m[0][0] * -s + m[0][2] * c;
-              type m10 = m[1][0] * c + m[1][2] * s;
-              type m12 = m[1][0] * -s + m[1][2] * c;
-              type m20 = m[2][0] * c + m[2][2] * s;
-              type m22 = m[2][0] * -s + m[2][2] * c;
-              m[0][0] = m00;
-              m[0][2] = m02;
-              m[1][0] = m10;
-              m[1][2] = m12;
-              m[2][0] = m20;
-              m[2][2] = m22;
-              return *this;
-       }
-       MthMat3<type> &rotZFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[1][0] * s;
-              type m01 = m[0][1] * c + m[1][1] * s;
-              type m02 = m[0][2] * c + m[1][2] * s;
-              type m10 = m[0][0] * -s + m[1][0] * c;
-              type m11 = m[0][1] * -s + m[1][1] * c;
-              type m12 = m[0][2] * -s + m[1][2] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              return *this;
-       }
-       MthMat3<type> &rotZSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[0][1] * -s;
-              type m01 = m[0][0] * s + m[0][1] * c;
-              type m10 = m[1][0] * c + m[1][1] * -s;
-              type m11 = m[1][0] * s + m[1][1] * c;
-              type m20 = m[2][0] * c + m[2][1] * -s;
-              type m21 = m[2][0] * s + m[2][1] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              return *this;
-       }
-};
+MTH_MAT3(float, f)
+MTH_MAT3(double, d)
+MTH_MAT3(int, i)
 
-template <typename type>
-struct MthMat4
-{
-       type m[4][4];
-
-       MthMat4() : m{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-       {
-       }
-       MthMat4(type m00, type m01, type m02, type m03,
-               type m10, type m11, type m12, type m13,
-               type m20, type m21, type m22, type m23,
-               type m30, type m31, type m32, type m33) : m{m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33}
-       {
-       }
-       MthMat4(const MthMat4<type> &mat) : m{mat.m[0][0], mat.m[0][1], mat.m[0][2], mat.m[0][3], mat.m[1][0], mat.m[1][1], mat.m[1][2], mat.m[1][3], mat.m[2][0], mat.m[2][1], mat.m[2][2], mat.m[2][3],
-                                             mat.m[3][0], mat.m[3][1], mat.m[3][2], mat.m[3][3]}
-       {
-       }
-       bool operator==(const MthMat2<type> &mat) const
-       {
-              return m[0][0] == mat.m[0][0] && m[0][1] == mat.m[0][1] && m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1] && m[0][2] == mat.m[0][2] && m[1][2] == mat.m[1][2] && m[2][0] == mat.m[2][0] && m[2][1] == mat.m[2][1] && m[2][2] == mat.m[2][2] && m[0][3] == mat.m[0][3] && m[1][3] == mat.m[1][3] && m[2][3] == mat.m[2][3] && m[3][0] == mat.m[3][0] && m[3][1] == mat.m[3][1] && m[3][2] == mat.m[3][2] && m[3][3] == mat.m[3][3];
-       }
-       bool operator!=(const MthMat2<type> &mat) const
-       {
-              return m[0][0] != mat.m[0][0] || m[0][1] != mat.m[0][1] || m[1][0] != mat.m[1][0] || m[1][1] != mat.m[1][1] || m[0][2] != mat.m[0][2] || m[1][2] != mat.m[1][2] || m[2][0] != mat.m[2][0] || m[2][1] != mat.m[2][1] || m[2][2] != mat.m[2][2] || m[0][3] != mat.m[0][3] || m[1][3] != mat.m[1][3] || m[2][3] != mat.m[2][3] || m[3][0] != mat.m[3][0] || m[3][1] != mat.m[3][1] || m[3][2] != mat.m[3][2] || m[3][3] != mat.m[3][3];
-       }
-       MthMat4<type> &operator=(const MthMat4<type> &mat) = default;
-       MthMat4<type> &operator+=(const MthMat4<type> &mat)
-       {
-              m[0][0] += mat.m[0][0];
-              m[0][1] += mat.m[0][1];
-              m[0][2] += mat.m[0][2];
-              m[0][3] += mat.m[0][3];
-              m[1][0] += mat.m[1][0];
-              m[1][1] += mat.m[1][1];
-              m[1][2] += mat.m[1][2];
-              m[1][3] += mat.m[1][3];
-              m[2][0] += mat.m[2][0];
-              m[2][1] += mat.m[2][1];
-              m[2][2] += mat.m[2][2];
-              m[2][3] += mat.m[2][3];
-              m[3][0] += mat.m[3][0];
-              m[3][1] += mat.m[3][1];
-              m[3][2] += mat.m[3][2];
-              m[3][3] += mat.m[3][3];
-              return *this;
-       }
-       MthMat4<type> operator+(const MthMat4<type> &mat) const
-       {
-              return MthMat4<type>(m[0][0] + mat.m[0][0],
-                                   m[0][1] + mat.m[0][1],
-                                   m[0][2] + mat.m[0][2],
-                                   m[0][3] + mat.m[0][3],
-                                   m[1][0] + mat.m[1][0],
-                                   m[1][1] + mat.m[1][1],
-                                   m[1][2] + mat.m[1][2],
-                                   m[1][3] + mat.m[1][3],
-                                   m[2][0] + mat.m[2][0],
-                                   m[2][1] + mat.m[2][1],
-                                   m[2][2] + mat.m[2][2],
-                                   m[2][3] + mat.m[2][3],
-                                   m[3][0] + mat.m[3][0],
-                                   m[3][1] + mat.m[3][1],
-                                   m[3][2] + mat.m[3][2],
-                                   m[3][3] + mat.m[3][3]);
-       }
-       MthMat4<type> &operator-=(const MthMat4<type> &mat)
-       {
-              m[0][0] += mat.m[0][0];
-              m[0][1] += mat.m[0][1];
-              m[0][2] += mat.m[0][2];
-              m[0][3] += mat.m[0][3];
-              m[1][0] += mat.m[1][0];
-              m[1][1] += mat.m[1][1];
-              m[1][2] += mat.m[1][2];
-              m[1][3] += mat.m[1][3];
-              m[2][0] += mat.m[2][0];
-              m[2][1] += mat.m[2][1];
-              m[2][2] += mat.m[2][2];
-              m[2][3] += mat.m[2][3];
-              m[3][0] += mat.m[3][0];
-              m[3][1] += mat.m[3][1];
-              m[3][2] += mat.m[3][2];
-              m[3][3] += mat.m[3][3];
-              return *this;
-       }
-       MthMat4<type> operator-(const MthMat4<type> &mat)
-       {
-              return MthMat4<type>(m[0][0] - mat.m[0][0],
-                                   m[0][1] - mat.m[0][1],
-                                   m[0][2] - mat.m[0][2],
-                                   m[0][3] - mat.m[0][3],
-                                   m[1][0] - mat.m[1][0],
-                                   m[1][1] - mat.m[1][1],
-                                   m[1][2] - mat.m[1][2],
-                                   m[1][3] - mat.m[1][3],
-                                   m[2][0] - mat.m[2][0],
-                                   m[2][1] - mat.m[2][1],
-                                   m[2][2] - mat.m[2][2],
-                                   m[2][3] - mat.m[2][3],
-                                   m[3][0] - mat.m[3][0],
-                                   m[3][1] - mat.m[3][1],
-                                   m[3][2] - mat.m[3][2],
-                                   m[3][3] - mat.m[3][3]);
-       }
-       MthMat4<type> operator-() const
-       {
-              return MthMat4<type>(-m[0][0], -m[0][1], -m[0][2], -m[0][3],
-                                   -m[1][0], -m[1][1], -m[1][2], -m[1][3],
-                                   -m[2][0], -m[2][1], -m[2][2], -m[2][3],
-                                   -m[3][0], -m[3][1], -m[3][2], -m[3][3]);
-       }
-       MthMat4<type> &operator*=(const MthMat4<type> &mat)
-       {
-              type m00 = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2] + m[3][0] * mat.m[0][3];
-              type m01 = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2] + m[3][1] * mat.m[0][3];
-              type m02 = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2] + m[3][2] * mat.m[0][3];
-              type m03 = m[0][3] * mat.m[0][0] + m[1][3] * mat.m[0][1] + m[2][3] * mat.m[0][2] + m[3][3] * mat.m[0][3];
-              type m10 = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2] + m[3][0] * mat.m[1][3];
-              type m11 = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2] + m[3][1] * mat.m[1][3];
-              type m12 = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2] + m[3][2] * mat.m[1][3];
-              type m13 = m[0][3] * mat.m[1][0] + m[1][3] * mat.m[1][1] + m[2][3] * mat.m[1][2] + m[3][3] * mat.m[1][3];
-              type m20 = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2] + m[3][0] * mat.m[2][3];
-              type m21 = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2] + m[3][1] * mat.m[2][3];
-              type m22 = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2] + m[3][2] * mat.m[2][3];
-              type m23 = m[0][3] * mat.m[2][0] + m[1][3] * mat.m[2][1] + m[2][3] * mat.m[2][2] + m[3][3] * mat.m[2][3];
-              type m30 = m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0] * mat.m[3][3];
-              type m31 = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1] * mat.m[3][3];
-              type m32 = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2] * mat.m[3][3];
-              type m33 = m[0][3] * mat.m[3][0] + m[1][3] * mat.m[3][1] + m[2][3] * mat.m[3][2] + m[3][3] * mat.m[3][3];
-              m[0][0] = m00;
-              m[0][0] = m01;
-              m[0][0] = m02;
-              m[0][0] = m03;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[1][3] = m13;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              m[2][3] = m23;
-              m[3][0] = m30;
-              m[3][1] = m31;
-              m[3][2] = m32;
-              m[3][3] = m33;
-              return *this;
-       }
-       MthMat4<type> operator*(const MthMat4<type> &mat)
-       {
-              return MthMat4<type>(m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2] + m[3][0] * mat.m[0][3],
-                                   m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2] + m[3][1] * mat.m[0][3],
-                                   m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2] + m[3][2] * mat.m[0][3],
-                                   m[0][3] * mat.m[0][0] + m[1][3] * mat.m[0][1] + m[2][3] * mat.m[0][2] + m[3][3] * mat.m[0][3],
-                                   m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2] + m[3][0] * mat.m[1][3],
-                                   m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2] + m[3][1] * mat.m[1][3],
-                                   m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2] + m[3][2] * mat.m[1][3],
-                                   m[0][3] * mat.m[1][0] + m[1][3] * mat.m[1][1] + m[2][3] * mat.m[1][2] + m[3][3] * mat.m[1][3],
-                                   m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2] + m[3][0] * mat.m[2][3],
-                                   m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2] + m[3][1] * mat.m[2][3],
-                                   m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2] + m[3][2] * mat.m[2][3],
-                                   m[0][3] * mat.m[2][0] + m[1][3] * mat.m[2][1] + m[2][3] * mat.m[2][2] + m[3][3] * mat.m[2][3],
-                                   m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0] * mat.m[3][3],
-                                   m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1] * mat.m[3][3],
-                                   m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2] * mat.m[3][3],
-                                   m[0][3] * mat.m[3][0] + m[1][3] * mat.m[3][1] + m[2][3] * mat.m[3][2] + m[3][3] * mat.m[3][3]);
-       }
-       MthVec4<type> operator*(const MthVec3<type> &vec) const
-       {
-              return MthVec4<type>(m[0][0] * vec.x + m[1][0] * vec.y + m[2][0] * vec.z + m[3][0] * vec.w,
-                                   m[0][1] * vec.x + m[1][1] * vec.y + m[2][1] * vec.z + m[3][1] * vec.w,
-                                   m[0][2] * vec.x + m[1][2] * vec.y + m[2][2] * vec.z + m[3][2] * vec.w,
-                                   m[0][3] * vec.x + m[1][3] * vec.y + m[2][3] * vec.z + m[3][3] * vec.w);
-       }
-       MthMat4<type> &operator*=(type factor)
-       {
-              m[0][0] *= factor;
-              m[0][1] *= factor;
-              m[0][2] *= factor;
-              m[0][3] *= factor;
-              m[1][0] *= factor;
-              m[1][1] *= factor;
-              m[1][2] *= factor;
-              m[1][3] *= factor;
-              m[2][0] *= factor;
-              m[2][1] *= factor;
-              m[2][2] *= factor;
-              m[2][3] *= factor;
-              m[3][0] *= factor;
-              m[3][1] *= factor;
-              m[3][2] *= factor;
-              m[3][3] *= factor;
-              return *this;
-       }
-       MthMat4<type> operator*(type factor) const
-       {
-              return MthMat4<type>(m[0][0] * factor,
-                                   m[0][1] * factor,
-                                   m[0][2] * factor,
-                                   m[0][3] * factor,
-                                   m[1][0] * factor,
-                                   m[1][1] * factor,
-                                   m[1][2] * factor,
-                                   m[1][3] * factor,
-                                   m[2][0] * factor,
-                                   m[2][1] * factor,
-                                   m[2][2] * factor,
-                                   m[2][3] * factor,
-                                   m[3][0] * factor,
-                                   m[3][1] * factor,
-                                   m[3][2] * factor,
-                                   m[3][3] * factor);
-       }
-       MthMat4<type> &identity()
-       {
-              m[0][0] = 1;
-              m[0][1] = 0;
-              m[0][2] = 0;
-              m[0][3] = 0;
-              m[1][0] = 0;
-              m[1][1] = 1;
-              m[1][2] = 0;
-              m[1][3] = 0;
-              m[2][0] = 0;
-              m[2][1] = 0;
-              m[2][2] = 1;
-              m[2][3] = 0;
-              m[3][0] = 0;
-              m[3][1] = 0;
-              m[3][2] = 0;
-              m[3][3] = 1;
-              return *this;
-       }
-       MthMat4<type> &transpose()
-       {
-              type buf10 = m[1][0];
-              m[1][0] = m[0][1];
-              m[1][1] = buf10;
-              type buf20 = m[2][0];
-              m[2][0] = m[0][2];
-              m[0][2] = buf20;
-              type buf30 = m[3][0];
-              m[3][0] = m[0][3];
-              m[0][3] = buf30;
-              type buf21 = m[2][1];
-              m[2][1] = m[1][2];
-              m[1][2] = buf21;
-              type buf31 = m[3][1];
-              m[3][1] = m[1][3];
-              m[1][3] = buf31;
-              type buf32 = m[3][2];
-              m[3][2] = m[2][3];
-              m[2][3] = buf32;
-              return *this;
-       }
-       MthMat4<type> &scale(type x, type y, type z, type w)
-       {
-              m[0][0] *= x;
-              m[0][1] *= x;
-              m[0][2] *= x;
-              m[0][3] *= x;
-              m[1][0] *= y;
-              m[1][1] *= y;
-              m[1][2] *= y;
-              m[1][3] *= y;
-              m[2][0] *= z;
-              m[2][1] *= z;
-              m[2][2] *= z;
-              m[2][3] *= z;
-              m[3][0] *= w;
-              m[3][1] *= w;
-              m[3][2] *= w;
-              m[3][3] *= w;
-              return *this;
-       }
-       MthMat4<type> &scale(const MthVec4<type> &vec)
-       {
-              return scale(vec.x, vec.y, vec.z, vec.w);
-       }
-       MthMat4<type> &scaleDim3(type x, type y, type z)
-       {
-              m[0][0] *= x;
-              m[0][1] *= x;
-              m[0][2] *= x;
-              m[0][3] *= x;
-              m[1][0] *= y;
-              m[1][1] *= y;
-              m[1][2] *= y;
-              m[1][3] *= y;
-              m[2][0] *= z;
-              m[2][1] *= z;
-              m[2][2] *= z;
-              m[2][3] *= z;
-              return *this;
-       }
-       MthMat4<type> &scaleDim3(const MthVec3<type> &vec)
-       {
-              return scaleDim3(vec.x, vec.y, vec.z);
-       }
-       MthMat4<type> &rotXFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m10 = m[1][0] * c + m[2][0] * s;
-              type m11 = m[1][1] * c + m[2][1] * s;
-              type m12 = m[1][2] * c + m[2][2] * s;
-              type m13 = m[1][3] * c + m[2][3] * s;
-              type m20 = m[1][0] * -s + m[2][0] * c;
-              type m21 = m[1][1] * -s + m[2][1] * c;
-              type m22 = m[1][2] * -s + m[2][2] * c;
-              type m23 = m[1][3] * -s + m[2][3] * c;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[1][3] = m13;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              m[2][3] = m23;
-              return *this;
-       }
-       MthMat4<type> &rotXSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m01 = m[0][1] * c + m[0][2] * -s;
-              type m02 = m[0][1] * s + m[0][2] * c;
-              type m11 = m[1][1] * c + m[1][2] * -s;
-              type m12 = m[1][1] * s + m[1][2] * c;
-              type m21 = m[2][1] * c + m[2][2] * -s;
-              type m22 = m[2][1] * s + m[2][2] * c;
-              type m31 = m[3][1] * c + m[3][2] * -s;
-              type m32 = m[3][1] * s + m[3][2] * c;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              m[3][1] = m31;
-              m[3][2] = m32;
-              return *this;
-       }
-       MthMat4<type> &rotYFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[2][0] * -s;
-              type m01 = m[0][1] * c + m[2][1] * -s;
-              type m02 = m[0][2] * c + m[2][2] * -s;
-              type m03 = m[0][3] * c + m[2][3] * -s;
-              type m20 = m[0][0] * s + m[2][0] * c;
-              type m21 = m[0][1] * s + m[2][1] * c;
-              type m22 = m[0][2] * s + m[2][2] * c;
-              type m23 = m[0][3] * s + m[2][3] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[0][3] = m03;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[2][2] = m22;
-              m[2][3] = m23;
-              return *this;
-       }
-       MthMat4<type> &rotYSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[0][2] * s;
-              type m02 = m[0][0] * -s + m[0][2] * c;
-              type m10 = m[1][0] * c + m[1][2] * s;
-              type m12 = m[1][0] * -s + m[1][2] * c;
-              type m20 = m[2][0] * c + m[2][2] * s;
-              type m22 = m[2][0] * -s + m[2][2] * c;
-              type m30 = m[3][0] * c + m[3][2] * s;
-              type m32 = m[3][0] * -s + m[3][2] * c;
-              m[0][0] = m00;
-              m[0][2] = m02;
-              m[1][0] = m10;
-              m[1][2] = m12;
-              m[2][0] = m20;
-              m[2][2] = m22;
-              m[3][0] = m30;
-              m[3][2] = m32;
-              return *this;
-       }
-       MthMat4<type> &rotZFst(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[1][0] * s;
-              type m01 = m[0][1] * c + m[1][1] * s;
-              type m02 = m[0][2] * c + m[1][2] * s;
-              type m03 = m[0][3] * c + m[1][3] * s;
-              type m10 = m[0][0] * -s + m[1][0] * c;
-              type m11 = m[0][1] * -s + m[1][1] * c;
-              type m12 = m[0][2] * -s + m[1][2] * c;
-              type m13 = m[0][3] * -s + m[1][3] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[0][2] = m02;
-              m[0][3] = m03;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[1][2] = m12;
-              m[1][3] = m13;
-              return *this;
-       }
-       MthMat4<type> &rotZSec(type a)
-       {
-              type c = (type)cosf(a);
-              type s = (type)sinf(a);
-              type m00 = m[0][0] * c + m[0][1] * -s;
-              type m01 = m[0][0] * s + m[0][1] * c;
-              type m10 = m[1][0] * c + m[1][1] * -s;
-              type m11 = m[1][0] * s + m[1][1] * c;
-              type m20 = m[2][0] * c + m[2][1] * -s;
-              type m21 = m[2][0] * s + m[2][1] * c;
-              type m30 = m[3][0] * c + m[3][1] * -s;
-              type m31 = m[3][0] * s + m[3][1] * c;
-              m[0][0] = m00;
-              m[0][1] = m01;
-              m[1][0] = m10;
-              m[1][1] = m11;
-              m[2][0] = m20;
-              m[2][1] = m21;
-              m[3][0] = m30;
-              m[3][1] = m31;
-              return *this;
-       }
-       MthMat4<type> &translateFst(type x, type y, type z, type w)
-       {
-              m[3][0] = m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0] * w;
-              m[3][1] = m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1] * w;
-              m[3][2] = m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2] * w;
-              m[3][3] = m[0][3] * x + m[1][3] * y + m[2][3] * z + m[3][3] * w;
-              return *this;
-       }
-       MthMat4<type> &translateFst(const MthVec4<type> &vec)
-       {
-              return translateFst(vec.x, vec.y, vec.z, vec.w);
-       }
-       MthMat4<type> &translateSec(type x, type y, type z, type w)
-       {
-              m[0][0] = m[0][0] + x * m[0][3];
-              m[0][1] = m[0][1] + y * m[0][3];
-              m[0][2] = m[0][2] + z * m[0][3];
-              m[0][3] = w * m[0][3];
-              m[1][0] = m[1][0] + x * m[1][3];
-              m[1][1] = m[1][1] + y * m[1][3];
-              m[1][2] = m[1][2] + z * m[1][3];
-              m[1][3] = w * m[1][3];
-              m[2][0] = m[2][0] + x * m[2][3];
-              m[2][1] = m[2][1] + y * m[2][3];
-              m[2][2] = m[2][2] + z * m[2][3];
-              m[2][3] = w * m[2][3];
-              m[3][0] = m[3][0] + x * m[3][3];
-              m[3][1] = m[3][1] + y * m[3][3];
-              m[3][2] = m[3][2] + z * m[3][3];
-              m[3][3] = w * m[3][3];
-              return *this;
-       }
-       MthMat4<type> &translateSec(const MthVec4<type> &vec)
-       {
-              return translateSec(vec.x, vec.y, vec.z, vec.w);
-       }
-       MthMat4<type> &translateFstDim3(type x, type y, type z)
-       {
-              m[3][0] = m[0][0] * x + m[1][0] * y + m[2][0] * z + m[3][0];
-              m[3][1] = m[0][1] * x + m[1][1] * y + m[2][1] * z + m[3][1];
-              m[3][2] = m[0][2] * x + m[1][2] * y + m[2][2] * z + m[3][2];
-              m[3][3] = m[0][3] * x + m[1][3] * y + m[2][3] * z + m[3][3];
-              return *this;
-       }
-       MthMat4<type> &translateFstDim3(const MthVec3<type> &vec)
-       {
-              return translateFstDim3(vec.x, vec.y, vec.z);
-       }
-       MthMat4<type> &translateSecDim3(type x, type y, type z)
-       {
-              m[0][0] = m[0][0] + x * m[0][3];
-              m[0][1] = m[0][1] + y * m[0][3];
-              m[0][2] = m[0][2] + z * m[0][3];
-              m[1][0] = m[1][0] + x * m[1][3];
-              m[1][1] = m[1][1] + y * m[1][3];
-              m[1][2] = m[1][2] + z * m[1][3];
-              m[2][0] = m[2][0] + x * m[2][3];
-              m[2][1] = m[2][1] + y * m[2][3];
-              m[2][2] = m[2][2] + z * m[2][3];
-              m[3][0] = m[3][0] + x * m[3][3];
-              m[3][1] = m[3][1] + y * m[3][3];
-              m[3][2] = m[3][2] + z * m[3][3];
-              return *this;
-       }
-       MthMat4<type> &translateSecDim3(const MthVec4<type> &vec)
-       {
-              return translateSecDim3(vec.x, vec.y, vec.z);
-       }
-       MthMat4<type> &perspective(type width, type height, type fov, type znear, type zfar)
-       {
-              type aspect = width / height;
-              type tan_half_fov = (type)tanf(fov / 2.0f);
-              type range = znear - zfar;
-              m[0][0] = 1 / (aspect * tan_half_fov);
-              m[0][1] = 0;
-              m[0][2] = 0;
-              m[0][3] = 0;
-              m[1][0] = 0;
-              m[1][1] = 1 / tan_half_fov;
-              m[1][2] = 0;
-              m[1][3] = 0;
-              m[2][0] = 0;
-              m[2][1] = 0;
-              m[2][2] = (-znear - zfar) / range;
-              m[2][3] = 1;
-              m[3][0] = 0;
-              m[3][1] = 0;
-              m[3][2] = ((type)2 * zfar * znear) / range;
-              m[3][3] = 0;
-              return *this;
-       }
-};
-
-typedef MthVec2<float> MthVec2f;
-typedef MthVec2<double> MthVec2d;
-typedef MthVec2<int> MthVec2i;
-
-typedef MthVec3<float> MthVec3f;
-typedef MthVec3<double> MthVec3d;
-typedef MthVec3<int> MthVec3i;
-
-typedef MthVec4<float> MthVec4f;
-typedef MthVec4<double> MthVec4d;
-typedef MthVec4<int> MthVec4i;
-
-typedef MthMat2<float> MthMat2f;
-typedef MthMat2<double> MthMat2d;
-typedef MthMat2<int> MthMat2i;
-
-typedef MthMat3<float> MthMat3f;
-typedef MthMat3<double> MthMat3d;
-typedef MthMat3<int> MthMat3i;
-
-typedef MthMat4<float> MthMat4f;
-typedef MthMat4<double> MthMat4d;
-typedef MthMat4<int> MthMat4i;
+MTH_MAT4(float, f)
+MTH_MAT4(double, d)
+MTH_MAT4(int, i)
 
 #ifdef ATK_MTH_NO_CONFUSION
 typedef MthVec2f vec2f;

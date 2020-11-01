@@ -176,6 +176,8 @@ int main()
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
+                     DskKeyboard keyboard({&window});
+                     DskMouse mouse({&window});
 
                      OrnSurfaceSettings surface_settings = {dskGetX11Display(), window.getX11Window()};
                      OrnSurface *surface = ornCreateSurface(&surface_settings);
@@ -205,7 +207,7 @@ int main()
                      ornDestroyShader(device, fragment_shader);
                      ornDestroyShader(device, vertex_shader);
 
-                     AstModel model("../../code/test/models/colored-cube.ply", AST_LOAD_OPT_COLORS);
+                     AstModel model("../../code/test/models/colored-cube.ply", AST_MDL_LOAD_OPT_COLORS | AST_MDL_LOAD_OPT_ALPHA_COLOR_CHANNEL);
                      OrnBufferSettings buffer_settings = {model.vertexCount() * sizeof(float) + model.indexCount() * sizeof(uint32_t),
                                                           ORN_BUFFER_USAGE_VERTEX | ORN_BUFFER_USAGE_INDEX, ORN_BUFFER_HOST_MEMORY};
                      OrnBuffer *buffer = ornCreateBuffer(device, &buffer_settings);
@@ -248,6 +250,22 @@ int main()
                             ornUnmapBuffer(device, uniform_buffer);
                             ornRenderNextFrame(device);
                             dskRefresh();
+                            if(keyboard.isKeyPressed(65))
+                            {
+                                   std::cout << "Q pressed" << std::endl;
+                            }
+                            if(keyboard.isKeyReleased(65))
+                            {
+                                   std::cout << "Q released" << std::endl;
+                            }
+                            if(mouse.isButtonPressed(0))
+                            {
+                                   std::cout << "Mouse pressed" << std::endl;
+                            }
+                            if(mouse.isButtonReleased(0))
+                            {
+                                   std::cout << "Mouse released" << std::endl;
+                            }
                      }
 
                      ornUpdateDevice(device, true);
