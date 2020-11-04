@@ -43,7 +43,7 @@ void astImageFree(AstImage *image)
 {
        stbi_image_free(image->m_data);
        image->m_data = NULL;
-       image->m_width = 0;
+       /*image->m_width = 0;
        image->m_height = 0;
-       image->m_channel_count = 0;
+       image->m_channel_count = 0;*/
 }

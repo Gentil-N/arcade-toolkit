@@ -34,8 +34,8 @@ void dskDestroyWindow(DskWindow *window)
 {
        glfwDestroyWindow((GLFWwindow *)window->m_handle);
        window->m_handle = NULL;
-       window->m_width = 0;
-       window->m_height = 0;
+       /*window->m_width = 0;
+       window->m_height = 0;*/
        atk_info("window destroyed");
 }
 

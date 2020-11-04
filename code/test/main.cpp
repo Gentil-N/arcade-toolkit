@@ -176,7 +176,6 @@ int main()
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
-                     DskKeyboard keyboard({&window});
                      DskMouse mouse({&window});
 
                      OrnSurfaceSettings surface_settings = {dskGetX11Display(), window.getX11Window()};
@@ -250,21 +249,10 @@ int main()
                             ornUnmapBuffer(device, uniform_buffer);
                             ornRenderNextFrame(device);
                             dskRefresh();
-                            if(keyboard.isKeyPressed(65))
+                            if(mouse.isButtonPressed(DSK_MOUSE_BUTTON_RIGHT))
                             {
-                                   std::cout << "Q pressed" << std::endl;
-                            }
-                            if(keyboard.isKeyReleased(65))
-                            {
-                                   std::cout << "Q released" << std::endl;
-                            }
-                            if(mouse.isButtonPressed(0))
-                            {
-                                   std::cout << "Mouse pressed" << std::endl;
-                            }
-                            if(mouse.isButtonReleased(0))
-                            {
-                                   std::cout << "Mouse released" << std::endl;
+                                   vec2d vec = mouse.getCursorPos();
+                                   std::cout << vec.x << " " << vec.y << std::endl;
                             }
                      }
 

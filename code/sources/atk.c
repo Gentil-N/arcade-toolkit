@@ -148,11 +148,12 @@ void atkNewVectorFromOther(AtkVector *vector, const AtkVector *other)
 
 void atkDeleteVector(AtkVector *vector)
 {
+       atk_assert(vector != NULL);
        atk_free(vector->m_data);
        vector->m_data = NULL;
-       vector->m_count = 0;
+       /*vector->m_count = 0;
        vector->m_capacity = 0;
-       vector->m_size_of_element = 0;
+       vector->m_size_of_element = 0;*/
 }
 
 void atkVectorRecreate(AtkVector *vector, size_t count, size_t size_of_element)
@@ -245,8 +246,8 @@ void atkDeleteArray(AtkArray *array)
        atk_assert(array != NULL);
        atk_free(array->m_data);
        array->m_data = NULL;
-       array->m_count = 0;
-       array->m_size_of_element = 0;
+       /*array->m_count = 0;
+       array->m_size_of_element = 0;*/
 }
 
 void atkArrayRecreate(AtkArray *array, size_t count, size_t size_of_element)
@@ -296,8 +297,8 @@ void atkDeleteString(AtkString *string)
        atk_assert(string != NULL);
        atk_free(string->m_data);
        string->m_data = NULL;
-       string->m_capacity = 0;
-       string->m_size = 0;
+       /*string->m_capacity = 0;
+       string->m_size = 0;*/
 }
 
 AtkString *atkStringAppend(AtkString *string, const char *str)
@@ -386,7 +387,7 @@ bool atkFileClose(AtkFile *file)
               return false;
        }
        file->m_handle = NULL;
-       file->m_size = 0;
+       /*file->m_size = 0;*/
        return true;
 }
 

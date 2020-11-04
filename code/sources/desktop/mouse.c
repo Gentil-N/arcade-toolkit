@@ -9,21 +9,14 @@ void mouseButtonCallback(GLFWwindow *handle, int button, int action, int mods)
               {
                      if(action == GLFW_PRESS)
                      {
-                            atkVectorPushBack(&curr_mouse->m_button_pressed, &button);
+                            curr_mouse->m_buttons_states[button] = GLFW_PRESS;
                             return;
                      }
                      else if(action == GLFW_RELEASE)
                      {
-                            atkVectorPushBack(&curr_mouse->m_button_released, &button);
-                            for(size_t i = 0; i < curr_mouse->m_button_pressed.m_count; ++i)
-                            {
-                                   if(atk_get(int, curr_mouse->m_button_pressed, i) == button)
-                                   {
-                                          atkVectorRemove(&curr_mouse->m_button_pressed, i);
-                                          return;
-                                   }
-                            }
-                            atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to find button (button callback)");
+                            curr_mouse->m_buttons_states[button] = GLFW_RELEASE;
+                            atkVectorPushBack(&curr_mouse->m_buttons_released, &button);
+                            return;
                      }
               }
        }
@@ -33,8 +26,8 @@ void mouseButtonCallback(GLFWwindow *handle, int button, int action, int mods)
 void dskCreateMouse(DskMouse *mouse, const DskMouseSettings *settings)
 {
        mouse->m_window = settings->window;
-       atkNewVector(&mouse->m_button_pressed, 0, sizeof(int));
-       atkNewVector(&mouse->m_button_released, 0, sizeof(int));
+       memset(mouse->m_buttons_states, DSK_STATE_NOP, DSK_MAX_MOUSE_BUTTONS * sizeof(int));
+       atkNewVector(&mouse->m_buttons_released, 0, sizeof(int));
        glfwSetMouseButtonCallback(settings->window->m_handle, mouseButtonCallback);
        atkVectorPushBack(&MOUSES, &mouse);
 }
@@ -49,32 +42,18 @@ void dskDestroyMouse(DskMouse *mouse)
                      break;
               }
        }
-       atkDeleteVector(&mouse->m_button_released);
-       atkDeleteVector(&mouse->m_button_pressed);
+       atkDeleteVector(&mouse->m_buttons_released);
+       mouse->m_window = NULL;
 }
 
-bool dskMouseIsMouseButtonPressed(DskMouse *mouse, int button)
+bool dskMouseIsMouseButtonPressed(DskMouse *mouse, DskMouseButton button)
 {
-       for(size_t i = 0; i < mouse->m_button_pressed.m_count; ++i)
-       {
-              if(atk_get(int, mouse->m_button_pressed, i) == button)
-              {
-                     return true;
-              }
-       }
-       return false;
+       return mouse->m_buttons_states[(int)button] == GLFW_PRESS;
 }
 
-bool dskMouseIsMouseButtonReleased(DskMouse *mouse, int button)
+bool dskMouseIsMouseButtonReleased(DskMouse *mouse, DskMouseButton button)
 {
-       for(size_t i = 0; i < mouse->m_button_released.m_count; ++i)
-       {
-              if(atk_get(int, mouse->m_button_released, i) == button)
-              {
-                     return true;
-              }
-       }
-       return false;
+       return mouse->m_buttons_states[(int)button] == GLFW_RELEASE;
 }
 
 AtkPack2d dskMouseGetCursorPos(DskMouse *mouse)

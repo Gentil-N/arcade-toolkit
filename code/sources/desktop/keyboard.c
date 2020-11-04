@@ -9,21 +9,14 @@ void keyCallback(GLFWwindow *handle, int key, int scancode, int action, int mods
               {
                      if(action == GLFW_PRESS)
                      {
-                            atkVectorPushBack(&curr_keyboard->m_key_pressed, &key);
+                            curr_keyboard->m_keys_states[key] = GLFW_PRESS;
                             return;
                      }
                      else if(action == GLFW_RELEASE)
                      {
-                            atkVectorPushBack(&curr_keyboard->m_key_released, &key);
-                            for(size_t i = 0; i < curr_keyboard->m_key_pressed.m_count; ++i)
-                            {
-                                   if(atk_get(int, curr_keyboard->m_key_pressed, i) == key)
-                                   {
-                                          atkVectorRemove(&curr_keyboard->m_key_pressed, i);
-                                          return;
-                                   }
-                            }
-                            atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to find key (key callback)");
+                            curr_keyboard->m_keys_states[key] = GLFW_RELEASE;
+                            atkVectorPushBack(&curr_keyboard->m_keys_released, &key);
+                            return;
                      }
                      else
                      {
@@ -38,8 +31,8 @@ void keyCallback(GLFWwindow *handle, int key, int scancode, int action, int mods
 void dskCreateKeyboard(DskKeyboard *keyboard, const DskKeyboardSettings *settings)
 {
        keyboard->m_window = settings->window;
-       atkNewVector(&keyboard->m_key_pressed, 0, sizeof(int));
-       atkNewVector(&keyboard->m_key_released, 0, sizeof(int));
+       memset(keyboard->m_keys_states, DSK_STATE_NOP, DSK_MAX_KEYS * sizeof(int));
+       atkNewVector(&keyboard->m_keys_released, 0, sizeof(int));
        glfwSetKeyCallback(settings->window->m_handle, keyCallback);
        atkVectorPushBack(&KEYBOARDS, &keyboard);
 }
@@ -54,30 +47,16 @@ void dskDestroyKeyboard(DskKeyboard *keyboard)
                      break;
               }
        }
-       atkDeleteVector(&keyboard->m_key_released);
-       atkDeleteVector(&keyboard->m_key_pressed);
+       atkDeleteVector(&keyboard->m_keys_released);
+       keyboard->m_window = NULL;
 }
 
-bool dskKeyboardIsKeyPressed(DskKeyboard *keyboard, int key)
+bool dskKeyboardIsKeyPressed(DskKeyboard *keyboard, DskKey key)
 {
-       for(size_t i = 0; i < keyboard->m_key_pressed.m_count; ++i)
-       {
-              if(atk_get(int, keyboard->m_key_pressed, i) == key)
-              {
-                     return true;
-              }
-       }
-       return false;
+       return keyboard->m_keys_states[(int)key] == GLFW_PRESS;
 }
 
-bool dskKeyboardIsKeyReleased(DskKeyboard *keyboard, int key)
+bool dskKeyboardIsKeyReleased(DskKeyboard *keyboard, DskKey key)
 {
-       for(size_t i = 0; i < keyboard->m_key_released.m_count; ++i)
-       {
-              if(atk_get(int, keyboard->m_key_released, i) == key)
-              {
-                     return true;
-              }
-       }
-       return false;
+       return keyboard->m_keys_states[(int)key] == GLFW_RELEASE;
 }

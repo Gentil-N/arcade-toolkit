@@ -108,7 +108,7 @@ extern "C"
 
        ATK_API void atkPushMessage(AtkMsgType code, const char *description, const char *file, size_t line);
        ATK_API void atkConcatAndPushMsg(AtkMsgType code, const char *file, size_t line, const char *format, ...);
-       
+
 #define atk_vinfo(format, ...) atkConcatAndPushMsg(ATK_MSG_INFO, __FILENAME__, __LINE__, format, __VA_ARGS__)
 #define atk_info(description) atkPushMessage(ATK_MSG_INFO, description, __FILENAME__, __LINE__)
 #define atk_vwarn(type, format, ...) atkConcatAndPushMsg((AtkMsgType)(ATK_MSG_WARNING | type), __FILENAME__, __LINE__, format, __VA_ARGS__)
@@ -131,10 +131,10 @@ extern "C"
        /**
         * Pack
         */
-#define ATK_PACK(type, t, n, vars) \
+#define ATK_PACK(type, t, n, vars)  \
        typedef struct AtkPack##n##t \
-       { \
-              type vars;\
+       {                            \
+              type vars;            \
        } AtkPack##n##t
 
        ATK_PACK(int, i, 2, x ATK_COMMA y);
@@ -149,10 +149,10 @@ extern "C"
        ATK_PACK(float, f, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
        ATK_PACK(double, d, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
 
-#define ATK_PACKX(type, t, n) \
+#define ATK_PACKX(type, t, n)             \
        typedef struct AtkPack##n##x##n##t \
-       { \
-              type m[n][n];\
+       {                                  \
+              type m[n][n];               \
        } AtkPack##n##x##n##t
 
        ATK_PACKX(int, i, 2);
@@ -287,6 +287,8 @@ struct AtkVector
        }
        ~AtkVector()
        {
+              if (m_data == nullptr)
+                     return;
               atkDeleteVector(this);
        }
        AtkVector &operator=(const AtkVector &vector)
@@ -413,6 +415,8 @@ struct AtkArray
        }
        ~AtkArray()
        {
+              if (m_data == nullptr)
+                     return;
               atkDeleteArray(this);
        }
        AtkArray &operator=(const AtkArray &array)
@@ -473,7 +477,7 @@ struct AtkString
        size_t m_size ATK_HIDE_CPP(= 0);
        size_t m_capacity ATK_HIDE_CPP(= 0);
 #ifdef __cplusplus
-       AtkString()
+       AtkString() : m_data(nullptr), m_size(0), m_capacity(0)
        {
               atkNewString(this);
        }
@@ -494,6 +498,8 @@ struct AtkString
        }
        ~AtkString()
        {
+              if (m_data == nullptr)
+                     return;
               atkDeleteString(this);
        }
        AtkString &operator=(const AtkString &string)
@@ -553,7 +559,7 @@ struct AtkFile
        void *m_handle ATK_HIDE_CPP(= nullptr);
        size_t m_size ATK_HIDE_CPP(= 0);
 #ifdef __cplusplus
-       AtkFile()
+       AtkFile() : m_handle(nullptr), m_size(0)
        {
        }
        AtkFile(const char *name, const char *access_mode)
@@ -569,10 +575,9 @@ struct AtkFile
        }
        ~AtkFile()
        {
-              if (m_handle != nullptr)
-              {
-                     atkFileClose(this);
-              }
+              if (m_handle == nullptr)
+                     return;
+              atkFileClose(this);
        }
        AtkFile &operator=(const AtkFile &file) = delete;
        AtkFile &operator=(AtkFile &&file)

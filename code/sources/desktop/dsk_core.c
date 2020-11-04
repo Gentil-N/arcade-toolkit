@@ -36,11 +36,21 @@ void dskRefresh()
 {
        for(size_t i = 0; i < KEYBOARDS.m_count; ++i)
        {
-              atk_get(DskKeyboard*, KEYBOARDS, i)->m_key_released.m_count = 0;//the size will not exceed the number of keys
+              DskKeyboard *keyboard = atk_get(DskKeyboard*, KEYBOARDS, i);
+              for(size_t j = 0; j < keyboard->m_keys_released.m_count; ++j)
+              {
+                     keyboard->m_keys_states[atk_get(int, keyboard->m_keys_released, j)] = DSK_STATE_NOP;
+              }
+              keyboard->m_keys_released.m_count = 0;//the size will not exceed the number of keys
        }
        for(size_t i = 0; i < MOUSES.m_count; ++i)
        {
-              atk_get(DskMouse*, MOUSES, i)->m_button_released.m_count = 0;//the size will not exceed the number of buttons
+              DskMouse *mouse = atk_get(DskMouse*, MOUSES, i);
+              for(size_t j = 0; j < mouse->m_buttons_released.m_count; ++j)
+              {
+                     mouse->m_buttons_states[atk_get(int, mouse->m_buttons_released, j)] = DSK_STATE_NOP;
+              }
+              mouse->m_buttons_released.m_count = 0;//the size will not exceed the number of buttons
        }
        glfwPollEvents();
 }

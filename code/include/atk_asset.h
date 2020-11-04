@@ -73,10 +73,9 @@ struct AstModel
        }
        ~AstModel()
        {
-              if (m_vertices.m_data != nullptr)
-              {
-                     astModelDestroy(this);
-              }
+              if (m_vertices.m_data == nullptr)
+                     return;
+              astModelDestroy(this);
        }
        AstModel &operator=(const AstModel &model)
        {
@@ -129,7 +128,7 @@ struct AstImage
        void *m_data ATK_HIDE_CPP(= nullptr);
        int m_width ATK_HIDE_CPP(= 0), m_height ATK_HIDE_CPP(= 0), m_channel_count ATK_HIDE_CPP(= 0);
 #ifdef __cplusplus
-       AstImage() //"loadFrom..." must be called
+       AstImage() : m_data(nullptr), m_width(0), m_height(0), m_channel_count(0)//"loadFrom..." must be called
        {
        }
        AstImage(const char *file_name, AstImageLoadOption load_option)
@@ -154,14 +153,14 @@ struct AstImage
        }
        ~AstImage()
        {
-              if(m_data != nullptr)
-              {
-                     astImageFree(this);
-              }
+              if(m_data == nullptr)
+                     return;
+              astImageFree(this);
        }
        AstImage &operator=(const AstImage &image)
        {
-              astImageFree(this);
+              if(m_data != nullptr)
+                     astImageFree(this);
               astImageCreateFromOther(this, &image);
               return *this;
        }
@@ -176,12 +175,14 @@ struct AstImage
        }
        bool loadFromFile(const char *file_name, AstImageLoadOption load_option)
        {
-              astImageFree(this);
+              if(m_data != nullptr)
+                     astImageFree(this);
               return astImageLoadFromFile(this, file_name, load_option);
        }
        bool loadFromMemory(const void *data, size_t size, AstImageLoadOption load_option)
        {
-              astImageFree(this);
+              if(m_data != nullptr)
+                     astImageFree(this);
               return astImageLoadFromMemory(this, data, size, load_option);
        }
        inline const void *data() const noexcept
