@@ -86,6 +86,7 @@ OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *set
        {
               atkNewArray(&binding_descriptions, settings->binding_input_count, sizeof(VkVertexInputBindingDescription));
               atkNewVector(&attribute_descriptions, 0, sizeof(VkVertexInputAttributeDescription));
+              size_t total_previous_locations = 0;
               for (size_t i = 0; i < settings->binding_input_count; ++i)
               {
                      VkVertexInputBindingDescription *binding_desc = &atk_get(VkVertexInputBindingDescription, binding_descriptions, i);
@@ -95,10 +96,11 @@ OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *set
                      VkDeviceSize stride = 0;
                      for (size_t j = 0; j < binding_input->input_count; ++j)
                      {
-                            VkVertexInputAttributeDescription attribute = vkfVertexInputAttributeDescription(j, binding_input->binding, ornGetFormatEquivalent(binding_input->inputs[j]), stride);
+                            VkVertexInputAttributeDescription attribute = vkfVertexInputAttributeDescription( total_previous_locations + j, binding_input->binding, ornGetFormatEquivalent(binding_input->inputs[j]), stride);
                             stride += ornGetSizeofFormat(attribute.format);
                             atkVectorPushBack(&attribute_descriptions, &attribute);
                      }
+                     total_previous_locations += binding_input->input_count;
                      binding_desc->stride = stride;
               }
               vertex_input_state.vertexBindingDescriptionCount = settings->binding_input_count;

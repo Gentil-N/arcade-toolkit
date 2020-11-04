@@ -30,6 +30,7 @@ void dskCreateMouse(DskMouse *mouse, const DskMouseSettings *settings)
        atkNewVector(&mouse->m_buttons_released, 0, sizeof(int));
        glfwSetMouseButtonCallback(settings->window->m_handle, mouseButtonCallback);
        atkVectorPushBack(&MOUSES, &mouse);
+       atk_info("mouse created");
 }
 
 void dskDestroyMouse(DskMouse *mouse)
@@ -44,6 +45,7 @@ void dskDestroyMouse(DskMouse *mouse)
        }
        atkDeleteVector(&mouse->m_buttons_released);
        mouse->m_window = NULL;
+       atk_info("mouse destroyed");
 }
 
 bool dskMouseIsMouseButtonPressed(DskMouse *mouse, DskMouseButton button)

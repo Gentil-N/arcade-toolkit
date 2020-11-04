@@ -35,6 +35,7 @@ void dskCreateKeyboard(DskKeyboard *keyboard, const DskKeyboardSettings *setting
        atkNewVector(&keyboard->m_keys_released, 0, sizeof(int));
        glfwSetKeyCallback(settings->window->m_handle, keyCallback);
        atkVectorPushBack(&KEYBOARDS, &keyboard);
+       atk_info("keyboard created");
 }
 
 void dskDestroyKeyboard(DskKeyboard *keyboard)
@@ -49,6 +50,7 @@ void dskDestroyKeyboard(DskKeyboard *keyboard)
        }
        atkDeleteVector(&keyboard->m_keys_released);
        keyboard->m_window = NULL;
+       atk_info("keyboard destroyed");
 }
 
 bool dskKeyboardIsKeyPressed(DskKeyboard *keyboard, DskKey key)

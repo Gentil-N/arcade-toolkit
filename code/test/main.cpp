@@ -274,3 +274,157 @@ int main()
        return 0;
 }
 #endif //CUBE_DEMO
+
+#ifdef INSTANCE_RENDERING_DEMO
+#define WINDOW_TITLE "Instance rendering demo"
+#define ROTATION mth_to_radf(0.5f)
+
+/*const std::vector<float> VERTICES = {
+    -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
+    0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f};
+const size_t VERTICES_SIZE = VERTICES.size() * sizeof(float);
+const std::vector<uint32_t> INDICES = {0, 1, 2, 2, 3, 0};
+const size_t INDICES_SIZE = INDICES.size() * sizeof(uint32_t);*/
+struct Camera
+{
+       mat4f projection;
+       mat4f view;
+} camera;
+const size_t UNIFORM_SIZE = sizeof(float) * 16 * 2;
+const vec3f pos_instance_1 = {2.0f, 0.0f, 0.0f};
+const vec3f pos_instance_2 = {-2.0f, 0.0f, 0.0f};
+
+int main()
+{
+       atk_init(myMessageCallback, NULL, NULL, NULL, NULL);
+       {
+              OrnContextSettings context_settings;
+              context_settings.application_name = "test";
+              context_settings.version_major = 0;
+              context_settings.version_minor = 1;
+              context_settings.version_patch = 0;
+              bool init = ornInitContext(&context_settings);
+              if (!init)
+              {
+                     atk_error(ATK_MSG_INIT_FAILED, "failed to init orion");
+              }
+              init = dskInit();
+              if (!init)
+              {
+                     atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
+              }
+              {
+                     DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
+                     DskMouse mouse({&window});
+
+                     OrnSurfaceSettings surface_settings = {dskGetX11Display(), window.getX11Window()};
+                     OrnSurface *surface = ornCreateSurface(&surface_settings);
+                     OrnGpu *gpu = chooseGpu(surface);
+                     std::cout << "Gpu = " << ornGetGpuName(gpu) << std::endl;
+                     OrnDeviceSettings device_settings = {gpu, surface, WINDOW_WIDTH, WINDOW_HEIGHT, false};
+                     OrnDevice *device = ornCreateDevice(&device_settings);
+                     OrnRendererSettings renderer_settings = {true, ORN_SAMPLE_COUNT_1};
+                     OrnRenderer *renderer = ornCreateRenderer(device, &renderer_settings);
+                     AtkFile vertex_file("../../code/test/shaders/instance_rendering_vert.spv", "r");
+                     AtkFile fragment_file("../../code/test/shaders/instance_rendering_frag.spv", "r");
+                     void *vertex_buffer = new char[vertex_file.size()];
+                     void *fragment_buffer = new char[fragment_file.size()];
+                     vertex_file.read(vertex_buffer, vertex_file.size());
+                     fragment_file.read(fragment_buffer, fragment_file.size());
+                     OrnShaderSettings vertex_shader_settings = {vertex_file.size(), (const uint32_t *)vertex_buffer};
+                     OrnShaderSettings fragment_shader_settings = {fragment_file.size(), (const uint32_t *)fragment_buffer};
+                     OrnShader *vertex_shader = ornCreateShader(device, &vertex_shader_settings);
+                     OrnShader *fragment_shader = ornCreateShader(device, &fragment_shader_settings);
+                     OrnVertexInputType input_types[] = {ORN_VERTEX_INPUT_TYPE_VEC_3, ORN_VERTEX_INPUT_TYPE_VEC_4};
+                     OrnVertexInputType instance_input_types[] = {ORN_VERTEX_INPUT_TYPE_VEC_3};
+                     OrnVertexBindingInput vertex_inputs = {0, ORN_VERTEX_INPUT_RATE_VERTEX, input_types, 2};
+                     OrnVertexBindingInput instance_vertex_inputs = {1, ORN_VERTEX_INPUT_RATE_INSTANCE, instance_input_types, 1};
+                     OrnVertexBindingInput inputs[2] = {vertex_inputs, instance_vertex_inputs};
+                     OrnUniformBinding uniform_binding = {ORN_UNIFORM_TYPE_BUFFER, ORN_VERTEX_SHADER};
+                     OrnUniformSet uniform_set = {&uniform_binding, 1, 1};
+                     OrnPipelineSettings pipeline_settings = {
+                         vertex_shader, fragment_shader, inputs, 2, ORN_CULL_MODE_NONE, ORN_POLYGON_MODE_FILL, &uniform_set, 1, renderer, ORN_SAMPLE_COUNT_1};
+                     OrnPipeline *pipeline = ornCreatePipeline(device, &pipeline_settings);
+                     ornDestroyShader(device, fragment_shader);
+                     ornDestroyShader(device, vertex_shader);
+
+                     AstModel model("../../code/test/models/colored-cube.ply", AST_MDL_LOAD_OPT_COLORS | AST_MDL_LOAD_OPT_ALPHA_COLOR_CHANNEL);
+                     OrnBufferSettings buffer_settings = {model.vertexCount() * sizeof(float) + model.indexCount() * sizeof(uint32_t),
+                                                          ORN_BUFFER_USAGE_VERTEX | ORN_BUFFER_USAGE_INDEX, ORN_BUFFER_HOST_MEMORY};
+                     OrnBuffer *buffer = ornCreateBuffer(device, &buffer_settings);
+                     void *mapped = ornMapBuffer(device, buffer);
+                     memcpy(mapped, model.vertices(), model.vertexCount() * sizeof(float));
+                     memcpy((char *)mapped + model.vertexCount() * sizeof(float), model.indices(), model.indexCount() * sizeof(uint32_t));
+                     ornUnmapBuffer(device, buffer);
+
+                     buffer_settings.usage = ORN_BUFFER_USAGE_VERTEX;
+                     buffer_settings.size = sizeof(float) * 3 * 2;//two instances
+                     OrnBuffer *instance_buffer = ornCreateBuffer(device, &buffer_settings);
+                     mapped = ornMapBuffer(device, instance_buffer);
+                     memcpy(mapped, &pos_instance_1, sizeof(float) * 3);
+                     memcpy((char*)mapped + sizeof(float) * 3, &pos_instance_2, sizeof(float) * 3);
+                     ornUnmapBuffer(device, instance_buffer);
+
+                     camera.projection.perspective(WINDOW_WIDTH, WINDOW_HEIGHT, mth_to_radf(90.0f), 0.1f, 100.0f);
+                     camera.view.identity().rotYFst(mth_to_radf(45.0f)).rotXSec(mth_to_radf(45.0f)).translateSecDim3(0.0f, 0.0f, 10.0f);
+                     
+                     buffer_settings.size = UNIFORM_SIZE;
+                     buffer_settings.usage = ORN_BUFFER_USAGE_UNIFORM;
+                     OrnBuffer *uniform_buffer = ornCreateBuffer(device, &buffer_settings);
+                     mapped = ornMapBuffer(device, uniform_buffer);
+                     memcpy(mapped, camera.projection.m, sizeof(float) * 16);
+                     memcpy((char *)mapped + sizeof(float) * 16, camera.view.m, sizeof(float) * 16);
+                     ornUnmapBuffer(device, uniform_buffer);
+                     OrnUniformSettings uniform_settings = {pipeline, 0};
+                     OrnUniform *uniform = ornCreateUniform(device, &uniform_settings);
+                     ornLinkBufferToUniform(device, uniform, uniform_buffer, 0, UNIFORM_SIZE, 0);
+
+                     OrnCommand *command = ornCreateCommand(device);
+                     ornCmdBegin(command);
+                     ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f);
+                     ornCmdBindVertex(command, buffer, 0, 0);
+                     ornCmdBindVertex(command, instance_buffer, 1, 0);
+                     ornCmdBindIndex(command, buffer, model.vertexCount() * sizeof(float));
+                     ornCmdBindUniform(command, pipeline, uniform, 0);
+                     ornCmdDrawIndexed(command, (uint32_t)model.indexCount(), 2, 0, 0);
+                     ornCmdEndRender(command);
+                     ornCmdEnd(command);
+                     ornBindCommand(device, command);
+
+                     window.show();
+                     while (!window.shouldClose())
+                     {
+                            camera.view.rotYFst(ROTATION);
+                            mapped = ornMapBuffer(device, uniform_buffer);
+                            memcpy((char *)mapped + sizeof(float) * 16, camera.view.m, sizeof(float) * 16);
+                            ornUnmapBuffer(device, uniform_buffer);
+                            ornRenderNextFrame(device);
+                            dskRefresh();
+                            if(mouse.isButtonPressed(DSK_MOUSE_BUTTON_RIGHT))
+                            {
+                                   vec2d vec = mouse.getCursorPos();
+                                   std::cout << vec.x << " " << vec.y << std::endl;
+                            }
+                     }
+
+                     ornUpdateDevice(device, true);
+                     ornDestroyCommand(device, command);
+                     ornDestroyUniform(device, pipeline, uniform);
+                     ornDestroyBuffer(device, uniform_buffer);
+                     ornDestroyBuffer(device, instance_buffer);
+                     ornDestroyBuffer(device, buffer);
+                     ornDestroyPipeline(device, pipeline);
+                     ornDestroyRenderer(device, renderer);
+                     ornDestroyDevice(device);
+                     ornDestroySurface(surface);
+              }
+              dskEnd();
+
+              ornEndContext();
+       }
+       atk_end();
+       return 0;
+}
+#endif //INSTANCE_RENDERING_DEMO
