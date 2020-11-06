@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**"
             ],
-            "defines": ["INSTANCE_RENDERING_DEMO"],
+            "defines": ["CUBE_TEXTURED_DEMO"],
             "compilerPath": "/usr/bin/gcc",
             "intelliSenseMode": "gcc-x64",
             "cStandard": "c17",

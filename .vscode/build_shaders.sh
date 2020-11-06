@@ -12,4 +12,8 @@ echo -----------------
 glslc instance_rendering.vert -o instance_rendering_vert.spv
 echo -----------------
 glslc instance_rendering.frag -o instance_rendering_frag.spv
+echo -----------------
+glslc cube_textured.vert -o cube_textured_vert.spv
+echo -----------------
+glslc cube_textured.frag -o cube_textured_frag.spv
 echo End compilation
