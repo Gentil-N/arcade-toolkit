@@ -66,8 +66,9 @@ extern "C"
 
        ATK_API OrnGpu *const *ornGetGpus(uint32_t *count);
        ATK_API const char *ornGetGpuName(const OrnGpu *gpu);
-       ATK_API bool ornGpuCheckMinimalGraphicsSupport(OrnGpu *gpu, const OrnSurface *surface);//must be called before the device creation
-       ATK_API bool ornGpuCheckDepthTestSupport(OrnGpu *gpu);//must be called if "depth testing" is used
+       ATK_API bool ornGpuCheckMinimalGraphicsSupport(OrnGpu *gpu, const OrnSurface *surface); //must be called before the device creation
+       ATK_API bool ornGpuCheckTextureSupport(OrnGpu *gpu); //must be called before to create textures
+       ATK_API bool ornGpuCheckDepthTestSupport(OrnGpu *gpu); //must be called if "depth testing" is used
        ATK_API bool ornGpuIsDedicated(const OrnGpu *gpu);
        ATK_API bool ornGpuSupportAnisotropy(const OrnGpu *gpu);
        ATK_API bool ornGpuSupportMipmapGeneration(const OrnGpu *gpu);
@@ -103,7 +104,7 @@ extern "C"
        typedef struct OrnShaderSettings
        {
               size_t size;
-              const uint32_t* code;
+              const uint32_t *code;
        } OrnShaderSettings;
 
        typedef struct OrnShader OrnShader;
@@ -229,7 +230,7 @@ extern "C"
        typedef struct OrnTextureSettings
        {
               uint32_t width, height;
-              float max_anisotropy;//set 1.0f to disable anisotropy
+              float max_anisotropy; //set 1.0f to disable anisotropy
               bool enable_mipmaps;
        } OrnTextureSettings;
 
@@ -241,12 +242,12 @@ extern "C"
        ATK_API OrnMemoryOperation *ornCreateMemoryOperation(OrnDevice *device);
        ATK_API void ornDestroyMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operation);
        ATK_API void ornBeginMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operation);
-       ATK_API void ornCopyBufferToBuffer(OrnDevice *device, OrnMemoryOperation *memory_operation, OrnBuffer *src_buffer, OrnBuffer *dst_buffer, size_t src_offset, 
-              size_t dst_offset, size_t size);
+       ATK_API void ornCopyBufferToBuffer(OrnDevice *device, OrnMemoryOperation *memory_operation, OrnBuffer *src_buffer, OrnBuffer *dst_buffer, size_t src_offset,
+                                          size_t dst_offset, size_t size);
        ATK_API void ornPrepareTexture(OrnDevice *device, OrnMemoryOperation *memory_operation, OrnTexture *texture);
        ATK_API void ornCopyBufferToTexture(
-              OrnDevice *device, OrnMemoryOperation *memory_operation, OrnBuffer *buffer, size_t buffer_offset, OrnTexture *texture, uint32_t width, uint32_t height, uint32_t width_offset, 
-              uint32_t height_offset);
+           OrnDevice *device, OrnMemoryOperation *memory_operation, OrnBuffer *buffer, size_t buffer_offset, OrnTexture *texture, uint32_t width, uint32_t height, uint32_t width_offset,
+           uint32_t height_offset);
        ATK_API void ornEndTexture(OrnDevice *device, OrnMemoryOperation *memory_operation, OrnTexture *texture);
        ATK_API void ornSendMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operation);
        ATK_API void ornWaitMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operation);
@@ -270,7 +271,7 @@ extern "C"
        ATK_API void ornDestroyCommand(OrnDevice *device, OrnCommand *command);
        ATK_API void ornCmdBegin(OrnCommand *command);
        ATK_API void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *pipeline, float clear_r, float clear_g, float clear_b);
-       ATK_API void ornCmdBindUniform(OrnCommand *command, OrnPipeline *pipeline, OrnUniform *uniform, uint32_t set);
+       ATK_API void ornCmdBindUniform(OrnCommand *command, OrnPipeline *pipeline, OrnUniform *uniform);
        ATK_API void ornCmdBindVertex(OrnCommand *command, OrnBuffer *buffer, uint32_t binding, size_t offset);
        ATK_API void ornCmdBindIndex(OrnCommand *command, OrnBuffer *buffer, size_t offset);
        ATK_API void ornCmdDraw(OrnCommand *command, uint32_t vertex_count, uint32_t instance_count, uint32_t first_vertex, uint32_t first_instance);

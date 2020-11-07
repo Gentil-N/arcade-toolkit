@@ -9,6 +9,8 @@ OrnUniform *ornCreateUniform(OrnDevice *device, const OrnUniformSettings *settin
            settings->pipeline->descriptor_pool, 1, &atk_get(VkDescriptorSetLayout, settings->pipeline->descriptor_set_layouts, settings->set));
        orn_assert_vk(device->tbl.vkAllocateDescriptorSets(device->handle, &descriptor_alloc_info, &uniform->descriptor_set));
 
+       uniform->set = settings->set;
+
        atk_info("uniform created");
        return uniform;
 }

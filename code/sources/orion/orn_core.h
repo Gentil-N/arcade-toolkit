@@ -150,7 +150,10 @@ extern "C"
               struct
               {
                      VkFormat format;
+                     VkImageTiling tiling;
+                     VkImageUsageFlags usage;
                      VkFormatProperties properties;
+                     VkImageFormatProperties image_properties;
               } texture;
        };
 
@@ -293,6 +296,7 @@ extern "C"
 
        struct OrnUniform
        {
+              uint32_t set;
               VkDescriptorSet descriptor_set;
        };
 

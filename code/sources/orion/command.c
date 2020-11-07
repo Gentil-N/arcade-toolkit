@@ -50,12 +50,12 @@ void ornCmdBeginRender(OrnCommand *command, OrnRenderer *renderer, OrnPipeline *
        }
 }
 
-void ornCmdBindUniform(OrnCommand *command, OrnPipeline *pipeline, OrnUniform *uniform, uint32_t set)
+void ornCmdBindUniform(OrnCommand *command, OrnPipeline *pipeline, OrnUniform *uniform)
 {
        for (size_t i = 0; i < command->command_buffers.m_count; ++i)
        {
               VkCommandBuffer curr_cmd_buf = atk_get(VkCommandBuffer, command->command_buffers, i);
-              command->dtbl->vkCmdBindDescriptorSets(curr_cmd_buf, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, set, 1, &uniform->descriptor_set, 0, NULL);
+              command->dtbl->vkCmdBindDescriptorSets(curr_cmd_buf, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, uniform->set, 1, &uniform->descriptor_set, 0, NULL);
        }
 }
 

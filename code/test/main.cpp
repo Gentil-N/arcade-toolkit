@@ -35,7 +35,7 @@ OrnGpu *chooseGpu(const OrnSurface *surface)
        for (size_t i = 0; i < gpus_count; i++)
        {
               std::cout << ornGetGpuName(gpus[i]) << std::endl;
-              if (ornGpuCheckMinimalGraphicsSupport(gpus[i], surface) && ornGpuCheckDepthTestSupport(gpus[i]))
+              if (ornGpuCheckMinimalGraphicsSupport(gpus[i], surface) && ornGpuCheckDepthTestSupport(gpus[i]) && ornGpuCheckTextureSupport(gpus[i]))
               {
                      suitable_gpus.push_back(gpus[i]);
               }
@@ -107,7 +107,7 @@ int main()
                      ornDestroyShader(device, vertex_shader);
                      OrnCommand *command = ornCreateCommand(device);
                      ornCmdBegin(command);
-                     ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f, false);
+                     ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f);
                      ornCmdDraw(command, 3, 1, 0, 0);
                      ornCmdEndRender(command);
                      ornCmdEnd(command);
@@ -234,7 +234,7 @@ int main()
                      ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f);
                      ornCmdBindVertex(command, buffer, 0, 0);
                      ornCmdBindIndex(command, buffer, model.vertexCount() * sizeof(float));
-                     ornCmdBindUniform(command, pipeline, uniform, 0);
+                     ornCmdBindUniform(command, pipeline, uniform);
                      ornCmdDrawIndexed(command, (uint32_t)model.indexCount(), 1, 0, 0);
                      ornCmdEndRender(command);
                      ornCmdEnd(command);
@@ -387,7 +387,7 @@ int main()
                      ornCmdBindVertex(command, buffer, 0, 0);
                      ornCmdBindVertex(command, instance_buffer, 1, 0);
                      ornCmdBindIndex(command, buffer, model.vertexCount() * sizeof(float));
-                     ornCmdBindUniform(command, pipeline, uniform, 0);
+                     ornCmdBindUniform(command, pipeline, uniform);
                      ornCmdDrawIndexed(command, (uint32_t)model.indexCount(), 2, 0, 0);
                      ornCmdEndRender(command);
                      ornCmdEnd(command);
@@ -544,7 +544,7 @@ int main()
                      ornCmdBeginRender(command, renderer, pipeline, 0.0f, 0.0f, 0.0f);
                      ornCmdBindVertex(command, buffer, 0, 0);
                      ornCmdBindIndex(command, buffer, model.vertexCount() * sizeof(float));
-                     ornCmdBindUniform(command, pipeline, uniform, 0);
+                     ornCmdBindUniform(command, pipeline, uniform);
                      ornCmdDrawIndexed(command, (uint32_t)model.indexCount(), 1, 0, 0);
                      ornCmdEndRender(command);
                      ornCmdEnd(command);

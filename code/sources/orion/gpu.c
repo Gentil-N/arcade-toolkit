@@ -18,8 +18,6 @@ void ornListGpus(AtkArray *gpus)
               curr_gpu->handle = curr_physical_device;
               curr_gpu->surface_formats.m_data = NULL; //to check alloc
               CONTEXT.itbl.vkGetPhysicalDeviceFeatures(curr_gpu->handle, &curr_gpu->features);
-              curr_gpu->texture.format = VK_FORMAT_R8G8B8A8_UNORM;
-              CONTEXT.itbl.vkGetPhysicalDeviceFormatProperties(curr_gpu->handle, curr_gpu->texture.format, &curr_gpu->texture.properties);
               CONTEXT.itbl.vkGetPhysicalDeviceProperties(curr_physical_device, &curr_gpu->properties);
               {
                      uint32_t count = 0;
@@ -139,6 +137,17 @@ bool ornGpuCheckMinimalGraphicsSupport(OrnGpu *gpu, const OrnSurface *surface)
        }
 
        return suitable_device && gpu->surface_formats.m_count > 0 && gpu->present_modes.m_count > 0;
+}
+
+bool ornGpuCheckTextureSupport(OrnGpu *gpu)
+{
+       gpu->texture.format = VK_FORMAT_R8G8B8A8_SRGB;
+       CONTEXT.itbl.vkGetPhysicalDeviceFormatProperties(gpu->handle, gpu->texture.format, &gpu->texture.properties);
+       gpu->texture.tiling = VK_IMAGE_TILING_OPTIMAL;
+       gpu->texture.usage = VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+       VkResult result = CONTEXT.itbl.vkGetPhysicalDeviceImageFormatProperties(
+              gpu->handle, gpu->texture.format, VK_IMAGE_TYPE_2D, gpu->texture.tiling, gpu->texture.usage, 0, &gpu->texture.image_properties);
+       return result == VK_SUCCESS;
 }
 
 const VkFormat DEPTH_FORMAT = VK_FORMAT_D32_SFLOAT;
