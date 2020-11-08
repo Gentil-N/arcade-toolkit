@@ -14,8 +14,11 @@ extern "C"
 #endif //ATK_PLATFORM_LINUX
 #include <GLFW/glfw3native.h>
 
+#define DSK_MAX_JOYSTICKS 16
+
        ATK_GLOBAL AtkVector KEYBOARDS;
        ATK_GLOBAL AtkVector MOUSES;
+       ATK_GLOBAL AtkArray JOYSTICKS;
 
 #ifdef __cplusplus
 }

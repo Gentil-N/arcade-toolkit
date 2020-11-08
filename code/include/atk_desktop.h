@@ -204,14 +204,36 @@ extern "C"
        ATK_API bool dskMouseIsMouseButtonReleased(DskMouse *mouse, DskMouseButton button);
        ATK_API AtkPack2d dskMouseGetCursorPos(DskMouse *mouse);
 
+       typedef enum DskJoystickHatState
+       {
+              DSK_JOY_HAT_CENTERED = 0,
+              DSK_JOY_HAT_UP = 1,
+              DSK_JOY_HAT_RIGHT = 2,
+              DSK_JOY_HAT_DOWN = 4,
+              DSK_JOY_HAT_LEFT = 8,
+              DSK_JOY_HAT_RIGHT_UP = DSK_JOY_HAT_RIGHT | DSK_JOY_HAT_UP,
+              DSK_JOY_HAT_RIGHT_DOWN = DSK_JOY_HAT_RIGHT | DSK_JOY_HAT_DOWN,
+              DSK_JOY_HAT_LEFT_UP = DSK_JOY_HAT_LEFT | DSK_JOY_HAT_UP,
+              DSK_JOY_HAT_LEFT_DOWN = DSK_JOY_HAT_LEFT | DSK_JOY_HAT_DOWN
+       } DskJoystickHatState;
+
+       typedef struct DskJoystick DskJoystick;
+
+       ATK_API DskJoystick *const *dskEnumJoysticks(int *count);
+       ATK_API const char *dskJoystickGetName(DskJoystick *joystick);
+       ATK_API void dskJoystickUpdate(DskJoystick *joystick);
+       ATK_API float dskJoystickGetAxeState(DskJoystick *joystick, int axe);
+       ATK_API bool dskJoystickIsButtonPressed(DskJoystick *joystick, int button);
+       ATK_API DskJoystickHatState dskJoystickGetHatState(DskJoystick *joystick, int hat);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus
 
 struct DskWindow
 {
-       void *m_handle ATK_HIDE_CPP(= nullptr);
-       int m_width ATK_HIDE_CPP(= 0), m_height ATK_HIDE_CPP(= 0);
+       void *m_handle;
+       int m_width, m_height;
 #ifdef __cplusplus
        DskWindow() : m_handle(nullptr), m_width(0), m_height(0)
        {
@@ -291,8 +313,8 @@ struct DskWindow
 
 struct DskKeyboard
 {
-       DskWindow *m_window ATK_HIDE_CPP(= nullptr);
-       int m_keys_states[DSK_MAX_KEYS] ATK_HIDE_CPP(= {DSK_STATE_NOP});
+       DskWindow *m_window;
+       int m_keys_states[DSK_MAX_KEYS];
        AtkVector m_keys_released;
 #ifdef __cplusplus
        DskKeyboard() : m_window(nullptr), m_keys_states{DSK_STATE_NOP}
@@ -302,7 +324,7 @@ struct DskKeyboard
        {
               dskCreateKeyboard(this, &settings);
        }
-       DskKeyboard(const DskKeyboard &keyboard) = delete;//only once keyboard
+       DskKeyboard(const DskKeyboard &keyboard) = delete; //only once keyboard
        DskKeyboard(DskKeyboard &&keyboard)
        {
               m_window = keyboard.m_window;
@@ -350,8 +372,8 @@ struct DskKeyboard
 
 struct DskMouse
 {
-       DskWindow *m_window ATK_HIDE_CPP(= nullptr);
-       int m_buttons_states[DSK_MAX_MOUSE_BUTTONS] ATK_HIDE_CPP(= {DSK_STATE_NOP});
+       DskWindow *m_window;
+       int m_buttons_states[DSK_MAX_MOUSE_BUTTONS];
        AtkVector m_buttons_released;
 #ifdef __cplusplus
        DskMouse() : m_window(nullptr), m_buttons_states{DSK_STATE_NOP}
@@ -361,7 +383,7 @@ struct DskMouse
        {
               dskCreateMouse(this, &settings);
        }
-       DskMouse(const DskMouse &mouse) = delete;//only once mouse
+       DskMouse(const DskMouse &mouse) = delete; //only once mouse
        DskMouse(DskMouse &&mouse)
        {
               m_window = mouse.m_window;
@@ -375,7 +397,7 @@ struct DskMouse
                      return;
               dskDestroyMouse(this);
        }
-       DskMouse &operator=(const DskMouse &mouse) = delete;//only once mouse
+       DskMouse &operator=(const DskMouse &mouse) = delete; //only once mouse
        DskMouse &operator=(DskMouse &&mouse)
        {
               m_window = mouse.m_window;
@@ -405,6 +427,65 @@ struct DskMouse
        AtkPack2d getCursorPos()
        {
               return dskMouseGetCursorPos(this);
+       }
+#endif //__cplusplus
+};
+
+struct DskJoystick
+{
+       bool m_connected;
+       const int m_id;
+       int m_axe_count;
+       const float *m_axes;
+       int m_button_count;
+       const unsigned char *m_buttons;
+       int m_hat_count;
+       const unsigned char *m_hats;
+#ifdef __cplusplus
+       DskJoystick() = delete; //Just a pointer class
+       DskJoystick(const DskJoystick &joystick) = delete;
+       DskJoystick(DskJoystick &&joystick) = delete;
+       DskJoystick& operator=(const DskJoystick &joystick) = delete;
+       DskJoystick& operator=(DskJoystick &&joystick) = delete;
+       const char *getName()
+       {
+              return dskJoystickGetName(this);
+       }
+       void update()
+       {
+              dskJoystickUpdate(this);
+       }
+       float getAxeState(int axe)
+       {
+              return dskJoystickGetAxeState(this, axe);
+       }
+       bool isButtonPressed(int button)
+       {
+              return dskJoystickIsButtonPressed(this, button);
+       }
+       DskJoystickHatState getHatState(int hat)
+       {
+              return dskJoystickGetHatState(this, hat);
+       }
+       bool isConnected() const noexcept
+       {
+              return m_connected;
+       }
+       int id() const noexcept
+       {
+              return m_id;
+       }
+       int axeCount() const noexcept
+       {
+              return m_axe_count;
+       }
+       int buttonCount() const noexcept
+       {
+              return m_button_count;
+       }
+       int hatCount() const noexcept
+       {
+              return m_hat_count;
        }
 #endif //__cplusplus
 };

@@ -98,7 +98,8 @@ set(SRC_FILES ${SRC_FILES}
               ${SRC_DIR}/desktop/global.c
               ${SRC_DIR}/desktop/window.c
               ${SRC_DIR}/desktop/keyboard.c
-              ${SRC_DIR}/desktop/mouse.c)
+              ${SRC_DIR}/desktop/mouse.c
+              ${SRC_DIR}/desktop/joystick.c)
 endif()
 #-
 if(${ATK_MOD_MATH} MATCHES ON)
