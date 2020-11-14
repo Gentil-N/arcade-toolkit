@@ -6,6 +6,7 @@
 #include "../include/atk_desktop.h"
 #define ATK_MTH_NO_CONFUSION
 #include "../include/atk_math.h"
+#include "../include/atk_audio.h"
 
 void myMessageCallback(AtkMsgType code, const char *description, const char *file, size_t line)
 {
@@ -430,7 +431,7 @@ int main()
 #endif //INSTANCE_RENDERING_DEMO
 
 #ifdef CUBE_TEXTURED_DEMO
-#define WINDOW_TITLE "Instance rendering demo"
+#define WINDOW_TITLE "Cube textured demo"
 #define ROTATION mth_to_radf(0.5f)
 
 struct Camera
@@ -459,8 +460,24 @@ int main()
               {
                      atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
               }
+              init = adiInit();
+              if(!init)
+              {
+                     atk_error(ATK_MSG_INIT_FAILED, "failed to init audio");
+              }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
+                     AdiSoundDataSettings sound_data_settings = {"../../code/test/sounds/sound-test.mp3"};
+                     AdiSoundData sound_data;
+                     if(!adiLoadSoundData(&sound_data, &sound_data_settings))
+                     {
+                            atk_error(ATK_MSG_PROC_FAILED, "failed to load sound data");
+                     }
+                     AdiSource source;
+                     adiCreateSource(&source);
+                     adiSourceBindSoundData(&source, &sound_data);
+                     adiSourcePlay(&source);
+                     //adiSourceEnableLooping(&source);
 
                      OrnSurfaceSettings surface_settings = {dskGetX11Display(), window.getX11Window()};
                      OrnSurface *surface = ornCreateSurface(&surface_settings);
@@ -571,9 +588,13 @@ int main()
                      ornDestroyRenderer(device, renderer);
                      ornDestroyDevice(device);
                      ornDestroySurface(surface);
-              }
-              dskEnd();
 
+                     adiSourceStop(&source);
+                     adiDestroySource(&source);
+                     adiFreeSoundData(&sound_data);
+              }
+              adiEnd();
+              dskEnd();
               ornEndContext();
        }
        atk_end();

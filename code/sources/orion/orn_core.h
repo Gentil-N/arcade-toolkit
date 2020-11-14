@@ -1,13 +1,13 @@
 #ifndef __ORN_CORE_H__
 #define __ORN_CORE_H__
 
+#include "../../include/atk.h"
+#include "../../include/atk_orion.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif //__cplusplus
-
-#include "../../include/atk.h"
-#include "../../include/atk_orion.h"
 
        /**
         * Common Headers

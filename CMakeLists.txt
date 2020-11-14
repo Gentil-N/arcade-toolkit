@@ -18,6 +18,7 @@ set(ATK_MOD_ORION ON)
 set(ATK_MOD_ASSET ON)
 set(ATK_MOD_DESKTOP ON)
 set(ATK_MOD_MATH ON)
+set(ATK_MOD_AUDIO ON)
 set(CMAKE_BUILD_TYPE Debug)
 set(SRC_FILES ${SRC_FILES} ${PROJECT_SOURCE_DIR}/code/test/main.cpp)
 if(${ATK_TRIANGLE_DEMO} MATCHES ON)
@@ -108,6 +109,20 @@ set(SRC_FILES ${SRC_FILES}
               ${SRC_DIR}/math/mth_core.c
               ${SRC_DIR}/math/mat.cpp
               ${SRC_DIR}/math/vec.cpp)
+endif()
+#-
+if(${ATK_MOD_AUDIO} MATCHES ON)
+message(STATUS "Audio module enabled")
+find_library(OPENAL_LIB openal)
+if(NOT OPENAL_LIB)
+       message(FATAL_ERROR "openal library not found (required for audio module)")
+endif()
+message(STATUS "All libraries required for audio module are available")
+set(REQUIRED_LIBS ${REQUIRED_LIBS} openal)
+set(SRC_FILES ${SRC_FILES} 
+              ${SRC_DIR}/audio/adi_core.c
+              ${SRC_DIR}/audio/sound_data.c
+              ${SRC_DIR}/audio/source.c)
 endif()
 #----------------
 

@@ -1,11 +1,6 @@
 #ifndef __DSK_CORE_H__
 #define __DSK_CORE_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif //__cplusplus
-
 #include "../../include/atk_desktop.h"
 
 #include <GLFW/glfw3.h>
@@ -13,6 +8,11 @@ extern "C"
 #define GLFW_EXPOSE_NATIVE_X11
 #endif //ATK_PLATFORM_LINUX
 #include <GLFW/glfw3native.h>
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif //__cplusplus
 
 #define DSK_MAX_JOYSTICKS 16
 
