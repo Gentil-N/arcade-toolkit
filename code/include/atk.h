@@ -15,6 +15,8 @@ extern "C"
         *  Utils
         */
 #define ATK_COMMA ,
+#define atk_max(a, b) (a > b ? a : b)
+#define atk_min(a, b) (a > b ? b : a)
 
        /**
         * Compilation States
@@ -127,45 +129,6 @@ extern "C"
 #define atk_assert(expr)
 #define atk_dassert(expr, type, description)
 #endif //ATK_DEBUG
-
-       /**
-        * Pack
-        */
-#define ATK_PACK(type, t, n, vars)  \
-       typedef struct AtkPack##n##t \
-       {                            \
-              type vars;            \
-       } AtkPack##n##t
-
-       ATK_PACK(int, i, 2, x ATK_COMMA y);
-       ATK_PACK(float, f, 2, x ATK_COMMA y);
-       ATK_PACK(double, d, 2, x ATK_COMMA y);
-
-       ATK_PACK(int, i, 3, x ATK_COMMA y ATK_COMMA z);
-       ATK_PACK(float, f, 3, x ATK_COMMA y ATK_COMMA z);
-       ATK_PACK(double, d, 3, x ATK_COMMA y ATK_COMMA z);
-
-       ATK_PACK(int, i, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
-       ATK_PACK(float, f, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
-       ATK_PACK(double, d, 4, x ATK_COMMA y ATK_COMMA z ATK_COMMA w);
-
-#define ATK_PACKX(type, t, n)             \
-       typedef struct AtkPack##n##x##n##t \
-       {                                  \
-              type m[n][n];               \
-       } AtkPack##n##x##n##t
-
-       ATK_PACKX(int, i, 2);
-       ATK_PACKX(float, f, 2);
-       ATK_PACKX(double, d, 2);
-
-       ATK_PACKX(int, i, 3);
-       ATK_PACKX(float, f, 3);
-       ATK_PACKX(double, d, 3);
-
-       ATK_PACKX(int, i, 4);
-       ATK_PACKX(float, f, 4);
-       ATK_PACKX(double, d, 4);
 
        /**
         * Vector

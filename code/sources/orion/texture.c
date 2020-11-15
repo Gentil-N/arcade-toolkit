@@ -7,7 +7,7 @@ OrnTexture *ornCreateTexture(OrnDevice *device, const OrnTextureSettings *settin
 
     texture->width = settings->width;
     texture->height = settings->height;
-    texture->mip_level_count = settings->enable_mipmaps ? ORN_MIN((uint32_t)floorf(log2f((float)ORN_MAX(settings->width, settings->height))) + 1, device->gpu->texture.image_properties.maxMipLevels) : 1;
+    texture->mip_level_count = settings->enable_mipmaps ? atk_min((uint32_t)floorf(log2f((float)atk_max(settings->width, settings->height))) + 1, device->gpu->texture.image_properties.maxMipLevels) : 1;
     texture->image = ornCreateImage(
         device->handle, &device->tbl, device->memory_allocator, settings->width, settings->height, device->gpu->texture.format, device->gpu->texture.tiling,
         device->gpu->texture.usage, texture->mip_level_count, VK_SAMPLE_COUNT_1_BIT);

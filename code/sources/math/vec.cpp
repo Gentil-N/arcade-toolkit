@@ -16,11 +16,6 @@
               x = vec.x;                                             \
               y = vec.y;                                             \
        }                                                             \
-       MthVec2##t::MthVec2##t(const AtkPack2##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-       }\
        bool MthVec2##t::operator==(const MthVec2##t &vec) const      \
        {                                                             \
               return x == vec.x && y == vec.y;                       \
@@ -29,12 +24,6 @@
        {                                                             \
               return x != vec.x || y != vec.y;                       \
        }                                                             \
-       MthVec2##t &MthVec2##t::operator=(const AtkPack2##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-              return *this;\
-       }\
        MthVec2##t &MthVec2##t::operator+=(const MthVec2##t &vec)     \
        {                                                             \
               x += vec.x;                                            \
@@ -91,7 +80,7 @@
        }                                                             \
        type MthVec2##t::len() const                                  \
        {                                                             \
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y);      \
+              return (type)1.0 / (type)mthRsqrtssf(x * x + y * y);      \
        }                                                             \
        type MthVec2##t::lenSq() const                                \
        {                                                             \
@@ -141,12 +130,6 @@
               y = vec.y;                                                                              \
               z = vec.z;                                                                              \
        }                                                                                              \
-       MthVec3##t::MthVec3##t(const AtkPack3##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-              z = pack.z;\
-       }\
        bool MthVec3##t::operator==(const MthVec3##t &vec) const                                       \
        {                                                                                              \
               return x == vec.x && y == vec.y && z == vec.z;                                          \
@@ -155,13 +138,6 @@
        {                                                                                              \
               return x != vec.x || y != vec.y || z != vec.z;                                          \
        }                                                                                              \
-       MthVec3##t &MthVec3##t::operator=(const AtkPack3##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-              z = pack.z;\
-              return *this;\
-       }\
        MthVec3##t &MthVec3##t::operator+=(const MthVec3##t &vec)                                      \
        {                                                                                              \
               x += vec.x;                                                                             \
@@ -236,7 +212,7 @@
        }                                                                                              \
        type MthVec3##t::len() const                                                                   \
        {                                                                                              \
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z);                               \
+              return (type)1.0 / (type)mthRsqrtssf(x * x + y * y + z * z);                               \
        }                                                                                              \
        type MthVec3##t::lenSq() const                                                                 \
        {                                                                                              \
@@ -304,21 +280,6 @@
               z = vec.z;                                                         \
               w = vec.w;                                                         \
        }                                                                         \
-       MthVec4##t::MthVec4##t(const AtkPack4##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-              z = pack.z;\
-              w = pack.w;\
-       }\
-       MthVec4##t &MthVec4##t::operator=(const AtkPack4##t &pack)\
-       {\
-              x = pack.x;\
-              y = pack.y;\
-              z = pack.z;\
-              w = pack.w;\
-              return *this;\
-       }\
        bool MthVec4##t::operator==(const MthVec4##t &vec) const                  \
        {                                                                         \
               return x == vec.x && y == vec.y && z == vec.z && w == vec.w;       \
@@ -405,7 +366,7 @@
        }                                                                         \
        type MthVec4##t::len() const                                              \
        {                                                                         \
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z + w * w);  \
+              return (type)1.0 / (type)mthRsqrtssf(x * x + y * y + z * z + w * w);  \
        }                                                                         \
        type MthVec4##t::lenSq() const                                            \
        {                                                                         \
@@ -413,7 +374,7 @@
        }                                                                         \
        type MthVec4##t::lenDim3() const                                          \
        {                                                                         \
-              return (type)1.0 / (type)rsqrtssf(x * x + y * y + z * z);          \
+              return (type)1.0 / (type)mthRsqrtssf(x * x + y * y + z * z);          \
        }                                                                         \
        type MthVec4##t::lenSqDim3() const                                        \
        {                                                                         \

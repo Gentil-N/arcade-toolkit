@@ -108,7 +108,8 @@ message(STATUS "Math module enabled")
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/math/mth_core.c
               ${SRC_DIR}/math/mat.cpp
-              ${SRC_DIR}/math/vec.cpp)
+              ${SRC_DIR}/math/vec.cpp
+              ${SRC_DIR}/math/collision.c)
 endif()
 #-
 if(${ATK_MOD_AUDIO} MATCHES ON)
@@ -122,7 +123,8 @@ set(REQUIRED_LIBS ${REQUIRED_LIBS} openal)
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/audio/adi_core.c
               ${SRC_DIR}/audio/sound_data.c
-              ${SRC_DIR}/audio/source.c)
+              ${SRC_DIR}/audio/source.c
+              ${SRC_DIR}/audio/listener.c)
 endif()
 #----------------
 

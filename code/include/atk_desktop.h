@@ -202,7 +202,7 @@ extern "C"
        ATK_API void dskDestroyMouse(DskMouse *mouse);
        ATK_API bool dskMouseIsMouseButtonPressed(DskMouse *mouse, DskMouseButton button);
        ATK_API bool dskMouseIsMouseButtonReleased(DskMouse *mouse, DskMouseButton button);
-       ATK_API AtkPack2d dskMouseGetCursorPos(DskMouse *mouse);
+       ATK_API void dskMouseGetCursorPos(DskMouse *mouse, double *x, double *y);
 
        typedef enum DskJoystickHatState
        {
@@ -424,9 +424,9 @@ struct DskMouse
        {
               return dskMouseIsMouseButtonReleased(this, button);
        }
-       AtkPack2d getCursorPos()
+       void getCursorPos(double &x, double &y)
        {
-              return dskMouseGetCursorPos(this);
+              return dskMouseGetCursorPos(this, &x, &y);
        }
 #endif //__cplusplus
 };

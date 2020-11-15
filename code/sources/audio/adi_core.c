@@ -33,6 +33,11 @@ void adiEnd()
        alcCloseDevice(Device);
        atk_info("audio module ended");
 }
+
+void adiSetAttenuation(AdiAttenuationType attenuation_type)
+{
+       alDistanceModel(attenuation_type);
+}
 /*
 ALuint buffer;
 ALuint source;

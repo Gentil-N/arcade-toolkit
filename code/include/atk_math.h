@@ -5,44 +5,20 @@
 #include "atk.h"
 #endif //__ATK_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif //__cplusplus
-
 #include <math.h>
-
-#define MTH_PI_f 3.141592653f
-#define MTH_PI_d 3.141592653589793238
-#define MTH_PI_HALF_f 1.570796327f
-#define MTH_PI_HALF_d 1.570796326794896619
-#define MTH_PI_2_f 6.283185307f
-#define MTH_PI_2_d 6.283185307179586477
-
-#define mth_to_radf(deg) (deg * MTH_PI_f / 180.0f)
-#define mth_to_radd(deg) (deg * MTH_PI_d / 180.0)
-#define mth_to_degf(rad) (rad * 180.0f / MTH_PI_f)
-#define mth_to_degd(rad) (rad * 180.0 / MTH_PI_d)
-
-       ATK_API float rsqrtssf(float val); //rsqrtss -> float
-
-#ifdef __cplusplus
-}
-#endif //__cplusplus
 
 #ifdef __cplusplus
 
 #define MTH_VEC2(type, t)                                             \
-       struct MthVec2##t : public AtkPack2##t                         \
+       struct MthVec2##t                                              \
        {                                                              \
+              type x, y;                                              \
               MthVec2##t();                                           \
               MthVec2##t(type _x, type _y);                           \
               MthVec2##t(const MthVec2##t &vec);                      \
-              MthVec2##t(const AtkPack2##t &pack);\
               bool operator==(const MthVec2##t &vec) const;           \
               bool operator!=(const MthVec2##t &vec) const;           \
               MthVec2##t &operator=(const MthVec2##t &vec) = default; \
-              MthVec2##t &operator=(const AtkPack2##t &pack);\
               MthVec2##t &operator+=(const MthVec2##t &vec);          \
               MthVec2##t operator+(const MthVec2##t &vec) const;      \
               MthVec2##t &operator-=(const MthVec2##t &vec);          \
@@ -62,16 +38,15 @@ extern "C"
        };
 
 #define MTH_VEC3(type, t)                                             \
-       struct MthVec3##t : public AtkPack3##t                         \
+       struct MthVec3##t                                              \
        {                                                              \
+              type x, y, z;                                           \
               MthVec3##t();                                           \
               MthVec3##t(type _x, type _y, type _z);                  \
               MthVec3##t(const MthVec3##t &vec);                      \
-              MthVec3##t(const AtkPack3##t &pack);\
               bool operator==(const MthVec3##t &vec) const;           \
               bool operator!=(const MthVec3##t &vec) const;           \
               MthVec3##t &operator=(const MthVec3##t &vec) = default; \
-              MthVec3##t &operator=(const AtkPack3##t &pack);\
               MthVec3##t &operator+=(const MthVec3##t &vec);          \
               MthVec3##t operator+(const MthVec3##t &vec) const;      \
               MthVec3##t &operator-=(const MthVec3##t &vec);          \
@@ -94,16 +69,15 @@ extern "C"
        };
 
 #define MTH_VEC4(type, t)                                             \
-       struct MthVec4##t : public AtkPack4##t                         \
+       struct MthVec4##t                                              \
        {                                                              \
+              type x, y, z, w;                                        \
               MthVec4##t();                                           \
               MthVec4##t(type _x, type _y, type _z, type _w);         \
               MthVec4##t(const MthVec4##t &vec);                      \
-              MthVec4##t(const AtkPack4##t &pack);\
               bool operator==(const MthVec4##t &vec) const;           \
               bool operator!=(const MthVec4##t &vec) const;           \
               MthVec4##t &operator=(const MthVec4##t &vec) = default; \
-              MthVec4##t &operator=(const AtkPack4##t &pack);\
               MthVec4##t &operator+=(const MthVec4##t &vec);          \
               MthVec4##t operator+(const MthVec4##t &vec) const;      \
               MthVec4##t &operator-=(const MthVec4##t &vec);          \
@@ -129,16 +103,15 @@ extern "C"
        };
 
 #define MTH_MAT2(type, t)                                             \
-       struct MthMat2##t : public AtkPack2x2##t                       \
+       struct MthMat2##t                                              \
        {                                                              \
+              type m[2][2];                                           \
               MthMat2##t();                                           \
               MthMat2##t(type m00, type m01, type m10, type m11);     \
               MthMat2##t(const MthMat2##t &mat);                      \
-              MthMat2##t(const AtkPack2x2##t &pack);\
               bool operator==(const MthMat2##t &mat) const;           \
               bool operator!=(const MthMat2##t &mat) const;           \
               MthMat2##t &operator=(const MthMat2##t &mat) = default; \
-              MthMat2##t &operator=(const AtkPack2x2##t &pack);\
               MthMat2##t &operator+=(const MthMat2##t &mat);          \
               MthMat2##t operator+(const MthMat2##t &mat) const;      \
               MthMat2##t &operator-=(const MthMat2##t &mat);          \
@@ -158,16 +131,15 @@ extern "C"
        };
 
 #define MTH_MAT3(type, t)                                                                                           \
-       struct MthMat3##t : public AtkPack3x3##t                                                                     \
+       struct MthMat3##t                                                                                            \
        {                                                                                                            \
+              type m[3][3];                                                                                         \
               MthMat3##t();                                                                                         \
               MthMat3##t(type m00, type m01, type m02, type m10, type m11, type m12, type m20, type m21, type m22); \
               MthMat3##t(const MthMat3##t &mat);                                                                    \
-              MthMat3##t(const AtkPack3x3##t &pack);\
-              bool operator==(const MthMat2##t &mat) const;                                                         \
-              bool operator!=(const MthMat2##t &mat) const;                                                         \
+              bool operator==(const MthMat3##t &mat) const;                                                         \
+              bool operator!=(const MthMat3##t &mat) const;                                                         \
               MthMat3##t &operator=(const MthMat3##t &mat) = default;                                               \
-              MthMat3##t &operator=(const AtkPack3x3##t &pack);\
               MthMat3##t &operator+=(const MthMat3##t &mat);                                                        \
               MthMat3##t operator+(const MthMat3##t &mat) const;                                                    \
               MthMat3##t &operator-=(const MthMat3##t &mat);                                                        \
@@ -191,19 +163,18 @@ extern "C"
        };
 
 #define MTH_MAT4(type, t)                                                                        \
-       struct MthMat4##t : public AtkPack4x4##t                                                  \
+       struct MthMat4##t                                                                         \
        {                                                                                         \
+              type m[4][4];                                                                      \
               MthMat4##t();                                                                      \
               MthMat4##t(type m00, type m01, type m02, type m03,                                 \
                          type m10, type m11, type m12, type m13,                                 \
                          type m20, type m21, type m22, type m23,                                 \
                          type m30, type m31, type m32, type m33);                                \
-              MthMat4##t(const AtkPack4x4##t &pack);\
               MthMat4##t(const MthMat4##t &mat);                                                 \
-              bool operator==(const MthMat2##t &mat) const;                                      \
-              bool operator!=(const MthMat2##t &mat) const;                                      \
+              bool operator==(const MthMat4##t &mat) const;                                      \
+              bool operator!=(const MthMat4##t &mat) const;                                      \
               MthMat4##t &operator=(const MthMat4##t &mat) = default;                            \
-              MthMat4##t &operator=(const AtkPack4x4##t &pack);\
               MthMat4##t &operator+=(const MthMat4##t &mat);                                     \
               MthMat4##t operator+(const MthMat4##t &mat) const;                                 \
               MthMat4##t &operator-=(const MthMat4##t &mat);                                     \
@@ -236,6 +207,46 @@ extern "C"
               MthMat4##t &translateSecDim3(const MthVec3##t &vec);                               \
               MthMat4##t &perspective(type width, type height, type fov, type znear, type zfar); \
        };
+
+#else
+
+#define MTH_VEC2(type, t)        \
+       typedef struct MthVec2##t \
+       {                         \
+              type x, y;         \
+       } MthVec2##t;
+
+#define MTH_VEC3(type, t)        \
+       typedef struct MthVec3##t \
+       {                         \
+              type x, y, z;      \
+       } MthVec3##t;
+
+#define MTH_VEC4(type, t)        \
+       typedef struct MthVec4##t \
+       {                         \
+              type x, y, z, w;   \
+       } MthVec4##t;
+
+#define MTH_MAT2(type, t)        \
+       typedef struct MthMat2##t \
+       {                         \
+              type m[2][2];      \
+       } MthMat2##t;
+
+#define MTH_MAT3(type, t)        \
+       typedef struct MthMat3##t \
+       {                         \
+              type m[3][3];      \
+       } MthMat3##t;
+
+#define MTH_MAT4(type, t)        \
+       typedef struct MthMat4##t \
+       {                         \
+              type m[4][4];      \
+       } MthMat4##t;
+
+#endif //__cplusplus
 
 MTH_VEC2(float, f);
 MTH_VEC2(double, d)
@@ -287,6 +298,72 @@ typedef MthMat4d mat4d;
 typedef MthMat4i mat4i;
 #endif //ATK_MTH_NO_CONFUSION
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif //__cplusplus
+
+#define MTH_PI_f 3.141592653f
+#define MTH_PI_d 3.141592653589793238
+#define MTH_PI_HALF_f 1.570796327f
+#define MTH_PI_HALF_d 1.570796326794896619
+#define MTH_PI_2_f 6.283185307f
+#define MTH_PI_2_d 6.283185307179586477
+
+#define mth_to_radf(deg) (deg * MTH_PI_f / 180.0f)
+#define mth_to_radd(deg) (deg * MTH_PI_d / 180.0)
+#define mth_to_degf(rad) (rad * 180.0f / MTH_PI_f)
+#define mth_to_degd(rad) (rad * 180.0 / MTH_PI_d)
+
+       ATK_API float mthRsqrtssf(float val); //rsqrtss -> float
+
+#define MTH_POINT(type, t)        \
+       typedef struct MthPoint##t \
+       {                          \
+              MthVec3##t pos;     \
+       } MthPoint##t;
+
+#define MTH_BALL(type, t)        \
+       typedef struct MthBall##t \
+       {                         \
+              MthVec3##t pos;    \
+              type radius;       \
+       } MthBall##t;
+
+#define MTH_AABB(type, t)        \
+       typedef struct MthAABB##t \
+       {                         \
+              MthVec3##t pos;    \
+              MthVec3##t dim;    \
+       } MthAABB##t;
+
+       MTH_POINT(float, f)
+       MTH_POINT(double, d)
+       MTH_POINT(int, i)
+
+       MTH_BALL(float, f)
+       MTH_BALL(double, d)
+       MTH_BALL(int, i)
+
+       MTH_AABB(float, f)
+       MTH_AABB(double, d)
+       MTH_AABB(int, i)
+
+#define MTH_COLLISION(type, t) \
+       ATK_API bool mthIsCollidedPointVsBall##t(const MthPoint##t *point, const MthBall##t *ball, type *distance);\
+       ATK_API bool mthIsCollidedBallVsBall##t(const MthBall##t *ball_a, const MthBall##t *ball_b, type *distance);\
+       ATK_API bool mthIsCollidedBallVsAABB##t(const MthBall##t *ball, const MthAABB##t *aabb, type *distance);\
+       ATK_API bool mthIsCollidedPointVsAABB##t(const MthPoint##t *point, const MthAABB##t *aabb);\
+       ATK_API bool mthIsCollidedAABBVsAABB##t(const MthAABB##t *aabb_a, const MthAABB##t *aabb_b);\
+       ATK_API type mthGetDistancePointVsAABB##t(const MthPoint##t *point, const MthAABB##t *aabb, bool *collided);\
+       ATK_API type mthGetDistanceAABBVsAABB##t(const MthAABB##t *aabb_a, const MthAABB##t *aabb_b, bool *collided);
+
+       MTH_COLLISION(float, f)
+       MTH_COLLISION(double, d)
+       MTH_COLLISION(int, i)
+
+#ifdef __cplusplus
+}
 #endif //__cplusplus
 
 #endif //__MATH_H__

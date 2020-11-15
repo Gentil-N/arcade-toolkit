@@ -58,9 +58,7 @@ bool dskMouseIsMouseButtonReleased(DskMouse *mouse, DskMouseButton button)
        return mouse->m_buttons_states[(int)button] == GLFW_RELEASE;
 }
 
-AtkPack2d dskMouseGetCursorPos(DskMouse *mouse)
+void dskMouseGetCursorPos(DskMouse *mouse, double *x, double *y)
 {
-       AtkPack2d pos = {0};
-       glfwGetCursorPos(mouse->m_window->m_handle, &pos.x, &pos.y);
-       return pos;
+       glfwGetCursorPos(mouse->m_window->m_handle, x, y);
 }

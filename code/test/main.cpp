@@ -477,7 +477,7 @@ int main()
                      adiCreateSource(&source);
                      adiSourceBindSoundData(&source, &sound_data);
                      adiSourcePlay(&source);
-                     //adiSourceEnableLooping(&source);
+                     adiSourceEnableLooping(&source);
 
                      OrnSurfaceSettings surface_settings = {dskGetX11Display(), window.getX11Window()};
                      OrnSurface *surface = ornCreateSurface(&surface_settings);
@@ -517,7 +517,7 @@ int main()
                      memcpy(mapped, model.vertices(), model.vertexCount() * sizeof(float));
                      memcpy((char *)mapped + model.vertexCount() * sizeof(float), model.indices(), model.indexCount() * sizeof(uint32_t));
                      ornUnmapBuffer(device, buffer);
-
+                     
                      OrnTexture *texture;
                      {
                             AstImage image("../../code/test/textures/cube_texture.png", AST_IMG_LOAD_OPTS_RGB_ALPHA);

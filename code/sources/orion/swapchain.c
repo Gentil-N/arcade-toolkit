@@ -22,8 +22,8 @@ VkExtent2D chooseExtent(const OrnGpu *gpu, uint32_t width, uint32_t height)
               return gpu->surface_capabilities.currentExtent;
        }
        VkExtent2D extent;
-       extent.width = ORN_MAX(gpu->surface_capabilities.minImageExtent.width, ORN_MIN(width, gpu->surface_capabilities.maxImageExtent.width));
-       extent.height = ORN_MAX(gpu->surface_capabilities.minImageExtent.height, ORN_MIN(height, gpu->surface_capabilities.maxImageExtent.height));
+       extent.width = atk_max(gpu->surface_capabilities.minImageExtent.width, atk_min(width, gpu->surface_capabilities.maxImageExtent.width));
+       extent.height = atk_max(gpu->surface_capabilities.minImageExtent.height, atk_min(height, gpu->surface_capabilities.maxImageExtent.height));
        return extent;
 }
 
@@ -46,7 +46,7 @@ OrnSwapchain *ornCreateSwapchain(VkDevice device, const VklDeviceTable *dtbl, co
 
        atk_assert(gpu->surface_formats.m_count > 0);
        swapchain->surface_format = chooseSurfaceFormat(gpu);
-       uint32_t image_count = ORN_MAX(gpu->surface_capabilities.minImageCount, ORN_MIN(gpu->surface_capabilities.maxImageCount, SWAPCHAIN_IMAGE_COUNT));
+       uint32_t image_count = atk_max(gpu->surface_capabilities.minImageCount, atk_min(gpu->surface_capabilities.maxImageCount, SWAPCHAIN_IMAGE_COUNT));
 
        swapchain->extent = chooseExtent(gpu, width, height);
        atk_assert(gpu->present_modes.m_count > 0);

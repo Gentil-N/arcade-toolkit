@@ -13,6 +13,15 @@ extern "C"
        ATK_API bool adiInit();
        ATK_API void adiEnd();
 
+       typedef enum AdiAttenuationType
+       {
+              ADI_ATT_TYPE_LINEAR = 0xD003,
+              ADI_ATT_TYPE_INVERSE = 0xD001,
+              ADI_ATT_TYPE_EXPONENT = 0xD005
+       } AdiAttenuationType;
+
+       ATK_API void adiSetAttenuation(AdiAttenuationType attenuation_type);
+
        typedef struct AdiSoundData AdiSoundData;
 
        typedef struct AdiSoundDataSettings
@@ -35,16 +44,11 @@ extern "C"
        ATK_API void adiSourceEnableLooping(AdiSource *source);
        ATK_API void adiSourceDisableLooping(AdiSource *source);
        ATK_API void adiSourceSetPosition(AdiSource *source, float x, float y, float z);
-       ATK_API void adiSourceSetPositionPack(AdiSource *source, const AtkPack3f *pack);
        ATK_API void adiSourceSetVelocity(AdiSource *source, float x, float y, float z);
-       ATK_API void adiSourceSetVelocityPack(AdiSource *source, const AtkPack3f *pack);
 
        ATK_API void adiListenerSetPosition(float x, float y, float z);
-       ATK_API void adiListenerSetPositionPack(const AtkPack3f *pack);
        ATK_API void adiListenerSetOrientation(float at_x, float at_y, float at_z, float up_x, float up_y, float up_z);
-       ATK_API void adiListenerSetOrientationPack(const AtkPack3f *at_pack, const AtkPack3f *up_pack);
        ATK_API void adiListenerSetVelocity(float x, float y, float z);
-       ATK_API void adiListenerSetVelocityPack(const AtkPack3f *pack);
 
 #ifdef __cplusplus
 }
@@ -162,17 +166,9 @@ struct AdiSource
        {
               adiSourceSetPosition(this, x, y, z);
        }
-       void setPosition(const AtkPack3f &pack)
-       {
-              adiSourceSetPositionPack(this, &pack);
-       }
        void setVelocity(float x, float y, float z)
        {
               adiSourceSetVelocity(this, x, y, z);
-       }
-       void setVelocity(const AtkPack3f &pack)
-       {
-              adiSourceSetVelocityPack(this, &pack);
        }
 #endif //___cplusplus
 };

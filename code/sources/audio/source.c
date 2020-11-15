@@ -53,17 +53,7 @@ void adiSourceSetPosition(AdiSource *source, float x, float y, float z)
        alSource3f(source->m_id, AL_POSITION, x, y, z);
 }
 
-void adiSourceSetPositionPack(AdiSource *source, const AtkPack3f *pack)
-{
-       alSource3f(source->m_id, AL_POSITION, pack->x, pack->y, pack->z);
-}
-
 void adiSourceSetVelocity(AdiSource *source, float x, float y, float z)
 {
        alSource3f(source->m_id, AL_VELOCITY, x, y, z);
-}
-
-void adiSourceSetVelocityPack(AdiSource *source, const AtkPack3f *pack)
-{
-       alSource3f(source->m_id, AL_VELOCITY, pack->x, pack->y, pack->z);
 }

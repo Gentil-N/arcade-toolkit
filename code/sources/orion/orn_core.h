@@ -15,9 +15,6 @@ extern "C"
 #include <string.h>
 #include <math.h>
 
-#define ORN_MAX(a, b) (a > b ? a : b)
-#define ORN_MIN(a, b) (a < b ? a : b)
-
 #ifdef ATK_PLATFORM_LINUX
 #define VK_USE_PLATFORM_XLIB_KHR
 #endif //ATK_PLATFORM_LINUX
