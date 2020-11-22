@@ -135,7 +135,6 @@ bool ornGpuCheckMinimalGraphicsSupport(OrnGpu *gpu, const OrnSurface *surface)
               atkNewArray(&gpu->present_modes, count, sizeof(VkPresentModeKHR));
               orn_assert_vk(CONTEXT.itbl.vkGetPhysicalDeviceSurfacePresentModesKHR(gpu->handle, surface->handle, &count, (VkPresentModeKHR *)gpu->present_modes.m_data));
        }
-
        return suitable_device && gpu->surface_formats.m_count > 0 && gpu->present_modes.m_count > 0;
 }
 

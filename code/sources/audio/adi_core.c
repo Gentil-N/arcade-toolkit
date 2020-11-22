@@ -6,21 +6,21 @@ bool adiInit()
        ALCdevice *device = alcOpenDevice(NULL);
        if (!device)
        {
-              atk_error(ATK_MSG_INIT_FAILED, "failed to open device");
+              atk_api_dbg_error("failed to open device");
               return false;
        }
        ALCcontext *context = alcCreateContext(device, NULL);
        if (!context)
        {
-              atk_error(ATK_MSG_INIT_FAILED, "failed to create context");
+              atk_api_dbg_error("failed to create context");
               return false;
        }
        if (!alcMakeContextCurrent(context))
        {
-              atk_error(ATK_MSG_INIT_FAILED, "failed to make current context");
+              atk_api_dbg_error("failed to make current context");
               return false;
        }
-       atk_info("audio module initialized");
+       atk_api_dbg_info("audio module initialized");
        return true;
 }
 
@@ -31,7 +31,7 @@ void adiEnd()
        alcMakeContextCurrent(NULL);
        alcDestroyContext(Context);
        alcCloseDevice(Device);
-       atk_info("audio module ended");
+       atk_api_dbg_info("audio module ended");
 }
 
 void adiSetAttenuation(AdiAttenuationType attenuation_type)
@@ -48,14 +48,14 @@ void adiTest(const char* file_name)
        mp3dec_file_info_t info;
        if(mp3dec_load(&mp3d, file_name, &info, NULL, NULL))
        {
-              atk_error(ATK_MSG_LIB_REPORT, "failed to load mp3 file");
+              atk_api_dbg_error("failed to load mp3 file");
        }
        ALenum format = AL_FORMAT_STEREO16;
        alGenBuffers(1, &buffer);
        alBufferData(buffer, format, info.buffer, info.samples * sizeof(mp3d_sample_t), info.hz);
        if(alGetError() != AL_NO_ERROR)
        {
-              atk_error(ATK_MSG_LIB_REPORT, "failed to push data into buffer");
+              atk_api_dbg_error("failed to push data into buffer");
        }
        alGenSources(1, &source);
        alSourcei(source, AL_BUFFER, buffer);

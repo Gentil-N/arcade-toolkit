@@ -13,7 +13,7 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
        {
               if (mesh->mNormals == NULL)
               {
-                     atk_error(ATK_MSG_FEATURE_NOT_PRESENT, "normals are not available");
+                     atk_api_dbg_error("normals are not available");
                      return false;
               }
               has_normals = true;
@@ -23,7 +23,7 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
        {
               if (mesh->mColors[0] == NULL)
               {
-                     atk_error(ATK_MSG_FEATURE_NOT_PRESENT, "color channel is not available");
+                     atk_api_dbg_error("color channel is not available");
                      return false;
               }
               vertex_size += 3;
@@ -38,7 +38,7 @@ bool astModelCreate(AstModel *model, const struct aiMesh *mesh, uint32_t load_op
        {
               if (mesh->mTextureCoords[0] == NULL)
               {
-                     atk_error(ATK_MSG_FEATURE_NOT_PRESENT, "textcoords are not available");
+                     atk_api_dbg_error("textcoords are not available");
                      return false;
               }
               has_textcoords = true;
@@ -101,7 +101,7 @@ bool astModelCreateFromFile(AstModel *model, const char *file_name, uint32_t loa
        const struct aiScene *scene = aiImportFile(file_name, aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
        if (scene == NULL || scene->mNumMeshes == 0)
        {
-              atk_vwarn(ATK_MSG_RESOURCE_MISSING, "%s%s", "failed to load scene from ", file_name);
+              atk_api_dbg_warn("%s%s", "failed to load scene from ", file_name);
               return false;
        }
        return astModelCreate(model, scene->mMeshes[0], load_options);
@@ -112,7 +112,7 @@ bool astModelCreateFromMemory(AstModel *model, const void *data, size_t size, ui
        const struct aiScene *scene = aiImportFileFromMemory(data, size, aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices, "");
        if (scene == NULL || scene->mNumMeshes == 0)
        {
-              atk_vwarn(ATK_MSG_RESOURCE_MISSING, "%s%s", "failed to load scene from memory");
+              atk_api_dbg_warn("%s%s", "failed to load scene from memory");
               return false;
        }
        return astModelCreate(model, scene->mMeshes[0], load_options);

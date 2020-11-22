@@ -25,7 +25,7 @@ void keyCallback(GLFWwindow *handle, int key, int scancode, int action, int mods
                      
               }
        }
-       atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to find window handle (key callback)");
+       atk_api_dbg_warn("failed to find window handle (key callback)");
 }
 
 void dskCreateKeyboard(DskKeyboard *keyboard, const DskKeyboardSettings *settings)
@@ -35,7 +35,7 @@ void dskCreateKeyboard(DskKeyboard *keyboard, const DskKeyboardSettings *setting
        atkNewVector(&keyboard->m_keys_released, 0, sizeof(int));
        glfwSetKeyCallback(settings->window->m_handle, keyCallback);
        atkVectorPushBack(&KEYBOARDS, &keyboard);
-       atk_info("keyboard created");
+       atk_api_dbg_info("keyboard created");
 }
 
 void dskDestroyKeyboard(DskKeyboard *keyboard)
@@ -50,7 +50,7 @@ void dskDestroyKeyboard(DskKeyboard *keyboard)
        }
        atkDeleteVector(&keyboard->m_keys_released);
        keyboard->m_window = NULL;
-       atk_info("keyboard destroyed");
+       atk_api_dbg_info("keyboard destroyed");
 }
 
 bool dskKeyboardIsKeyPressed(DskKeyboard *keyboard, DskKey key)

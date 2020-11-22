@@ -3,13 +3,13 @@
 #ifdef ATK_DEBUG
 void glfwErrorCallback(int code, const char *description)
 {
-       atk_verror(ATK_MSG_LIB_REPORT, "%s%i%s%s%s", "glfw error (", code, ") - ", description, " - ");
+       atk_api_dbg_error("%s%i%s%s%s", "glfw error (", code, ") - ", description, " - ");
 }
 #endif //ATK_DEBUG
 
 void joystickCallback(int id, int event)
 {
-       atk_assert(0 <= id <= DSK_MAX_JOYSTICKS);
+       atk_api_assert(0 <= id <= DSK_MAX_JOYSTICKS);
        switch(event)
        {
               case GLFW_CONNECTED :
@@ -24,7 +24,7 @@ void joystickCallback(int id, int event)
               }
               default :
               {
-                     atk_warn(ATK_MSG_INVALID_ARGUMENT, "joystick event unknow");
+                     atk_api_dbg_warn("joystick event unknow");
               }
        }
 }
@@ -37,7 +37,7 @@ bool dskInit()
        int result = glfwInit();
        if (result != GLFW_TRUE)
        {
-              atk_error(ATK_MSG_INIT_FAILED, "failed to initialize GLFW");
+              atk_api_dbg_error("failed to initialize GLFW");
               return false;
        }
        atkNewVector(&KEYBOARDS, 0, sizeof(DskKeyboard *));
@@ -51,7 +51,7 @@ bool dskInit()
               *(int*)&curr_joy->m_id = i;
        }
        glfwSetJoystickCallback(joystickCallback);
-       atk_info("desktop module initialized");
+       atk_api_dbg_info("desktop module initialized");
        return true;
 }
 
@@ -65,7 +65,7 @@ void dskEnd()
        atkDeleteVector(&MOUSES);
        atkDeleteVector(&KEYBOARDS);
        glfwTerminate();
-       atk_info("desktop module ended");
+       atk_api_dbg_info("desktop module ended");
 }
 
 void dskRefresh()

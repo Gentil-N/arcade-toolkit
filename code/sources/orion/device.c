@@ -6,7 +6,7 @@ const char *DEV_EXTENSIONS[1] = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 OrnDevice *ornCreateDevice(const OrnDeviceSettings *settings)
 {
        OrnDevice *device = (OrnDevice *)atk_alloc(sizeof(struct OrnDevice));
-       atk_assert(device != NULL);
+       atk_api_assert(device != NULL);
 
        device->gpu = settings->gpu;
 
@@ -67,7 +67,7 @@ OrnDevice *ornCreateDevice(const OrnDeviceSettings *settings)
        }
        atkNewVector(&device->msgs, 0, sizeof(struct OrnDeviceMsg));
 
-       atk_info("device created");
+       atk_api_dbg_info("device created");
        return device;
 }
 
@@ -91,7 +91,7 @@ void ornDestroyDevice(OrnDevice *device)
        device->tbl.vkDestroyCommandPool(device->handle, device->command_pool, VK_AC);
        device->tbl.vkDestroyDevice(device->handle, VK_AC);
        atk_free(device);
-       atk_info("device destroyed");
+       atk_api_dbg_info("device destroyed");
 }
 
 void ornPushDeviceMsg(OrnDevice *device, OrnDeviceMsgType type, void *data)
@@ -106,7 +106,7 @@ void executeDeviceMsg(OrnDevice *device, OrnDeviceMsg *msg)
        {
        default:
        {
-              atk_error(ATK_MSG_INVALID_ARGUMENT, "failed to execute a device message");
+              atk_api_dbg_error("failed to execute a device message");
        }
        break;
        }

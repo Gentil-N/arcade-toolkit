@@ -3,7 +3,7 @@
 OrnCommand *ornCreateCommand(OrnDevice *device)
 {
        OrnCommand *command = (OrnCommand *)atk_alloc(sizeof(struct OrnCommand));
-       atk_assert(command != NULL);
+       atk_api_assert(command != NULL);
 
        command->dtbl = &device->tbl;
        atkNewArray(&command->command_buffers, device->swapchain->images.m_count, sizeof(VkCommandBuffer));
@@ -11,7 +11,7 @@ OrnCommand *ornCreateCommand(OrnDevice *device)
        VkCommandBufferAllocateInfo alloc_info = vkfCommandBufferAllocateInfo(device->command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, command->command_buffers.m_count);
        orn_assert_vk(command->dtbl->vkAllocateCommandBuffers(device->handle, &alloc_info, (VkCommandBuffer *)command->command_buffers.m_data));
 
-       atk_info("command created");
+       atk_api_dbg_info("command created");
        return command;
 }
 
@@ -20,7 +20,7 @@ void ornDestroyCommand(OrnDevice *device, OrnCommand *command)
        device->tbl.vkFreeCommandBuffers(device->handle, device->command_pool, (uint32_t)command->command_buffers.m_count, (VkCommandBuffer *)command->command_buffers.m_data);
        atkDeleteArray(&command->command_buffers);
        atk_free(command);
-       atk_info("command destroyed");
+       atk_api_dbg_info("command destroyed");
 }
 
 void ornCmdBegin(OrnCommand *command)
@@ -130,5 +130,5 @@ void ornUnbindCommand(OrnDevice *device, OrnCommand *command)
                      return;
               }
        }
-       atk_warn(ATK_MSG_INVALID_ARGUMENT, "failed to unbind command");
+       atk_api_dbg_warn("failed to unbind command");
 }

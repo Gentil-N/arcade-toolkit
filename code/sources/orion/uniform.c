@@ -3,7 +3,7 @@
 OrnUniform *ornCreateUniform(OrnDevice *device, const OrnUniformSettings *settings)
 {
        OrnUniform *uniform = (OrnUniform *)atk_alloc(sizeof(struct OrnUniform));
-       atk_assert(uniform != NULL);
+       atk_api_assert(uniform != NULL);
 
        VkDescriptorSetAllocateInfo descriptor_alloc_info = vkfDescriptorSetAllocateInfo(
            settings->pipeline->descriptor_pool, 1, &atk_get(VkDescriptorSetLayout, settings->pipeline->descriptor_set_layouts, settings->set));
@@ -11,7 +11,7 @@ OrnUniform *ornCreateUniform(OrnDevice *device, const OrnUniformSettings *settin
 
        uniform->set = settings->set;
 
-       atk_info("uniform created");
+       atk_api_dbg_info("uniform created");
        return uniform;
 }
 
@@ -19,7 +19,7 @@ void ornDestroyUniform(OrnDevice *device, OrnPipeline *pipeline, OrnUniform *uni
 {
        device->tbl.vkFreeDescriptorSets(device->handle, pipeline->descriptor_pool, 1, &uniform->descriptor_set);
        atk_free(uniform);
-       atk_info("descriptor sets released");
+       atk_api_dbg_info("descriptor sets released");
 }
 
 void ornLinkBufferToUniform(OrnDevice *device, OrnUniform *uniform, OrnBuffer *buffer, size_t offset, size_t size, uint32_t binding)
@@ -28,7 +28,7 @@ void ornLinkBufferToUniform(OrnDevice *device, OrnUniform *uniform, OrnBuffer *b
        VkWriteDescriptorSet write_desc_set = vkfWriteDescriptorSet(
            uniform->descriptor_set, binding, 0, 1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, NULL, &buffer_info, NULL);
        device->tbl.vkUpdateDescriptorSets(device->handle, 1, &write_desc_set, 0, NULL);
-       atk_info("buffer linked to descriptor");
+       atk_api_dbg_info("buffer linked to descriptor");
 }
 
 void ornLinkTextureToUniform(OrnDevice *device, OrnUniform *uniform, OrnTexture *texture, uint32_t binding)
@@ -37,5 +37,5 @@ void ornLinkTextureToUniform(OrnDevice *device, OrnUniform *uniform, OrnTexture 
        VkWriteDescriptorSet write_desc_set = vkfWriteDescriptorSet(
            uniform->descriptor_set, binding, 0, 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &image_info, NULL, NULL);
        device->tbl.vkUpdateDescriptorSets(device->handle, 1, &write_desc_set, 0, NULL);
-       atk_info("texture linked to descriptor");
+       atk_api_dbg_info("texture linked to descriptor");
 }

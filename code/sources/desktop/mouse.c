@@ -20,7 +20,7 @@ void mouseButtonCallback(GLFWwindow *handle, int button, int action, int mods)
                      }
               }
        }
-       atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to find window handle (button callback)");
+       atk_api_dbg_warn("failed to find window handle (button callback)");
 }
 
 void dskCreateMouse(DskMouse *mouse, const DskMouseSettings *settings)
@@ -30,7 +30,7 @@ void dskCreateMouse(DskMouse *mouse, const DskMouseSettings *settings)
        atkNewVector(&mouse->m_buttons_released, 0, sizeof(int));
        glfwSetMouseButtonCallback(settings->window->m_handle, mouseButtonCallback);
        atkVectorPushBack(&MOUSES, &mouse);
-       atk_info("mouse created");
+       atk_api_dbg_info("mouse created");
 }
 
 void dskDestroyMouse(DskMouse *mouse)
@@ -45,7 +45,7 @@ void dskDestroyMouse(DskMouse *mouse)
        }
        atkDeleteVector(&mouse->m_buttons_released);
        mouse->m_window = NULL;
-       atk_info("mouse destroyed");
+       atk_api_dbg_info("mouse destroyed");
 }
 
 bool dskMouseIsMouseButtonPressed(DskMouse *mouse, DskMouseButton button)

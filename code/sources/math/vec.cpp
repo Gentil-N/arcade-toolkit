@@ -60,14 +60,14 @@
        }                                                             \
        MthVec2##t &MthVec2##t::operator/=(type factor)               \
        {                                                             \
-              atk_assert(factor != (type)0);                         \
+              atk_api_assert(factor != (type)0);                         \
               x /= factor;                                           \
               y /= factor;                                           \
               return *this;                                          \
        }                                                             \
        MthVec2##t MthVec2##t::operator/(type factor) const           \
        {                                                             \
-              atk_assert(factor != (type)0);                         \
+              atk_api_assert(factor != (type)0);                         \
               return MthVec2##t(x / factor, y / factor);             \
        }                                                             \
        type MthVec2##t::dot(type _x, type _y) const                  \
@@ -89,7 +89,7 @@
        MthVec2##t &MthVec2##t::norm()                                \
        {                                                             \
               type lenght = len();                                   \
-              atk_assert(lenght != 0);                               \
+              atk_api_assert(lenght != 0);                               \
               x /= lenght;                                           \
               y /= lenght;                                           \
               return *this;                                          \
@@ -191,7 +191,7 @@
        }                                                                                              \
        MthVec3##t &MthVec3##t::operator/=(type factor)                                                \
        {                                                                                              \
-              atk_assert(factor != (type)0);                                                          \
+              atk_api_assert(factor != (type)0);                                                          \
               x /= factor;                                                                            \
               y /= factor;                                                                            \
               z /= factor;                                                                            \
@@ -199,7 +199,7 @@
        }                                                                                              \
        MthVec3##t MthVec3##t::operator/(type factor) const                                            \
        {                                                                                              \
-              atk_assert(factor != (type)0);                                                          \
+              atk_api_assert(factor != (type)0);                                                          \
               return MthVec3##t(x / factor, y / factor, z / factor);                                  \
        }                                                                                              \
        type MthVec3##t::dot(type _x, type _y, type _z) const                                          \
@@ -221,7 +221,7 @@
        MthVec3##t &MthVec3##t::norm()                                                                 \
        {                                                                                              \
               type lenght = len();                                                                    \
-              atk_assert(lenght != 0);                                                                \
+              atk_api_assert(lenght != 0);                                                                \
               x /= lenght;                                                                            \
               y /= lenght;                                                                            \
               z /= lenght;                                                                            \
@@ -330,7 +330,7 @@
        }                                                                         \
        MthVec4##t &MthVec4##t::operator/=(type factor)                           \
        {                                                                         \
-              atk_assert(factor != (type)0);                                     \
+              atk_api_assert(factor != (type)0);                                     \
               x /= factor;                                                       \
               y /= factor;                                                       \
               z /= factor;                                                       \
@@ -339,7 +339,7 @@
        }                                                                         \
        MthVec4##t MthVec4##t::operator/(type factor) const                       \
        {                                                                         \
-              atk_assert(factor != (type)0);                                     \
+              atk_api_assert(factor != (type)0);                                     \
               return MthVec4##t(x / factor, y / factor, z / factor, w / factor); \
        }                                                                         \
        MthVec4##t &MthVec4##t::crossDim3(type _x, type _y, type _z)              \
@@ -383,7 +383,7 @@
        MthVec4##t &MthVec4##t::norm()                                            \
        {                                                                         \
               type lenght = len();                                               \
-              atk_assert(lenght != 0);                                           \
+              atk_api_assert(lenght != 0);                                           \
               x /= lenght;                                                       \
               y /= lenght;                                                       \
               z /= lenght;                                                       \
@@ -393,7 +393,7 @@
        MthVec4##t &MthVec4##t::normDim3()                                        \
        {                                                                         \
               type lenght = lenDim3();                                           \
-              atk_assert(lenght != 0);                                           \
+              atk_api_assert(lenght != 0);                                           \
               x /= lenght;                                                       \
               y /= lenght;                                                       \
               z /= lenght;                                                       \

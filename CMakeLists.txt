@@ -40,7 +40,15 @@ endif()
 #----------
 
 #Modules required
-set(SRC_FILES ${SRC_FILES} ${SRC_DIR}/atk.c)
+set(SRC_FILES ${SRC_FILES} 
+              ${SRC_DIR}/core/atk_core.c
+              ${SRC_DIR}/core/memory.c
+              ${SRC_DIR}/core/logger.c
+              ${SRC_DIR}/core/mutex.c
+              ${SRC_DIR}/core/vector.c
+              ${SRC_DIR}/core/array.c
+              ${SRC_DIR}/core/string.c
+              ${SRC_DIR}/core/file.c)
 find_package(Threads)
 set(REQUIRED_LIBS ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 #-
@@ -80,7 +88,7 @@ elseif(NOT Z_LIB_STATIC_LIB)
        message(FATAL_ERROR "zlibstatic library not found (required for asset module)")
 endif()
 message(STATUS "All libraries required for asset module are available")
-set(REQUIRED_LIBS ${REQUIRED_LIBS} assimp IrrXML zlibstatic)
+set(REQUIRED_LIBS ${REQUIRED_LIBS} ${ASSIMP_LIB} ${IRR_XML_LIB} ${Z_LIB_STATIC_LIB})
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/asset/model.c
               ${SRC_DIR}/asset/image.c)
@@ -93,7 +101,7 @@ if(NOT GLFW_LIB)
        message(FATAL_ERROR "glfw3 library not found (required for desktop module)")
 endif()
 message(STATUS "All libraries required for desktop module are available")
-set(REQUIRED_LIBS ${REQUIRED_LIBS} glfw3)
+set(REQUIRED_LIBS ${REQUIRED_LIBS} ${GLFW_LIB})
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/desktop/dsk_core.c
               ${SRC_DIR}/desktop/global.c
@@ -119,7 +127,7 @@ if(NOT OPENAL_LIB)
        message(FATAL_ERROR "openal library not found (required for audio module)")
 endif()
 message(STATUS "All libraries required for audio module are available")
-set(REQUIRED_LIBS ${REQUIRED_LIBS} openal)
+set(REQUIRED_LIBS ${REQUIRED_LIBS} ${OPENAL_LIB})
 set(SRC_FILES ${SRC_FILES} 
               ${SRC_DIR}/audio/adi_core.c
               ${SRC_DIR}/audio/sound_data.c

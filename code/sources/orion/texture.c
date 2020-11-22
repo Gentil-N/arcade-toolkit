@@ -3,7 +3,7 @@
 OrnTexture *ornCreateTexture(OrnDevice *device, const OrnTextureSettings *settings)
 {
     OrnTexture *texture = (OrnTexture *)atk_alloc(sizeof(struct OrnTexture));
-    atk_assert(texture != NULL);
+    atk_api_assert(texture != NULL);
 
     texture->width = settings->width;
     texture->height = settings->height;
@@ -22,7 +22,7 @@ OrnTexture *ornCreateTexture(OrnDevice *device, const OrnTextureSettings *settin
         VK_BORDER_COLOR_INT_OPAQUE_BLACK, VK_FALSE);
     orn_assert_vk(device->tbl.vkCreateSampler(device->handle, &sampler_info, VK_AC, &texture->sampler));
 
-    atk_info("texture created");
+    atk_api_dbg_info("texture created");
     return texture;
 }
 
@@ -32,5 +32,5 @@ void ornDestroyTexture(OrnDevice *device, OrnTexture *texture)
     device->tbl.vkDestroyImageView(device->handle, texture->image_view, VK_AC);
     ornDestroyImage(device->handle, &device->tbl, texture->image);
     atk_free(texture);
-    atk_info("texture destroyed");
+    atk_api_dbg_info("texture destroyed");
 }

@@ -12,7 +12,7 @@ struct OrnMemoryPool
 OrnMemoryPool *ornCreateMemoryPool(VkDevice device, OrnMemoryAllocator *memory_allocator, VkDeviceSize size, uint32_t memory_type)
 {
        OrnMemoryPool *memory_pool = (OrnMemoryPool *)atk_alloc(sizeof(struct OrnMemoryPool));
-       atk_assert(memory_pool != NULL);
+       atk_api_assert(memory_pool != NULL);
 
        VkMemoryAllocateInfo allocate_info = vkfMemoryAllocateInfo(size, memory_type);
        orn_assert_vk(memory_allocator->dtbl->vkAllocateMemory(device, &allocate_info, VK_AC, &memory_pool->memory));
@@ -23,7 +23,7 @@ OrnMemoryPool *ornCreateMemoryPool(VkDevice device, OrnMemoryAllocator *memory_a
        memory_pool->mapped = NULL;
 
        OrnMemoryAllocation *fake_alloc = (OrnMemoryAllocation *)atk_alloc(sizeof(struct OrnMemoryAllocation));
-       atk_assert(fake_alloc != NULL);
+       atk_api_assert(fake_alloc != NULL);
        fake_alloc->memory_pool = memory_pool;
        fake_alloc->offset = size;
        fake_alloc->size = 0;
@@ -74,7 +74,7 @@ void ornFreeMemoryFromPool(OrnMemoryAllocation *memory_alloc)
                      return;
               }
        }
-       atk_warn(ATK_MSG_RESOURCE_MISSING, "failed to free memory object from pool");
+       atk_api_dbg_warn("failed to free memory object from pool");
 }
 
 VkResult ornBindMemoryAllocation(VkDevice device, OrnMemoryAllocator *memory_allocator, const OrnMemoryAllocationSettings *settings, OrnMemoryAllocation *memory_alloc)
@@ -100,7 +100,7 @@ VkResult ornBindMemoryAllocation(VkDevice device, OrnMemoryAllocator *memory_all
 OrnMemoryAllocator *ornCreateMemoryAllocator(const OrnMemoryAllocatorSettings *settings)
 {
        OrnMemoryAllocator *memory_allocator = (OrnMemoryAllocator *)atk_alloc(sizeof(struct OrnMemoryAllocator));
-       atk_assert(memory_allocator != NULL);
+       atk_api_assert(memory_allocator != NULL);
 
        memory_allocator->dtbl = settings->dtbl;
        memory_allocator->memory_pool_size = settings->memory_pool_size;
@@ -146,10 +146,10 @@ VkResult ornAllocateMemoryFromAllocator(
        if (memory_requirements.size > memory_allocator->memory_pool_size)
        { //pour les tailles trop grandes
               OrnMemoryPool *memory_pool = ornCreateMemoryPool(device, memory_allocator, memory_requirements.size, memory_type);
-              atk_assert(memory_pool != NULL);
+              atk_api_assert(memory_pool != NULL);
               //l'alignement n'est pas nécessaire vu que le pool est unique à l'allocation
               VkBool32 alloc_success = ornAllocateMemoryFromPool(memory_pool, memory_alloc, 1);
-              atk_assert(alloc_success == VK_TRUE);
+              atk_api_assert(alloc_success == VK_TRUE);
               atkVectorPushBack(&memory_allocator->pools, &memory_pool);
               return VK_SUCCESS;
        }
@@ -169,10 +169,10 @@ VkResult ornAllocateMemoryFromAllocator(
        }
 
        OrnMemoryPool *pool = ornCreateMemoryPool(device, memory_allocator, memory_allocator->memory_pool_size, memory_type);
-       atk_assert(pool != NULL);
+       atk_api_assert(pool != NULL);
        //l'alignement est "1" puisque l'allocation présente est forcément la première
        VkBool32 alloc_success = ornAllocateMemoryFromPool(pool, memory_alloc, 1);
-       atk_assert(alloc_success == VK_TRUE);
+       atk_api_assert(alloc_success == VK_TRUE);
        atkVectorPushBack(&memory_allocator->pools, &pool);
        return VK_SUCCESS;
 }
@@ -180,7 +180,7 @@ VkResult ornAllocateMemoryFromAllocator(
 OrnMemoryAllocation *ornAllocateMemory(VkDevice device, OrnMemoryAllocator *memory_allocator, const OrnMemoryAllocationSettings *settings)
 {
        OrnMemoryAllocation *memory_alloc = (OrnMemoryAllocation *)atk_alloc(sizeof(struct OrnMemoryAllocation));
-       atk_assert(memory_alloc != NULL);
+       atk_api_assert(memory_alloc != NULL);
 
        VkMemoryRequirements memory_requirements;
        if (settings->objectType == ORN_BUFFER_OBJECT_TYPE)

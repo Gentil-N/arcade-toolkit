@@ -2,7 +2,7 @@
 #define __MATH_H__
 
 #ifndef __ATK_H__
-#include "atk.h"
+#include "atk_core.h"
 #endif //__ATK_H__
 
 #include <math.h>

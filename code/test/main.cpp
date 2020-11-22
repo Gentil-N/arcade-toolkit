@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "../include/atk.h"
+#include "../include/atk_core.h"
 #include "../include/atk_orion.h"
 #include "../include/atk_asset.h"
 #include "../include/atk_desktop.h"
@@ -8,23 +8,57 @@
 #include "../include/atk_math.h"
 #include "../include/atk_audio.h"
 
-void myMessageCallback(AtkMsgType code, const char *description, const char *file, size_t line)
+void myLoggerCallback(size_t level, const char *file, size_t line, const char *description)
 {
-       if ((code & ATK_MSG_INFO) == ATK_MSG_INFO)
+       if ((level & ATK_LOG_LVL_API) == ATK_LOG_LVL_API)
        {
-              printf("%s%s%s", "Atk Info : ", description, "\n");
-              return;
+              if ((level & ATK_LOG_LVL_INFO) == ATK_LOG_LVL_INFO)
+              {
+                     printf("%s%s%s", "API info : ", description, "\n");
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_WARN) == ATK_LOG_LVL_WARN)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[33mAPI warning : ", (int)(level ^ ATK_LOG_LVL_WARN), " - ", description, " / ", file, ", ", line, "\e[0m\n");
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_ERROR) == ATK_LOG_LVL_ERROR)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[31mAPI error : ", (int)(level ^ ATK_LOG_LVL_ERROR), " - ", description, " in ", file, " at ", line, "\e[0m\n");
+                     exit(1);
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_FATAL) == ATK_LOG_LVL_FATAL)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[31mAPI fatal : ", (int)(level ^ ATK_LOG_LVL_FATAL), " - ", description, " in ", file, " at ", line, "\e[0m\n");
+                     exit(1);
+                     return;
+              }
        }
-       else if ((code & ATK_MSG_WARNING) == ATK_MSG_WARNING)
+       else
        {
-              printf("%s%i%s%s%s%s%s%lu%s", "\e[33mAtk Warning : ", (int)(code ^ ATK_MSG_WARNING), " - ", description, " in ", file, " at ", line, "\e[0m\n");
-              return;
-       }
-       else if ((code & ATK_MSG_ERROR) == ATK_MSG_ERROR)
-       {
-              printf("%s%i%s%s%s%s%s%lu%s", "\e[31mAtk Error : ", (int)(code ^ ATK_MSG_ERROR), " - ", description, " in ", file, " at ", line, "\e[0m\n");
-              exit(1);
-              return;
+              if ((level & ATK_LOG_LVL_INFO) == ATK_LOG_LVL_INFO)
+              {
+                     printf("%s%s%s", "info : ", description, "\n");
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_WARN) == ATK_LOG_LVL_WARN)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[33mwarning : ", (int)(level ^ ATK_LOG_LVL_WARN), " - ", description, " in ", file, " at ", line, "\e[0m\n");
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_ERROR) == ATK_LOG_LVL_ERROR)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[31merror : ", (int)(level ^ ATK_LOG_LVL_ERROR), " - ", description, " in ", file, " at ", line, "\e[0m\n");
+                     exit(1);
+                     return;
+              }
+              else if ((level & ATK_LOG_LVL_FATAL) == ATK_LOG_LVL_FATAL)
+              {
+                     printf("%s%i%s%s%s%s%s%lu%s", "\e[31mfatal : ", (int)(level ^ ATK_LOG_LVL_FATAL), " - ", description, " in ", file, " at ", line, "\e[0m\n");
+                     exit(1);
+                     return;
+              }
        }
 }
 
@@ -43,7 +77,7 @@ OrnGpu *chooseGpu(const OrnSurface *surface)
        }
        if (suitable_gpus.empty())
        {
-              atk_error(ATK_MSG_FEATURE_NOT_PRESENT, "no gpu available");
+              atk_error("no gpu available");
        }
        OrnGpu *result = suitable_gpus[0];
        for (OrnGpu *element_gpu : suitable_gpus)
@@ -73,12 +107,12 @@ int main()
               bool init = ornInitContext(&context_settings);
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init orion");
+                     atk_error("failed to init orion");
               }
               init = dskInit();
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
+                     atk_error("failed to init desktop");
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
@@ -168,12 +202,12 @@ int main()
               bool init = ornInitContext(&context_settings);
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init orion");
+                     atk_error("failed to init orion");
               }
               init = dskInit();
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
+                     atk_error("failed to init desktop");
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
@@ -309,12 +343,12 @@ int main()
               bool init = ornInitContext(&context_settings);
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init orion");
+                     atk_error("failed to init orion");
               }
               init = dskInit();
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
+                     atk_error("failed to init desktop");
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
@@ -443,7 +477,8 @@ const size_t UNIFORM_SIZE = sizeof(float) * 16 * 2;
 
 int main()
 {
-       atk_init(myMessageCallback, NULL, NULL, NULL, NULL);
+       atkSetMemoryFunctions(NULL, NULL, NULL, NULL);
+       atkSetLoggerCallback(myLoggerCallback);
        {
               OrnContextSettings context_settings;
               context_settings.application_name = "test";
@@ -453,25 +488,25 @@ int main()
               bool init = ornInitContext(&context_settings);
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init orion");
+                     atk_error("failed to init orion");
               }
               init = dskInit();
               if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init desktop");
+                     atk_error("failed to init desktop");
               }
               init = adiInit();
-              if(!init)
+              if (!init)
               {
-                     atk_error(ATK_MSG_INIT_FAILED, "failed to init audio");
+                     atk_error("failed to init audio");
               }
               {
                      DskWindow window({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, false});
                      AdiSoundDataSettings sound_data_settings = {"../../code/test/sounds/sound-test.mp3"};
                      AdiSoundData sound_data;
-                     if(!adiLoadSoundData(&sound_data, &sound_data_settings))
+                     if (!adiLoadSoundData(&sound_data, &sound_data_settings))
                      {
-                            atk_error(ATK_MSG_PROC_FAILED, "failed to load sound data");
+                            atk_error("failed to load sound data");
                      }
                      AdiSource source;
                      adiCreateSource(&source);
@@ -517,10 +552,10 @@ int main()
                      memcpy(mapped, model.vertices(), model.vertexCount() * sizeof(float));
                      memcpy((char *)mapped + model.vertexCount() * sizeof(float), model.indices(), model.indexCount() * sizeof(uint32_t));
                      ornUnmapBuffer(device, buffer);
-                     
+
                      OrnTexture *texture;
                      {
-                            AstImage image("../../code/test/textures/cube_texture.png", AST_IMG_LOAD_OPTS_RGB_ALPHA);
+                            AstImage image("../../code/test/textures/cube_texture.png", AST_IMG_LOAD_OPT_RGB_ALPHA);
                             buffer_settings.size = image.width() * image.height() * image.channelCount();
                             buffer_settings.usage = ORN_BUFFER_USAGE_TRANSFER_SRC;
                             OrnBuffer *transfer_buffer = ornCreateBuffer(device, &buffer_settings);
@@ -597,7 +632,7 @@ int main()
               dskEnd();
               ornEndContext();
        }
-       atk_end();
+       atkCheckMemoryLeak();
        return 0;
 }
 #endif //CUBE_TEXTURED_DEMO

@@ -8,7 +8,7 @@ bool adiLoadSoundData(AdiSoundData *sound_data, const AdiSoundDataSettings *sett
        mp3dec_file_info_t info;
        if(mp3dec_load(&mp3d, settings->name, &info, NULL, NULL))
        {
-              atk_error(ATK_MSG_LIB_REPORT, "failed to load mp3 file");
+              atk_api_dbg_error("failed to load mp3 file");
               goto error;
        }
        ALenum format;
@@ -26,7 +26,7 @@ bool adiLoadSoundData(AdiSoundData *sound_data, const AdiSoundDataSettings *sett
               }
               default :
               {
-                     atk_error(ATK_MSG_INVALID_ARGUMENT, "invalid channel count");
+                     atk_api_dbg_error("invalid channel count");
                      goto error;
               }
        }
@@ -34,7 +34,7 @@ bool adiLoadSoundData(AdiSoundData *sound_data, const AdiSoundDataSettings *sett
        alBufferData(sound_data->m_buffer, format, info.buffer, info.samples * sizeof(mp3d_sample_t), info.hz);
        if(alGetError() != AL_NO_ERROR)
        {
-              atk_error(ATK_MSG_LIB_REPORT, "failed to push data into buffer");
+              atk_api_dbg_error("failed to push data into buffer");
               goto error;
        }
        free(info.buffer);

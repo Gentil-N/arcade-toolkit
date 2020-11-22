@@ -5,7 +5,7 @@ OrnImage *ornCreateImage(
        uint32_t mip_level_count, VkSampleCountFlagBits sample_count)
 {
        OrnImage *image = (OrnImage*)atk_alloc(sizeof(struct OrnImage));
-       atk_assert(image != NULL);
+       atk_api_assert(image != NULL);
 
        VkImageCreateInfo image_info = vkfImageCreateInfo(
               VK_IMAGE_TYPE_2D, format, (VkExtent3D){width, height, 1}, mip_level_count, 1, sample_count, tiling, usage, VK_SHARING_MODE_EXCLUSIVE, 
@@ -18,7 +18,7 @@ OrnImage *ornCreateImage(
        settings.objectType = ORN_IMAGE_OBJECT_TYPE;
        image->alloc = ornAllocateMemory(device, memory_allocator, &settings);
 
-       atk_info("image created");
+       atk_api_dbg_info("image created");
        return image;
 }
 
@@ -27,5 +27,5 @@ void ornDestroyImage(VkDevice device, const VklDeviceTable *dtbl, OrnImage *imag
        ornFreeMemory(image->alloc);
        dtbl->vkDestroyImage(device, image->handle, VK_AC);
        atk_free(image);
-       atk_info("image destroyed");
+       atk_api_dbg_info("image destroyed");
 }

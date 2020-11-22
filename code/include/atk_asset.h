@@ -2,7 +2,7 @@
 #define __ASSET_H__
 
 #ifndef __ATK_H__
-#include "atk.h"
+#include "atk_core.h"
 #endif //__ATK_H__
 
 #ifdef __cplusplus
@@ -29,10 +29,10 @@ extern "C"
 
        typedef enum AstImageLoadOption
        {
-              AST_IMG_LOAD_OPTS_GREY = 0x1,
-              AST_IMG_LOAD_OPTS_GREY_ALPHA = 0x2,
-              AST_IMG_LOAD_OPTS_RGB = 0x3,
-              AST_IMG_LOAD_OPTS_RGB_ALPHA = 0x4
+              AST_IMG_LOAD_OPT_GREY = 0x1,
+              AST_IMG_LOAD_OPT_GREY_ALPHA = 0x2,
+              AST_IMG_LOAD_OPT_RGB = 0x3,
+              AST_IMG_LOAD_OPT_RGB_ALPHA = 0x4
        } AstImageLoadOption;
 
        ATK_API bool astImageLoadFromFile(AstImage *image, const char *file_name, AstImageLoadOption load_option);
@@ -125,8 +125,8 @@ struct AstModel
 
 struct AstImage
 {
-       void *m_data ATK_HIDE_CPP(= nullptr);
-       int m_width ATK_HIDE_CPP(= 0), m_height ATK_HIDE_CPP(= 0), m_channel_count ATK_HIDE_CPP(= 0);
+       void *m_data;
+       int m_width, m_height, m_channel_count;
 #ifdef __cplusplus
        AstImage() : m_data(nullptr), m_width(0), m_height(0), m_channel_count(0)//"loadFrom..." must be called
        {

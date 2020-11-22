@@ -20,18 +20,18 @@ void dskJoystickUpdate(DskJoystick *joystick)
 
 float dskJoystickGetAxeState(DskJoystick *joystick, int axe)
 {
-       atk_assert(0 <= axe <= joystick->m_axe_count);
+       atk_api_assert(0 <= axe <= joystick->m_axe_count);
        return joystick->m_axes[axe];
 }
 
 bool dskJoystickIsButtonPressed(DskJoystick *joystick, int button)
 {
-       atk_assert(0 <= button <= joystick->m_button_count);
+       atk_api_assert(0 <= button <= joystick->m_button_count);
        return joystick->m_buttons[button] == GLFW_PRESS;
 }
 
 DskJoystickHatState dskJoystickGetHatState(DskJoystick *joystick, int hat)
 {
-       atk_assert(0 <= hat <= joystick->m_hat_count);
+       atk_api_assert(0 <= hat <= joystick->m_hat_count);
        return (DskJoystickHatState)joystick->m_hats[hat];
 }

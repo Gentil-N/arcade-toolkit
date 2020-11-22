@@ -1,7 +1,7 @@
 #ifndef __ORN_CORE_H__
 #define __ORN_CORE_H__
 
-#include "../../include/atk.h"
+#include "../../include/atk_core.h"
 #include "../../include/atk_orion.h"
 
 #ifdef __cplusplus
@@ -25,27 +25,27 @@ extern "C"
 #define ORN_MEMORY_POOL_SIZE 50000000 // 50Mb
 
 #ifndef NDEBUG
-#define orn_assert_vk(expr) atk_assert(expr == VK_SUCCESS)
+#define orn_assert_vk(expr) atk_api_assert(expr == VK_SUCCESS)
 #else
 #define orn_assert_vk(expr) expr;
 #endif //!NDEBUG
-#define orn_check_ret(expr, type, desc, rtrn) \
-       if ((expr))                            \
-       {                                      \
-              atk_error(type, desc);          \
-              return rtrn;                    \
+#define orn_check_ret(expr, rtrn, ...)                                                                              \
+       if ((expr))                                                                                                  \
+       {                                                                                                            \
+              atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__); \
+              return rtrn;                                                                                          \
        }
-#define orn_check_vk_ret(expr, type, desc, rtrn) \
-       if ((expr) != VK_SUCCESS)                 \
-       {                                         \
-              atk_error(type, desc);             \
-              return rtrn;                       \
+#define orn_check_vk_ret(expr, rtrn, ...)                                                                           \
+       if ((expr) != VK_SUCCESS)                                                                                    \
+       {                                                                                                            \
+              atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__); \
+              return rtrn;                                                                                          \
        }
-#define orn_check_vk_proc_ret(expr, desc, end, rtrn) \
-       if ((expr) != VK_SUCCESS)                     \
-       {                                             \
-              atk_error(ATK_MSG_PROC_FAILED, desc);  \
-              end return rtrn;                       \
+#define orn_check_vk_proc_ret(expr, end, rtrn, ...)                                                                 \
+       if ((expr) != VK_SUCCESS)                                                                                    \
+       {                                                                                                            \
+              atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__); \
+              end return rtrn;                                                                                      \
        }
 
        void *vulkanAllocationFunction(void *pUserData, size_t size, size_t alignment, VkSystemAllocationScope allocationScope);

@@ -3,7 +3,7 @@
 OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *settings)
 {
        OrnPipeline *pipeline = (OrnPipeline *)atk_alloc(sizeof(struct OrnPipeline));
-       atk_assert(pipeline != NULL);
+       atk_api_assert(pipeline != NULL);
 
        VkResult result;
        pipeline->descriptor_set_layouts.m_data = NULL;
@@ -39,7 +39,7 @@ OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *set
                                    ++uniform_image_count;
                                    break;
                             default:
-                                   atk_error(ATK_MSG_INVALID_ARGUMENT, "descriptor type is invalid");
+                                   atk_api_dbg_error("descriptor type is invalid");
                                    break;
                             }
                      }
@@ -142,7 +142,7 @@ OrnPipeline *ornCreatePipeline(OrnDevice *device, const OrnPipelineSettings *set
               atkDeleteArray(&binding_descriptions);
        }
 
-       atk_info("pipeline created");
+       atk_api_dbg_info("pipeline created");
        return pipeline;
 }
 
@@ -160,5 +160,5 @@ void ornDestroyPipeline(OrnDevice *device, OrnPipeline *pipeline)
               atkDeleteArray(&pipeline->descriptor_set_layouts);
        }
        atk_free(pipeline);
-       atk_info("pipeline destroyed");
+       atk_api_dbg_info("pipeline destroyed");
 }

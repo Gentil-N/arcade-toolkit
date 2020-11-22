@@ -87,7 +87,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL vulkanDebugCallback(
 {
        if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
        {
-              atk_error(ATK_MSG_LIB_REPORT, pCallbackData->pMessage);
+              atk_api_dbg_error(pCallbackData->pMessage);
        }
        return VK_FALSE;
 }
@@ -112,28 +112,28 @@ static const char *INST_EXTENSIONS[2] = {VK_KHR_SURFACE_EXTENSION_NAME, VK_KHR_X
 bool ornInitContext(const OrnContextSettings *settings)
 {
        VkResult result = vklInitVulkan(&CONTEXT.mtbl);
-       orn_check_ret(result != VK_SUCCESS, ATK_MSG_INIT_FAILED, "failed to load vulkan", false);
+       orn_check_ret(result != VK_SUCCESS, false, "failed to load vulkan");
 
        uint32_t api_version;
        orn_assert_vk(CONTEXT.mtbl.vkEnumerateInstanceVersion(&api_version));
        uint32_t vk_major = (api_version >> 22);
        uint32_t vk_minor = api_version >> 12 ^ (vk_major << 10);
-       orn_check_ret(!(vk_major >= ORN_REQUIRED_VK_VERS_MAJ && vk_minor >= ORN_REQUIRED_VK_VERS_MIN), ATK_MSG_FEATURE_NOT_PRESENT, "vulkan version is too old", false);
+       orn_check_ret(!(vk_major >= ORN_REQUIRED_VK_VERS_MAJ && vk_minor >= ORN_REQUIRED_VK_VERS_MIN), false, "vulkan version is too old");
 
        VkApplicationInfo app_info = vkfApplicationInfo(
            settings->application_name, VK_MAKE_VERSION(settings->version_major, settings->version_minor, settings->version_patch), ORN_LIB_NAME,
            VK_MAKE_VERSION(ORN_VERSION_MAJOR, ORN_VERSION_MINOR, ORN_VERSION_PATCH), api_version);
-       orn_check_ret(ornCheckInstanceLayers(LAYERS, LAYER_COUNT) == false, ATK_MSG_FEATURE_NOT_PRESENT, "required layers are not present", false);
-       orn_check_ret(ornCheckInstanceExtentions(INST_EXTENSIONS, INST_EXTENSION_COUNT) == false, ATK_MSG_FEATURE_NOT_PRESENT, "required extensions are not present", false)
+       orn_check_ret(ornCheckInstanceLayers(LAYERS, LAYER_COUNT) == false, false, "required layers are not present");
+       orn_check_ret(ornCheckInstanceExtentions(INST_EXTENSIONS, INST_EXTENSION_COUNT) == false, false, "required extensions are not present")
        VkInstanceCreateInfo instance_info = vkfInstanceCreateInfo(&app_info, LAYER_COUNT, LAYERS, INST_EXTENSION_COUNT, INST_EXTENSIONS);
        orn_assert_vk(CONTEXT.mtbl.vkCreateInstance(&instance_info, VK_AC, &CONTEXT.instance));
-       orn_check_ret(result != VK_SUCCESS, ATK_MSG_INIT_FAILED, "failed to init vulkan", false);
+       orn_check_ret(result != VK_SUCCESS, false, "failed to init vulkan");
 
        vklLoadInstanceTable(CONTEXT.instance, &CONTEXT.mtbl, &CONTEXT.itbl);
 #ifdef ATK_DEBUG
-       orn_check_ret(CONTEXT.itbl.vkCreateDebugUtilsMessengerEXT == NULL, ATK_MSG_INIT_FAILED, "fonction <vkCreateDebugUtilsMessengerEXT> is not present", false);
-       orn_check_ret(CONTEXT.itbl.vkCreateDebugUtilsMessengerEXT == NULL, ATK_MSG_FEATURE_NOT_PRESENT, "fonction <vkCreateDebugUtilsMessengerEXT> is not present", false);
-       orn_check_ret(CONTEXT.itbl.vkDestroyDebugUtilsMessengerEXT == NULL, ATK_MSG_FEATURE_NOT_PRESENT, "fonction <vkDestroyDebugUtilsMessengerEXT> is not present", false);
+       orn_check_ret(CONTEXT.itbl.vkCreateDebugUtilsMessengerEXT == NULL, false, "fonction <vkCreateDebugUtilsMessengerEXT> is not present");
+       orn_check_ret(CONTEXT.itbl.vkCreateDebugUtilsMessengerEXT == NULL, false, "fonction <vkCreateDebugUtilsMessengerEXT> is not present");
+       orn_check_ret(CONTEXT.itbl.vkDestroyDebugUtilsMessengerEXT == NULL, false, "fonction <vkDestroyDebugUtilsMessengerEXT> is not present");
        VkDebugUtilsMessengerCreateInfoEXT debug_info = vkfDebugUtilsMessengerCreateInfoEXT(
            VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
            VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT, vulkanDebugCallback, NULL);
@@ -143,7 +143,7 @@ bool ornInitContext(const OrnContextSettings *settings)
 
        ornListGpus(&CONTEXT.gpus);
 
-       atk_info("context initialized");
+       atk_api_dbg_info("context initialized");
        return true;
 }
 
@@ -155,7 +155,7 @@ void ornEndContext()
 #endif //ATK_DEBUG
        CONTEXT.itbl.vkDestroyInstance(CONTEXT.instance, VK_AC);
 
-       atk_info("context ended");
+       atk_api_dbg_info("context ended");
 }
 
 VkFormat ornGetFormatEquivalent(OrnVertexInputType input_type)
@@ -179,7 +179,7 @@ VkFormat ornGetFormatEquivalent(OrnVertexInputType input_type)
        case ORN_VERTEX_INPUT_TYPE_VEC_4:
               return VK_FORMAT_R32G32B32A32_SFLOAT;
        default:
-              atk_error(ATK_MSG_INVALID_ARGUMENT, "vertex input type is not valid");
+              atk_api_dbg_error("vertex input type is not valid");
               return VK_FORMAT_R32_SFLOAT;
        }
 }
@@ -205,7 +205,7 @@ VkDeviceSize ornGetSizeofFormat(VkFormat format)
        case VK_FORMAT_R32G32B32A32_SFLOAT:
               return 16;
        default:
-              atk_error(ATK_MSG_INVALID_ARGUMENT, "format is not valid");
+              atk_api_dbg_error("format is not valid");
               return 4;
        }
 }

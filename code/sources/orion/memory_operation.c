@@ -3,7 +3,7 @@
 OrnMemoryOperation *ornCreateMemoryOperation(OrnDevice *device)
 {
        OrnMemoryOperation *operation = (OrnMemoryOperation *)atk_alloc(sizeof(struct OrnMemoryOperation));
-       atk_assert(operation != NULL);
+       atk_api_assert(operation != NULL);
 
        VkCommandBufferAllocateInfo alloc_info = vkfCommandBufferAllocateInfo(device->command_pool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
        orn_assert_vk(device->tbl.vkAllocateCommandBuffers(device->handle, &alloc_info, &operation->command_buffer));
@@ -11,7 +11,7 @@ OrnMemoryOperation *ornCreateMemoryOperation(OrnDevice *device)
        VkFenceCreateInfo fence_info = vkfFenceCreateInfo();
        orn_assert_vk(device->tbl.vkCreateFence(device->handle, &fence_info, VK_AC, &operation->fence));
 
-       atk_info("memory operation created");
+       atk_api_dbg_info("memory operation created");
        return operation;
 }
 
@@ -47,7 +47,7 @@ void ornPrepareTexture(OrnDevice *device, OrnMemoryOperation *memory_operation, 
        break;
        default:
        {
-              atk_error(ATK_MSG_INVALID_ARGUMENT, "texture layout is not valid");
+              atk_api_dbg_error("texture layout is not valid");
        }
        break;
        }
@@ -126,7 +126,7 @@ void ornWaitMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operat
 {
        orn_assert_vk(device->tbl.vkWaitForFences(device->handle, 1, &memory_operation->fence, VK_TRUE, UINT64_MAX));
        orn_assert_vk(device->tbl.vkResetFences(device->handle, 1, &memory_operation->fence));
-       atk_info("memory operation waited");
+       atk_api_dbg_info("memory operation waited");
 }
 
 void ornDestroyMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_operation)
@@ -134,5 +134,5 @@ void ornDestroyMemoryOperation(OrnDevice *device, OrnMemoryOperation *memory_ope
        device->tbl.vkDestroyFence(device->handle, memory_operation->fence, VK_AC);
        device->tbl.vkFreeCommandBuffers(device->handle, device->command_pool, 1, &memory_operation->command_buffer);
        atk_free(memory_operation);
-       atk_info("memory operation destroyed");
+       atk_api_dbg_info("memory operation destroyed");
 }

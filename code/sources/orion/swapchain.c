@@ -42,14 +42,14 @@ VkPresentModeKHR choosePresentMode(const OrnGpu *gpu)
 OrnSwapchain *ornCreateSwapchain(VkDevice device, const VklDeviceTable *dtbl, const OrnGpu *gpu, uint32_t width, uint32_t height, OrnSurface *surface)
 {
        OrnSwapchain *swapchain = (OrnSwapchain*)atk_alloc(sizeof(struct OrnSwapchain));
-       atk_assert(swapchain != NULL);
+       atk_api_assert(swapchain != NULL);
 
-       atk_assert(gpu->surface_formats.m_count > 0);
+       atk_api_assert(gpu->surface_formats.m_count > 0);
        swapchain->surface_format = chooseSurfaceFormat(gpu);
        uint32_t image_count = atk_max(gpu->surface_capabilities.minImageCount, atk_min(gpu->surface_capabilities.maxImageCount, SWAPCHAIN_IMAGE_COUNT));
 
        swapchain->extent = chooseExtent(gpu, width, height);
-       atk_assert(gpu->present_modes.m_count > 0);
+       atk_api_assert(gpu->present_modes.m_count > 0);
        swapchain->present_mode = choosePresentMode(gpu);
 
        uint32_t queue_indices[2];
@@ -83,7 +83,7 @@ OrnSwapchain *ornCreateSwapchain(VkDevice device, const VklDeviceTable *dtbl, co
               orn_assert_vk(dtbl->vkCreateImageView(device, &image_info, VK_AC, &atk_get(VkImageView, swapchain->image_views, i)));
        }
 
-       atk_info("swapchain created");
+       atk_api_dbg_info("swapchain created");
        return swapchain;
 }
 
@@ -97,5 +97,5 @@ void ornDestroySwapchain(VkDevice device, const VklDeviceTable *dtbl, OrnSwapcha
        atkDeleteArray(&swapchain->images);
        dtbl->vkDestroySwapchainKHR(device, swapchain->handle, VK_AC);
        atk_free(swapchain);
-       atk_info("swapchain destoyed");
+       atk_api_dbg_info("swapchain destoyed");
 }

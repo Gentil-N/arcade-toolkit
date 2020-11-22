@@ -1,5 +1,5 @@
-#ifndef __ATK_H__
-#define __ATK_H__
+#ifndef __ATK_CORE_H__
+#define __ATK_CORE_H__
 
 #ifdef __cplusplus
 /**
@@ -24,10 +24,6 @@ extern "C"
 #ifndef NDEBUG
 #define ATK_DEBUG
 #endif //!NDEBUG
-#ifdef __cplusplus
-#define ATK_HIDE_CPP(expr) expr
-#else
-#define ATK_HIDE_CPP(expr)
 #ifdef ATK_DEFINE_GLOBAL
 #define ATK_GLOBAL
 #define ATK_GLOBAL_DEF(var, def) var def
@@ -35,7 +31,6 @@ extern "C"
 #define ATK_GLOBAL extern
 #define ATK_GLOBAL_DEF(var, def) extern var
 #endif //ATK_DEFINE_GLOBAL
-#endif //__cplusplus
 
        /**
         * PLateforms
@@ -72,6 +67,27 @@ extern "C"
        ATK_API void *atkRealloc(void *ptr, size_t size);
        ATK_API void *atkReallocAligned(void *ptr, size_t alignment, size_t size);
        ATK_API void atkFree(void *ptr);
+       ATK_API void atkSetMemoryFunctions(
+              fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback aligned_alloc_cb, fct_atkReallocCallback realloc_cb, fct_atkFreeCallback free_cb);
+#ifdef ATK_DEBUG
+       ATK_API void *atkAllocDbg(size_t size, size_t line, const char *file_name);
+       ATK_API void *atkAllocAlignedDbg(size_t alignment, size_t size, size_t line, const char *file_name);
+       ATK_API void *atkReallocDbg(void *ptr, size_t size, size_t line, const char *file);
+       ATK_API void *atkReallocAlignedDbg(void *ptr, size_t alignment, size_t size, size_t line, const char *file);
+       ATK_API void atkFreeDbg(void *ptr);
+       ATK_API void atkCheckMemoryLeak();
+#define atk_alloc(size) atkAllocDbg(size, __LINE__, __FILENAME__)
+#define atk_alloc_aligned(alignment, size) atkAllocAlignedDbg(alignment, size, __LINE__, __FILENAME__)
+#define atk_realloc(ptr, size) atkReallocDbg(ptr, size, __LINE__, __FILENAME__)
+#define atk_realloc_aligned(ptr, alignment, size) atkReallocAlignedDbg(ptr, alignment, size, __LINE__, __FILENAME__)
+#define atk_free(ptr) atkFreeDbg(ptr)
+#else
+#define atk_alloc(size) atkAlloc(size)
+#define atk_alloc_aligned(alignment, size) atkAllocAligned(alignment, size)
+#define atk_realloc(ptr, size) atkRealloc(ptr, size)
+#define atk_realloc_aligned(ptr, alignment, size) atkReallocAligned(ptr, alignment, size)
+#define atk_free(ptr) atkFree(ptr)
+#endif //ATK_DEBUG
 
        /**
         * Mutex
@@ -83,51 +99,57 @@ extern "C"
        ATK_API void atkUnlockMutex(AtkMutex *mutex);
        ATK_API void atkDestroyMutex(AtkMutex *mutex);
 
-       /**
-        * Callback Info/Warning/Error
-        */
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
-       typedef enum AtkMsgType
+       /**
+        * Logger
+        */
+       typedef enum AtkLogLevel
        {
-              ATK_MSG_VOID = 0,
-              ATK_MSG_INFO = 1,
-              ATK_MSG_WARNING = 2,
-              ATK_MSG_ERROR = 4,
-              ATK_MSG_UNKNOW = 0b1000,
-              ATK_MSG_OUT_OF_MEMORY = 0b10000,
-              ATK_MSG_FEATURE_NOT_PRESENT = 0b11000,
-              ATK_MSG_INIT_FAILED = 0b100000,
-              ATK_MSG_PROC_FAILED = 0b101000,
-              ATK_MSG_LIB_REPORT = 0b111000,
-              ATK_MSG_RESOURCE_MISSING = 0b1000000,
-              ATK_MSG_INVALID_ARGUMENT = 0b1001000
-       } AtkMsgType;
+              ATK_LOG_LVL_DEBUG = 0x1,
+              ATK_LOG_LVL_INFO = 0x2,
+              ATK_LOG_LVL_WARN = 0x4,
+              ATK_LOG_LVL_ERROR = 0x8,
+              ATK_LOG_LVL_FATAL = 0x10,
+              ATK_LOG_LVL_API = 0x20
+       } AtkLogLevel;
 
-       typedef void (*fct_atkMessageCallback)(AtkMsgType code, const char *description, const char *file, size_t line);
+       typedef void (*fct_atkLoggerCallback)(size_t level, const char *file, size_t line, const char *description);
+       
+       ATK_API void atkLog(size_t level, const char *file, size_t line, const char *format, ...);
+       ATK_API void atkSetLoggerCallback(fct_atkLoggerCallback logger_cb);
+       ATK_API void atkEndMemory();
 
+#define atk_info(...) atkLog(ATK_LOG_LVL_INFO, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_warn(...) atkLog(ATK_LOG_LVL_WARN, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_error(...) atkLog(ATK_LOG_LVL_ERROR, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_fatal(...) atkLog(ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__)
 #ifdef ATK_DEBUG
-
-       ATK_API void atkPushMessage(AtkMsgType code, const char *description, const char *file, size_t line);
-       ATK_API void atkConcatAndPushMsg(AtkMsgType code, const char *file, size_t line, const char *format, ...);
-
-#define atk_vinfo(format, ...) atkConcatAndPushMsg(ATK_MSG_INFO, __FILENAME__, __LINE__, format, __VA_ARGS__)
-#define atk_info(description) atkPushMessage(ATK_MSG_INFO, description, __FILENAME__, __LINE__)
-#define atk_vwarn(type, format, ...) atkConcatAndPushMsg((AtkMsgType)(ATK_MSG_WARNING | type), __FILENAME__, __LINE__, format, __VA_ARGS__)
-#define atk_warn(type, description) atkPushMessage((AtkMsgType)(ATK_MSG_WARNING | type), description, __FILENAME__, __LINE__)
-#define atk_verror(type, format, ...) atkConcatAndPushMsg((AtkMsgType)(ATK_MSG_ERROR | type), __FILENAME__, __LINE__, format, __VA_ARGS__)
-#define atk_error(type, description) atkPushMessage((AtkMsgType)(ATK_MSG_ERROR | type), description, __FILENAME__, __LINE__)
-#define atk_assert(expr) ((expr) ? (void)(0) : atk_error(ATK_MSG_PROC_FAILED, "assertion failed"))
-#define atk_dassert(expr, type, description) ((expr) ? (void)(0) : atk_error(type, description))
+#define atk_dbg_info(...) atkLog(ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_INFO, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_dbg_warn(...) atkLog(ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_WARN, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_dbg_error(...) atkLog(ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_ERROR, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_dbg_fatal(...) atkLog(ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_api_dbg_info(...) atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_INFO, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_api_dbg_warn(...) atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_WARN, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_api_dbg_error(...) atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_ERROR, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_api_dbg_fatal(...) atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__)
+#define atk_assert(expr) ((expr) ? (void)(0) : atk_dbg_fatal("assertion failed"))
+#define atk_vassert(expr, ...) ((expr) ? (void)(0) : atkLog(ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__))
+#define atk_api_assert(expr) ((expr) ? (void)(0) : atk_api_dbg_fatal("assertion failed"))
+#define atk_api_vassert(expr, ...) ((expr) ? (void)(0) : atkLog(ATK_LOG_LVL_API | ATK_LOG_LVL_DEBUG | ATK_LOG_LVL_FATAL, __FILENAME__, __LINE__, __VA_ARGS__))
 #else
-#define atk_vinfo(format, ...)
-#define atk_info(description)
-#define atk_vwarn(type, format, ...)
-#define atk_warn(type, description)
-#define atk_verror(type, format, ...)
-#define atk_error(type, description)
+#define atk_dbg_info(...)
+#define atk_dbg_warn(...)
+#define atk_dbg_error(...)
+#define atk_dbg_fatal(...)
+#define atk_api_dbg_info(...)
+#define atk_api_dbg_warn(...)
+#define atk_api_dbg_error(...)
+#define atk_api_dbg_fatal(...)
 #define atk_assert(expr)
-#define atk_dassert(expr, type, description)
+#define atk_vassert(expr, ...)
+#define atk_api_assert(expr)
+#define atk_api_vassert(expr, ...)
 #endif //ATK_DEBUG
 
        /**
@@ -183,51 +205,16 @@ extern "C"
        ATK_API bool atkFileWrite(AtkFile *file, void *buffer, size_t size);
        ATK_API bool atkFileSetCursor(AtkFile *file, size_t position);
 
-       /**
-        * Debug
-        */
-#ifdef ATK_DEBUG
-       ATK_API void *atkAllocDebug(size_t size, size_t line, const char *file_name);
-       ATK_API void *atkAllocAlignedDebug(size_t alignment, size_t size, size_t line, const char *file_name);
-       ATK_API void *atkReallocDebug(void *ptr, size_t size);
-       ATK_API void *atkReallocAlignedDebug(void *ptr, size_t alignment, size_t size);
-       ATK_API void atkFreeDebug(void *ptr);
-#endif //ATK_DEBUG
-
-       /**
-        * Init/End
-        */
-       ATK_API void atkInit(
-           fct_atkMessageCallback msg_cb, fct_atkAllocCallback alloc_cb, fct_atkAllocAlignedCallback alloc_align_cb, fct_atkReallocCallback realloc_cb,
-           fct_atkFreeCallback free_cb);
-       ATK_API void atkEnd();
-#define atk_init atkInit
-#define atk_end atkEnd
-
-#ifdef ATK_DEBUG
-#define atk_alloc(size) atkAllocDebug(size, __LINE__, __FILENAME__)
-#define atk_alloc_aligned(alignment, size) atkAllocAlignedDebug(alignment, size, __LINE__, __FILENAME__)
-#define atk_realloc(ptr, size) atkReallocDebug(ptr, size)
-#define atk_realloc_aligned(ptr, alignment, size) atkReallocAlignedDebug(ptr, alignment, size)
-#define atk_free(ptr) atkFreeDebug(ptr)
-#else
-#define atk_alloc(size) atkAlloc(size)
-#define atk_alloc_aligned(alignment, size) atkAllocAligned(alignment, size)
-#define atk_realloc(ptr, size) atkRealloc(ptr, size)
-#define atk_realloc_aligned(ptr, alignment, size) atkReallocAligned(ptr, alignment, size)
-#define atk_free(ptr) atkFree(ptr)
-#endif //ATK_DEBUG
-
 #ifdef __cplusplus
 }
 #endif //__cplusplus
 
 struct AtkVector
 {
-       void *m_data ATK_HIDE_CPP(= nullptr);
-       size_t m_count ATK_HIDE_CPP(= 0);
-       size_t m_capacity ATK_HIDE_CPP(= 0);
-       size_t m_size_of_element ATK_HIDE_CPP(= 0);
+       void *m_data;
+       size_t m_count;
+       size_t m_capacity;
+       size_t m_size_of_element;
 #ifdef __cplusplus
        AtkVector() : m_data(nullptr), m_count(0), m_capacity(0), m_size_of_element(0) //"recreate" must be called
        {
@@ -277,13 +264,13 @@ struct AtkVector
        template <typename T>
        T &get(size_t index)
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               return atk_get(T, *this, index);
        }
        template <typename T>
        const T &get(size_t index) const
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               return atk_get(T, *this, index);
        }
        template <typename T>
@@ -302,17 +289,17 @@ struct AtkVector
        template <typename T>
        void insert(size_t index, const T &element)
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               atkVectorInsert(this, index, &element);
        }
        void insert(size_t index, const void *element)
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               atkVectorInsert(this, index, element);
        }
        void remove(size_t index)
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               atkVectorRemove(this, index);
        }
        void resizeCapacity(size_t new_capacity)
@@ -354,9 +341,9 @@ struct AtkVector
 
 struct AtkArray
 {
-       void *m_data ATK_HIDE_CPP(= nullptr);
-       size_t m_count ATK_HIDE_CPP(= 0);
-       size_t m_size_of_element ATK_HIDE_CPP(= 0);
+       void *m_data;
+       size_t m_count;
+       size_t m_size_of_element;
 #ifdef __cplusplus
        AtkArray() : m_data(nullptr), m_count(0), m_size_of_element(0) //"recreate" must be called
        {
@@ -404,13 +391,13 @@ struct AtkArray
        template <typename T>
        T &get(size_t index)
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               return atk_get(T, *this, index);
        }
        template <typename T>
        const T &get(size_t index) const
        {
-              atk_assert(index < m_count);
+              atk_api_assert(index < m_count);
               return atk_get(T, *this, index);
        }
        inline bool isEmpty() const noexcept
@@ -436,9 +423,9 @@ struct AtkArray
 
 struct AtkString
 {
-       char *m_data ATK_HIDE_CPP(= nullptr);
-       size_t m_size ATK_HIDE_CPP(= 0);
-       size_t m_capacity ATK_HIDE_CPP(= 0);
+       char *m_data;
+       size_t m_size;
+       size_t m_capacity;
 #ifdef __cplusplus
        AtkString() : m_data(nullptr), m_size(0), m_capacity(0)
        {
@@ -519,8 +506,8 @@ struct AtkString
 
 struct AtkFile
 {
-       void *m_handle ATK_HIDE_CPP(= nullptr);
-       size_t m_size ATK_HIDE_CPP(= 0);
+       void *m_handle;
+       size_t m_size;
 #ifdef __cplusplus
        AtkFile() : m_handle(nullptr), m_size(0)
        {
@@ -585,4 +572,4 @@ struct AtkFile
 #endif //__cplusplus
 };
 
-#endif //__ATK_H__
+#endif //__ATK_CORE_H__

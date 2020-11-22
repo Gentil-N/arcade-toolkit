@@ -10,7 +10,7 @@ bool astImageLoadFromFile(AstImage *image, const char *file_name, AstImageLoadOp
        image->m_channel_count = (int)load_option;
        if(image->m_data == NULL)
        {
-              atk_error(ATK_MSG_PROC_FAILED, "failed to load image from file");
+              atk_api_dbg_error("failed to load image from file");
               return false;
        }
        return true;
@@ -23,7 +23,7 @@ bool astImageLoadFromMemory(AstImage *image, const void *data, int size, AstImag
        image->m_channel_count = (int)load_option;
        if(image->m_data == NULL)
        {
-              atk_error(ATK_MSG_PROC_FAILED, "failed to load image from memory");
+              atk_api_dbg_error("failed to load image from memory");
               return false;
        }
        return true;

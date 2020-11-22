@@ -3,7 +3,7 @@
 OrnRenderer *ornCreateRenderer(OrnDevice *device, const OrnRendererSettings *settings)
 {
     OrnRenderer *renderer = (OrnRenderer *)atk_alloc(sizeof(struct OrnRenderer));
-    atk_assert(renderer != NULL);
+    atk_api_assert(renderer != NULL);
 
     renderer->frame_extent = device->swapchain->extent;
     VkResult result;
@@ -81,7 +81,7 @@ OrnRenderer *ornCreateRenderer(OrnDevice *device, const OrnRendererSettings *set
         orn_assert_vk(device->tbl.vkCreateFramebuffer(device->handle, &framebuffer_info, VK_AC, &atk_get(VkFramebuffer, renderer->framebuffers, i)));
     }
 
-    atk_info("renderer created");
+    atk_api_dbg_info("renderer created");
     return renderer;
 }
 
@@ -104,5 +104,5 @@ void ornDestroyRenderer(OrnDevice *device, OrnRenderer *renderer)
         ornDestroyImage(device->handle, &device->tbl, renderer->msaa.image);
     }
     atk_free(renderer);
-    atk_info("renderer destroyed");
+    atk_api_dbg_info("renderer destroyed");
 }
