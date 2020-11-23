@@ -213,7 +213,7 @@ void atkCheckMemoryLeak()
        AtkAllocInfo *alloc_info = alloc_info_head;
        while (alloc_info)
        {
-              atk_api_dbg_warn("%s%lu%s%s", "leak at ", alloc_info->line, " in ", alloc_info->file);
+              atk_api_dbg_warn("%s%lu%s%s", "memory leak at ", alloc_info->line, " in ", alloc_info->file);
               alloc_info = alloc_info->previous;
        }
 }

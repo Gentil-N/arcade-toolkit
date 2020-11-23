@@ -48,7 +48,8 @@ set(SRC_FILES ${SRC_FILES}
               ${SRC_DIR}/core/vector.c
               ${SRC_DIR}/core/array.c
               ${SRC_DIR}/core/string.c
-              ${SRC_DIR}/core/file.c)
+              ${SRC_DIR}/core/file.c
+              ${SRC_DIR}/core/timer.c)
 find_package(Threads)
 set(REQUIRED_LIBS ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 #-

@@ -205,6 +205,13 @@ extern "C"
        ATK_API bool atkFileWrite(AtkFile *file, void *buffer, size_t size);
        ATK_API bool atkFileSetCursor(AtkFile *file, size_t position);
 
+       /**
+        * Timer
+        */
+       typedef struct AtkTimer AtkTimer;
+
+       ATK_API void atkTimerUpdate(AtkTimer *timer);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus
@@ -568,6 +575,41 @@ struct AtkFile
        inline void *handle() const noexcept
        {
               return m_handle;
+       }
+#endif //__cplusplus
+};
+
+struct AtkTimer
+{
+       int m_hour;
+       int m_min;
+       int m_sec;
+       float m_progress;
+       long m_last_clock;
+#ifdef __cplusplus
+       AtkTimer() : m_hour(0), m_min(0), m_sec(0), m_progress(0), m_last_clock(0)
+       {
+       }
+       ~AtkTimer() = default;
+       void update()
+       {
+              atkTimerUpdate(this);
+       }
+       inline int hour() const noexcept
+       {
+              return m_hour;
+       }
+       inline int min() const noexcept
+       {
+              return m_min;
+       }
+       inline int sec() const noexcept
+       {
+              return m_sec;
+       }
+       inline float progress() const noexcept
+       {
+              return m_progress;
        }
 #endif //__cplusplus
 };

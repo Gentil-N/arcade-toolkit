@@ -9,6 +9,7 @@
 #ifdef ATK_PLATFORM_LINUX
 #include <pthread.h>
 #endif //ATK_PLATFORM_LINUX
+#include <time.h>
 
 #ifdef __cplusplus
 extern "C"

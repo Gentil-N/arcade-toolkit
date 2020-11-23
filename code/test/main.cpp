@@ -464,6 +464,8 @@ int main()
 }
 #endif //INSTANCE_RENDERING_DEMO
 
+#include <time.h>
+
 #ifdef CUBE_TEXTURED_DEMO
 #define WINDOW_TITLE "Cube textured demo"
 #define ROTATION mth_to_radf(0.5f)
@@ -602,6 +604,9 @@ int main()
                      ornCmdEnd(command);
                      ornBindCommand(device, command);
 
+                     AtkTimer timer;
+                     timer.update();
+                     std::cout << timer.hour() << " " << timer.min() << " " << timer.sec() << std::endl;
                      window.show();
                      while (!window.shouldClose())
                      {
